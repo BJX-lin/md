@@ -1,0 +1,862 @@
+-- 终章《点名》
+-- 场景：冲回旧楼 / 门外对峙 / 广播室内部显形 / 最后一次点名 / 终极抉择 / 五结局收束
+
+== final_start
+@chapter 5 点名
+@bg oldbuilding_out rain
+@bgm bgm_final
+@amb amb_rain
+@clearchars
+@autosave
+旧楼的铁丝网破口在雨里泛着白。
+三层最左边那扇窗亮着。这一次不是一点点光——整扇窗都亮，亮得像有人把整个夏天塞进了那间屋子。
+@fx flash 0.5
+@set truth +1
+* 直接冲进去 -> final_enter
+    @set route_hostility +1
+* 先清点自己手里有什么 -> final_check
+    @set truth +1
+
+== final_check
+你在雨里停了三秒，摸了摸口袋。
+@if item:item_roster_core
+> 核心名单页。第109次。上面写着你和她。
+@endif
+@if item:item_night_roster
+> 夜间核对名单。凌晨两点十七分会自己改字的那张。
+@endif
+@if item:item_fire_tape
+> 火灾录像带。塑料壳被雨打湿了。
+@endif
+@if item:item_admin_key
+> 管理员钥匙。齿口磨得发圆。
+@endif
+@if item:item_library_card
+> 梁野的借书卡。名字被描过很多遍。
+@endif
+@if item:item_page109
+> 第109页残片。背面写着“别替我答到”。
+@endif
+@if item:item_lighter
+> 老秦的打火机。机身上有一道烧灼痕。
+@endif
+@if item:item_mirror_shard
+> 一片镜子碎片。碎片里的你，比你慢半拍。
+@endif
+@goto final_enter
+
+== final_enter
+@bg oldbuilding_stair dark
+@bgm bgm_final
+@amb amb_old_building
+@fx fog 1.0
+@clearchars
+@sfx sfx_steps_run
+你冲上楼梯。这一次你不数了。
+楼梯自己在数——每一级台阶亮起一个数字，用粉笔写的，从1开始。
+你数到自己踩过的最后一级：109。
+@fx names 1.0
+@set truth +2
+@set memory_echo +2
+@bg broadcast_door dark
+@amb amb_broadcast_static
+广播室的铁门这一次是全开的。
+门口站着两个人的影子。
+@goto final_sc2
+
+-- ================================================= Scene 2 门外对峙
+== final_sc2
+@bg broadcast_door dark
+@bgm bgm_final
+@clearchars
+@if state:liangye_end_state==present_anchor
+@show liangye fear left
+梁野追上来了，扶着膝盖喘。
+liangye(fear)：我在。
+liangye(fear)：这次我不跑。
+@elif state:liangye_end_state==present_fragile_truth
+@show liangye hollow left
+梁野跟着上来了。他的脚步声比人慢了半拍。
+liangye(hollow)：我记得这里。
+liangye(hollow)：我上次就站在这个位置。
+@set memory_echo +1
+@elif state:liangye_end_state==present_unstable
+@show liangye terrified left
+梁野贴着墙站着，牙齿在打颤，但他没有走。
+@else
+@sfx sfx_whisper
+天花板里传来梁野的声音，很远。
+@if flag_gave_up_roommate
+liangye(hollow)：这次也不拉我吗？
+@set sanity -3
+@else
+liangye(hollow)：林昼，这次别慢。
+@set sanity -2
+@endif
+@endif
+@if state:zhouxu_end_state==enter_with_player
+@show zhouxu angry right
+zhouxu(angry)：我跟你进。
+zhouxu(angry)：五年前我在门外，这次我在门里。
+@set trust_zhouxu +1
+@elif state:zhouxu_end_state==follow_to_threshold
+@show zhouxu sad right
+周叙站在门槛外，脚尖抵着门框，没有再往前。
+zhouxu(sad)：我送到这儿。
+zhouxu(sad)：对不起。我进不去。
+@else
+@show zhouxu cold right
+zhouxu(cold)：进去。快点结束。
+zhouxu(cold)：全班都在等着下课。
+@endif
+@wait 0.6
+@sfx sfx_broadcast_click
+门里传出声音。
+shenhe(hollow)：都到齐了？
+* “到齐了。” -> final_s2_a
+    @set truth +1
+* “还差一个。” -> final_s2_b
+    @set truth +3
+    @set save_route_score +1
+* “你数数看。” -> final_s2_c
+    @set truth +2
+    @set route_hostility +1
+
+== final_s2_a
+shenhe(hollow)：好。
+shenhe(hollow)：那就可以开始了。
+@goto final_sc3
+
+== final_s2_b
+门里安静了很久。
+shenhe(hollow)：……差谁。
+me：差你。
+@fx heartbeat 1.4
+@set shenhe_focus +2
+@set save_route_score +2
+shenhe(hollow)：我一直在。
+me：在的不是你。在的是你的名字，还写了一半。
+@set truth +2
+@goto final_sc3
+
+== final_s2_c
+shenhe(hollow)：数过了。
+shenhe(hollow)：每天晚上都数。
+shenhe(hollow)：数了一千八百多次，每次都少一个。
+@set truth +2
+@set sanity -1
+@goto final_sc3
+
+-- ================================================= Scene 3 广播室内部
+== final_sc3
+@bg broadcast_room dark
+@bgm bgm_horror
+@amb amb_broadcast_static
+@clearchars
+@fx darken 1.0
+你走进去。
+@if state:zhouxu_end_state==enter_with_player
+周叙跟在你身后半步，把门抵住，不让它合上。
+@show zhouxu angry right
+@else
+门在你身后合上了。
+@sfx sfx_door_slam
+@fx bigshake 0.8
+@endif
+广播室比你想的小。四面墙上贴着隔音棉，很多块已经脱落，露出下面焦黑的木板。
+调音台的每一个推子都推到了顶。
+@show shenhe hollow center
+播音椅上坐着一个人。
+她背对着你。头发是湿的，水一滴一滴落下来，落在地上没有声音。
+@sfx sfx_water
+@fx heartbeat 1.2
+shenhe(hollow)：坐吧。
+shenhe(hollow)：那把椅子，你坐过很多次了。
+你环顾四周——只有一把椅子，她坐着的那把。
+@set sanity -3
+@if gore>=1
+她的校服后背，从肩胛到腰，是焦的。焦痕里有些地方还发着暗红，像没有完全熄灭。
+@fx bloodburst 0.5
+@endif
+* “你为什么不走。” -> final_s3_a
+    @set truth +2
+* “把脸转过来。” -> final_s3_b
+    @set truth +2
+    @set sanity -4
+* [if item:item_roster_core] 把名单摊在调音台上 -> final_s3_c
+    @set truth +3
+    @set save_route_score +1
+* [if flag_true_linday_status_known] “我们是同一个人吗。” -> final_s3_d
+    @set truth +4
+    @set memory_echo +3
+
+== final_s3_a
+shenhe(hollow)：走去哪儿。
+shenhe(hollow)：我的名字还在名单上。名字在，人就得在。
+shenhe(hollow)：这是你们定的规矩。不是我的。
+@set truth +2
+@goto final_sc4
+
+== final_s3_b
+她转过来了。
+@fx flash 1.0
+@sfx sfx_sting
+@fx glitch 1.0
+你看见了那张脸。
+五官都在，位置也对。眉毛的形状，鼻梁的弧度，下巴那颗很小的痣。
+@fx eyes 1.0
+和你每天早上在盥洗室镜子里看见的，是同一张。
+@set sanity -6
+@set memory_echo +4
+@flag flag_true_linday_status_known
+@clue clue_self_repeat
+shenhe(hollow)：吓到了？
+shenhe(hollow)：每次到这一步，你都是这个表情。
+@set truth +3
+@goto final_sc4
+
+== final_s3_c
+你把那页名单摊在调音台上，压平。
+@sfx sfx_page
+她低头看了一眼，然后伸出手指，点在“沈禾（删除未完成）”那一行。
+shenhe(hollow)：删除未完成。
+shenhe(hollow)：知道为什么完不成吗？
+me：因为一直有人替你答到。
+shenhe(hollow)：不。
+shenhe(hollow)：是因为没有人肯把我的名字，完完整整地念一遍。
+shenhe(hollow)：删掉一个人，也是要走流程的。
+@set truth +4
+@set save_route_score +2
+@clue clue_rule_gap
+@goto final_sc4
+
+== final_s3_d
+me：我们是同一个人吗。
+她笑了。这次是真的笑，肩膀都在动。
+shenhe(smirk)：不是。
+shenhe(smirk)：你是他们为了填我这个空，一次一次描出来的。
+shenhe(smirk)：描到第109次，笔画已经很淡了。
+@fx names 1.0
+@set memory_echo +4
+@set truth +4
+@set sanity -5
+me：那我原来是谁。
+shenhe(hollow)：原来？
+shenhe(hollow)：你原来是那个在五年前的晚自习上，第一个低下头装作没听见的人。
+@fx heartbeat 1.6
+@set truth +2
+> 你不是被害者。也不是替死鬼。
+> 你是那四十一个低头的人里的一个，被留下来，反复补这一个空。
+@goto final_sc4
+
+-- ================================================= Scene 4 最后一次点名
+== final_sc4
+@bg broadcast_room dark
+@bgm bgm_final
+@clearchars
+@show shenhe hollow center
+@sfx sfx_broadcast_click
+调音台自己亮起。
+一张最终名单从机器里慢慢吐出来，纸还带着温热。
+@roster
+@set truth +4
+shenhe(hollow)：最后一次。
+shenhe(hollow)：这次念完，就不用反复了。
+她先念别人的名字。
+@wait 0.6
+shenhe(hollow)：周叙。
+@if state:zhouxu_end_state==enter_with_player
+zhouxu(angry)：在。
+zhouxu(angry)：但这次我不替任何人补后半句。
+@set trust_zhouxu +1
+@set save_route_score +1
+@elif state:zhouxu_end_state==follow_to_threshold
+门外传来周叙的声音，隔着铁门，闷闷的。
+zhouxu(sad)：在。
+@else
+zhouxu(cold)：在。
+zhouxu(cold)：别拖，念你的名字。
+@endif
+@wait 0.4
+shenhe(hollow)：梁野。
+@if state:liangye_end_state==present_anchor
+@goto final_ly_anchor
+@elif state:liangye_end_state==present_fragile_truth
+@goto final_ly_fragile
+@elif state:liangye_end_state==present_unstable
+@goto final_ly_unstable
+@else
+@goto final_ly_absent
+@endif
+
+== final_ly_anchor
+@show liangye terrified left
+梁野下意识要答。他的嘴已经张开了。
+@fx heartbeat 1.6
+* 抓住他 -> final_ly_hold
+    @set trust_liangye +2
+    @set save_route_score +2
+* 让他自己决定 -> final_ly_self
+* 替他答“到” -> final_ly_sub
+    @set taboo_count +2
+    @set shenhe_focus +2
+* [if item:item_library_card] 把借书卡塞给他 -> final_ly_card
+    @set truth +1
+    @set save_route_score +1
+
+== final_ly_hold
+你一把捂住他的嘴，把他往后拽。
+@fx shake 0.8
+他挣了两下，然后不动了，隔着你的手掌喘气。
+shenhe(hollow)：……
+shenhe(hollow)：他没答。
+shenhe(hollow)：那就先记着。
+@set truth +1
+@goto final_ly_end
+
+== final_ly_self
+你没有动。
+梁野张着嘴，僵了三秒。
+@wait 1.2
+然后他闭上了。
+liangye(fear)：我不答。
+liangye(fear)：我这条命是我自己的，不是名单上的。
+@set trust_liangye +1
+@set save_route_score +1
+@goto final_ly_end
+
+== final_ly_sub
+你抢在他前面开口。
+me：到。
+@fx redflash 1.0
+@sfx sfx_sting
+@fx bigshake 1.0
+整间屋子的红灯同时亮到最大。
+shenhe(hollow)：你替他答了。
+shenhe(hollow)：那从现在起，你们两个名字在同一格。
+@set sanity -4
+@set memory_echo +2
+@flag flag_liangye_final_loss
+@if gore>=1
+梁野的鼻子开始流血，很急，止不住。他自己没有感觉，只是茫然地看着你。
+@fx bloodburst 0.7
+@sfx sfx_flesh
+@endif
+@goto final_ly_end
+
+== final_ly_card
+你把那张借书卡拍进他手里。
+liangye(fear)：……
+他低头看卡上那个被描过很多遍的名字。
+liangye(fear)：我不是来替你死的。
+liangye(fear)：我是来跟你一起下课的。
+@set trust_liangye +2
+@set save_route_score +1
+@goto final_ly_end
+
+== final_ly_fragile
+@show liangye hollow left
+梁野在名字响起来的时候，自己先开口了。
+liangye(hollow)：这个名字，现在不一定全是我的。
+* 让他说完 -> final_ly_f1
+    @set truth +3
+* 打断他 -> final_ly_f2
+    @set sanity +2
+* 问他记起了什么 -> final_ly_f3
+    @set truth +4
+    @set sanity -3
+    @set memory_echo +2
+
+== final_ly_f1
+liangye(hollow)：我从旧楼回来的那天，回来的不全是我。
+liangye(hollow)：有一部分留在楼道里了。留下的那部分，一直在替我答到。
+liangye(hollow)：所以你别数我。我这一格，已经有人了。
+@set truth +2
+@set save_route_score +1
+@goto final_ly_end
+
+== final_ly_f2
+me：别说了。
+他闭上嘴，点点头。
+之后他一直很安静，安静得让你不敢确认他还在不在。
+@goto final_ly_end
+
+== final_ly_f3
+me：你记起什么了。
+liangye(hollow)：记起第106次。
+liangye(hollow)：那次是我先没的。你在门口回头看了我一眼，然后就跑了。
+liangye(hollow)：我不怪你。真的。
+liangye(hollow)：我只是想告诉你，你回过头。
+@fx heartbeat 1.4
+@set truth +3
+@set memory_echo +3
+@set save_route_score +1
+@goto final_ly_end
+
+== final_ly_unstable
+@show liangye terrified left
+梁野缩在角落，两手捂着耳朵，一个劲地摇头。
+liangye(terrified)：不是我不是我不是我——
+shenhe(hollow)：他不答。
+shenhe(hollow)：不答的，记“未到”。
+@set truth +1
+@goto final_ly_end
+
+== final_ly_absent
+@sfx sfx_whisper
+@fx static 0.8
+广播念到“梁野”，天花板里传来一句很远的回答。
+@if flag_gave_up_roommate
+liangye(hollow)：这次也不拉我吗？
+@fx heartbeat 1.6
+@set sanity -4
+@set memory_echo +2
+@else
+liangye(hollow)：林昼，这次别慢。
+@set sanity -2
+@endif
+@goto final_ly_end
+
+== final_ly_end
+@bg broadcast_room dark
+@bgm bgm_final
+@wait 0.8
+@fx heartbeat 1.8
+shenhe(hollow)：林昼。
+@fx flash 0.7
+@fx glitch 1.0
+广播室里所有线路都亮了一下。
+调音台的玻璃面板上，映出很多个你。它们全部同时转过头，看着真正的你。
+@set sanity -3
+@set truth +1
+@goto final_answer
+
+== final_answer
+* “到。” -> final_a_yes
+    @set sanity -3
+* 不答 -> final_a_silent
+    @set sanity +1
+* [lock flag_true_linday_status_known] “这个名字不完整。” -> final_a_incomplete
+    @set truth +3
+    @set save_route_score +1
+* [lock flag_shenhe_name_full] “先点沈禾。” -> final_a_shenhe
+    @set save_route_score +2
+* [lock flag_rule_terms_complete] “名单错了。” -> final_a_wrong
+    @set truth +2
+* [lock flag_terminal_broadcast_ready] 直接去改广播 -> final_a_broadcast
+
+== final_a_yes
+me：到。
+@fx redflash 1.0
+@sfx sfx_sting
+@fx bigshake 1.0
+沈禾看着你，笑了一下。
+shenhe(smirk)：终于。
+@set memory_echo +3
+@set shenhe_focus +3
+你觉得身体一下轻了。轻得像把什么东西交出去了。
+@if control_route_score>=5
+> 但你没有站起来。你伸手，把名单拉到自己面前。
+> 如果一定要有人在这儿，那也得是说了算的那个人。
+@goto final_sc5
+@else
+@goto final_sc5
+@endif
+
+== final_a_silent
+你没有出声。
+广播底噪一点一点变大，变成一种像很多人同时低声说话的声音。
+@sfx sfx_whisper
+@fx static 1.0
+shenhe(hollow)：不答也可以。
+shenhe(hollow)：不答的，按“未到”处理。
+shenhe(hollow)：未到的，下一次还得点。
+@set truth +1
+@goto final_sc5
+
+== final_a_incomplete
+me：这个名字不完整。
+@fx static 1.0
+沈禾第一次没有接话。
+广播底噪变大，然后又整个塌下去，屋里安静得能听见灯丝的声音。
+@wait 1.2
+shenhe(hollow)：……你怎么知道。
+me：因为写它的那支笔，之前写过别人。
+me：因为照片上那个位置是空的。
+me：因为第109次，我还是坐在最后一排靠窗。
+@set truth +3
+@set save_route_score +1
+@flag flag_name_incomplete_declared
+@goto final_sc5
+
+== final_a_shenhe
+me：先点沈禾。
+shenhe(angry)：你凭什么替我排顺序？
+me：因为你卡在这儿太久了。
+@fx heartbeat 1.6
+@set save_route_score +2
+@if flag_name_written_back
+她的手指在扶手上抠了一下。木头上留下五道很深的印。
+shenhe(hollow)：你已经把我写回去了。
+shenhe(hollow)：写回去的名字，是要有人念的。
+@set save_route_score +2
+@endif
+@set shenhe_focus +2
+@goto final_sc5
+
+== final_a_wrong
+me：名单错了。
+me：删除未完成者不能由同格替补直接覆盖。
+me：你们一直在跳步骤。
+@fx glitch 1.0
+@sfx sfx_broadcast_static
+调音台上所有的推子同时往下滑了一格。
+shenhe(hollow)：……谁教你的。
+me：许清。她自己十七岁的时候写在日志上的。
+@set truth +2
+@set end_cycle_score +1
+@set control_route_score +1
+@goto final_sc5
+
+== final_a_broadcast
+你没有回答。你直接绕过椅子，走到主控柜前面。
+@sfx sfx_door
+@fx shake 0.8
+柜门开着。里面是一排老式继电器，和一个手写标签的总闸：全校广播。
+shenhe(hollow)：你要干什么。
+me：我要把这次点名，从头念一遍。
+@set truth +2
+@set control_route_score +1
+@goto final_sc5
+
+-- ================================================= Scene 5 终极抉择
+== final_sc5
+@bg broadcast_room dark
+@bgm bgm_final
+@clearchars
+@show shenhe hollow center
+@fx heartbeat 1.4
+@wait 0.6
+调音台上的红灯全部亮起，然后开始一颗一颗熄灭。
+名单从机器里源源不断地吐出来，堆在地上，纸边卷曲，像烧过一样。
+shenhe(hollow)：选吧。
+shenhe(hollow)：这一格，总要有一个名字。
+@if truth>=20
+> 你现在明白了：规则从来不在乎是谁，只在乎那一格不能空着。
+@endif
+* [lock flag_shenhe_name_full and item:item_roster_core] 把沈禾的名字，完整地写回名单 -> final_c_write
+* [lock flag_terminal_broadcast_ready] 自己坐上那把椅子 -> final_c_seat
+* [lock item:item_admin_key and flag_terminal_broadcast_ready] 接管主控，重新定规则 -> final_c_control
+* [lock item:item_lighter or item:item_fire_tape] 烧掉名单和这栋楼 -> final_c_burn
+* 什么都不做，答一声“到” -> final_c_answer
+
+== final_c_write
+@bgm bgm_truth
+你把核心名单页铺在调音台上，从口袋里摸出笔。
+@sfx sfx_write
+在“沈禾（删除未完成）”那一行后面，你一笔一笔，把她的名字重新写了一遍。
+写完之后，你念了出来。
+@wait 0.8
+me：沈禾。
+@fx flash 0.8
+@sfx sfx_sting
+me：沈、禾。
+@fx names 1.0
+@flag flag_name_written_back
+@flag true_end_precondition_1
+@set save_route_score +3
+@set shenhe_focus +2
+@set truth +2
+她坐在椅子上，很久没有动。
+然后你听见一个很轻的声音。轻得几乎不像人声。
+shenhe(sad)：到。
+@fx whiteout 1.0
+@sfx sfx_bell
+@wait 0.8
+@goto final_resolve
+
+== final_c_seat
+@bgm bgm_ending_bad
+你走过去，把手放在椅背上。
+shenhe(hollow)：你确定？
+me：确定。
+me：这一格总要有人。那就我。
+她站了起来。站起来的时候，身上的水一下子全干了。
+@fx whiteout 0.8
+你坐下。椅子是温的。
+@set save_route_score +2
+@flag flag_player_self_substitute
+@goto final_resolve_self
+
+== final_c_control
+@bgm bgm_ending_bad
+你把管理员钥匙插进主控柜，转到底。
+@sfx sfx_door
+@fx glitch 1.0
+所有推子归零，然后你一根一根重新推上去。
+me：从今天起，晚自习九点半下课。
+me：点名只点在册的人。
+me：删除未完成的那一格——封掉。
+shenhe(angry)：你不能封。
+me：我可以。名单在我手上。
+@set control_route_score +3
+@set truth +2
+@flag flag_chose_take_control
+@goto final_resolve
+
+== final_c_burn
+@bgm bgm_chase
+@fx redflash 0.8
+你把地上那些名单堆到调音台下面。
+@if item:item_fire_tape
+你把录像带也扔了进去。它比纸难烧，但烧起来味道更冲。
+@endif
+@sfx sfx_lighter
+打火机打了三次才着。
+@sfx sfx_fire_burst
+@amb amb_fire
+@fx bloodburst 0.6
+火先舔上那些名字。纸卷起来，一排一排，像低着头的人。
+@set end_cycle_score +4
+@flag flag_chose_end_cycle
+@set truth +1
+shenhe(angry)：你烧不掉。
+me：那就一起烧。
+@fx bigshake 1.0
+@goto final_resolve_burn
+
+== final_c_answer
+me：到。
+@fx redflash 1.0
+@sfx sfx_sting
+你听见自己的声音在这间屋子里回荡了很多遍，一遍比一遍轻。
+@set shenhe_focus +3
+@set memory_echo +3
+@goto final_resolve
+
+-- ================================================= 结局判定
+== final_resolve
+@bg broadcast_room dark
+@wait 0.6
+@goto __ending__
+
+== final_resolve_self
+@bg broadcast_room dark
+@set save_route_score +1
+@wait 0.6
+@goto __ending__
+
+== final_resolve_burn
+@bg broadcast_room fire
+@amb amb_fire
+@wait 0.6
+@goto __ending__
+
+-- ================================================= 五结局收束
+== ending_true_release
+@bg broadcast_room dark
+@bgm bgm_ending_true
+@stopamb
+@clearchars
+@fx whiteout 1.0
+@sfx sfx_bell
+@title 真结局　《点名停止》
+@show shenhe smile center
+她站起来了。
+站起来之后，她看起来就是一个普通的高二女生——个子不高，校服袖子长了一截，头发有点毛躁。
+shenhe(smile)：原来被念全，是这种感觉。
+me：疼吗。
+shenhe(smile)：不疼。就是，终于可以走了。
+@wait 0.8
+@fx names 0.6
+她走到门口，回头看了一眼那把空椅子。
+shenhe(smile)：那把椅子，以后别让人坐了。
+shenhe(smile)：告诉他们，人到齐了，就可以下课。
+@clearchars
+@fx whiteout 1.0
+@wait 0.6
+@bg schoolyard day
+@amb amb_classroom_day
+第二天早自习，许清拿着点名册进来。
+她今天穿了鞋。
+@show xuqing flat center
+xuqing(flat)：安静。点名。
+她一个一个念下去。念完最后一个名字，合上册子。
+xuqing(flat)：人齐了。
+全班没有人反应过来这四个字意味着什么。
+只有你，和最后一排靠窗那个位置——那里现在坐着一个真正的新同学，正在低头补作业。
+@set truth +2
+@gallery gallery_true
+@ending ending_true_release
+
+== ending_bittersweet_exchange
+@bg broadcast_room dark
+@bgm bgm_ending_bad
+@clearchars
+@title 遗憾结局　《留堂》
+@show shenhe sad center
+她站在你面前，看了你很久。
+shenhe(sad)：你知道坐下之后会怎么样吗。
+me：知道。名字留在这儿，人也留在这儿。
+shenhe(sad)：……对不起。
+me：不用。这不是你定的规矩。
+@wait 0.8
+@clearchars
+@fx darken 1.0
+她走出去的时候，脚步声很轻，一步一步下楼梯，一共109级。
+你坐在椅子上，把麦克风拉近。
+@sfx sfx_broadcast_click
+@amb amb_broadcast_static
+me：高二三班，点名。
+me：周叙。
+> “到。”
+me：梁野。
+@if state:liangye_end_state==absent_echo
+> 没有人答。
+> 你在名单上，把他的名字轻轻划掉，写进“已离席”那一栏。
+@else
+> “到。”
+@endif
+me：沈禾。
+@wait 1.0
+门外传来一声很轻的“到”。
+是她自己答的。这是五年来第一次。
+@wait 0.8
+me：……到齐了。
+me：下课。
+@fx whiteout 0.8
+@sfx sfx_bell
+@bg black
+从那以后，南栖中学再也没有失踪过学生。
+只是每天晚上十点零七分，广播里会有一个男生的声音，很耐心地，把每一个名字念完。
+念到最后一个的时候，他会停一下，然后说：到齐了，下课。
+@gallery gallery_exchange
+@ending ending_bittersweet_exchange
+
+== ending_manager
+@bg broadcast_room dark
+@bgm bgm_ending_bad
+@clearchars
+@title 管理者结局　《管理员》
+@show shenhe hollow center
+你把名单摊平，抽出笔，在“待定”那一栏画了一道很直的线。
+shenhe(hollow)：你在做什么。
+me：我在改流程。
+me：以后不点待定的人。谁在册，点谁。
+me：删除未完成的，封存。不销，也不补。
+shenhe(hollow)：那我呢。
+me：你留在封存里。
+@fx glitch 1.0
+@set sanity -3
+她张了张嘴，然后就像信号断了一样，慢慢淡下去。
+最后一秒，她说了一句你没有听清的话。
+@clearchars
+@wait 0.8
+@bg history_hall dark
+@fx darken 1.0
+许清站在门口看了你很久，然后转身走了。
+她终于可以不用再描那些字了。
+@wait 0.6
+@bg office day
+@amb amb_classroom_day
+第二年三月，你穿着借来的教师工牌，坐在教务处靠窗那张桌子后面。
+新的转学生来报到。你把信息表推过去。
+me：名字，原学校，监护人电话，按顺序填。
+桌上压着一张被揉皱的违纪记录表。
+他的目光落在那张纸上。
+@fx heartbeat 1.0
+me：那张别碰。
+@gallery gallery_manager
+@ending ending_manager
+
+== ending_destroyer
+@bg broadcast_room fire
+@bgm bgm_ending_bad
+@amb amb_fire
+@clearchars
+@title 毁灭结局　《焚校》
+@fx bloodburst 0.6
+火从名单烧到隔音棉，从隔音棉烧到天花板。
+广播还在念。念到一半，声音开始变形——不是电流的变形，是像一个人被烟呛住那样的变形。
+@sfx sfx_fire_burst
+@show shenhe angry center
+shenhe(angry)：你以为烧掉纸，那一格就不存在了？
+me：不。
+me：我是让这栋楼不存在。
+me：没有教室，就没有座位。没有座位，就不用有人坐。
+@fx bigshake 1.0
+@set sanity -4
+@if state:zhouxu_end_state==enter_with_player
+@show zhouxu angry right
+周叙一把拽住你的领子，把你往门口拖。
+zhouxu(angry)：够了！走！
+@elif state:liangye_end_state==present_anchor
+@show liangye terrified left
+梁野从门口冲进来，抓住你的胳膊。
+liangye(terrified)：说好了一起下课的！
+@else
+没有人来拉你。
+你自己往门口走了两步，然后回头看了一眼那把椅子。
+@endif
+@fx whiteout 1.0
+@wait 0.8
+@bg black
+@stopamb
+@bgm bgm_ending_bad
+消防车凌晨三点到的。旧楼烧了大半夜，最后只剩半边。
+第二天全校停课。第三天，学校在公告栏上贴了一张通知：旧楼危房，即将拆除。
+@wait 0.6
+清理废墟的时候，工人在三楼找到一把烧变形的椅子。
+椅子上没有人。整片废墟里，一具尸体都没有。
+@wait 0.6
+只是从那以后，那块地上什么都长不出来。
+草籽撒下去，第二天就是黑的。
+@gallery gallery_burn
+@ending ending_destroyer
+
+== ending_empty_seat
+@bg broadcast_room dark
+@bgm bgm_ending_bad
+@clearchars
+@title 空席结局　《到》
+@show shenhe smirk center
+你张开嘴，答了一声“到”。
+@fx redflash 1.0
+@sfx sfx_sting
+很奇怪，说完之后你就轻松了——就像终于把一件背了很久的东西放下。
+shenhe(smirk)：谢谢。
+她站起来，把位置让给你。
+你坐下的时候，甚至觉得椅子的高度刚刚好。
+@fx darken 1.0
+@wait 0.8
+@clearchars
+@bg classroom night
+@amb amb_classroom_night
+名单上的“林昼”被划掉，改成了一个更浅的字。
+最后一排靠窗的位置空出来了。
+@wait 0.6
+@if state:liangye_end_state==present_anchor or state:liangye_end_state==present_fragile_truth
+第二天，梁野一个人在教室里坐到很晚。
+他把那张借书卡放在你的桌子上，压在书底下，像怕被风吹走。
+liangye(sad)：你答应过一起下课的。
+@set truth +1
+@endif
+@wait 0.6
+@bg office day
+一个月后，新的转学生来报到。
+许清把信息表推过去，头也没抬。
+@show xuqing flat center
+xuqing(flat)：名字，原学校，监护人电话，按顺序填。
+桌上压着一张被揉皱的违纪记录表。
+新来的那个人看了那张纸一眼。
+xuqing(flat)：那张别碰。
+@fx heartbeat 1.2
+@clearchars
+@bg black
+那天晚上，晚自习的广播里，念到一个只有姓的名字。
+@sfx sfx_broadcast_click
+@fx static 1.0
+radio：林——
+后半个字，没有人听得见。
+@gallery gallery_empty
+@ending ending_empty_seat

@@ -1,0 +1,31 @@
+-- 《晚自习之后》序章
+-- 依据 a.md / b.md / e.md 开发文档
+
+== prologue
+@bg black
+@bgm bgm_unease
+@amb amb_rain
+@title 南栖中学
+@wait 0.6
+南方的雨下到第三天，校门口的水泥缝里都在冒泡。
+铁栅栏门后面，四栋教学楼靠在一起，只有最东边那栋是关着的。
+关了五年。
+@fx fog 0.8
+> 那栋楼的窗，每层都用木条钉过。第三层最左边那扇，木条是新换的。
+> 换木条的人没说为什么。学校里也没人问。
+@sfx sfx_broadcast_click
+@fx static 0.6
+广播试音的电流声从旧楼那边传过来，很短，一下就没了。
+明明那栋楼早就断电了。
+@wait 0.8
+@bg white
+@fx whiteout 1.0
+@stopbgm
+@amb amb_classroom_day
+@bg office day
+@title 三月十四日　周四　午后
+@clearchars
+教务处外面的走廊晒得发白，风扇转着，风吹不进来。
+你把行李箱靠在墙边，站直了，敲门。
+@sfx sfx_knock_soft
+@goto ch1_start

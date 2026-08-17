@@ -1,0 +1,842 @@
+-- 第四章《照片》—— 档案的裂缝
+-- 场景：雨后校史馆 / 进入 / 假墙与内门 / 许清现身 / 监控内档室 / 站位锁定 / 三路线锁定 / 崩塌 / 冲向旧楼
+
+== ch4_start
+@chapter 4 照片
+@bg schoolyard rain
+@bgm bgm_investigate
+@amb amb_rain
+@clearchars
+@autosave
+下午，雨又下起来了。校史馆在实验楼后面，是一栋两层的小灰楼，平时只在校庆开门。
+门口的公告栏贴着今年的高考喜报，边角被雨泡得翘起来。
+喜报下面压着一张更旧的纸——五年前的。
+@sfx sfx_page
+> 五年前那张上面，第一行写着：“热烈祝贺我校本届高考再创佳绩，全体高三学生零缺席。”
+> 零缺席。
+@set truth +2
+@if state:liangye_end_state==absent_echo or death:梁野
+你一个人站在雨里。
+@else
+@show liangye fear left
+梁野撑着一把伞，伞骨断了两根，雨顺着断口往他肩上灌。
+liangye(fear)：进去了就出不来了吧。
+me：出得来。
+liangye(fear)：你上次也这么说。
+@set memory_echo +1
+@endif
+@if state:zhouxu_final_state_ch3==coercer
+@show zhouxu cold right
+zhouxu(cold)：快点。天黑之前必须出来。
+zhouxu(cold)：天黑以后，这栋楼跟旧楼是通的。
+@else
+@show zhouxu flat right
+zhouxu(flat)：我先进。你跟在我后面两步。
+zhouxu(flat)：里面有什么，别乱碰。
+@endif
+@goto ch4_sc2
+
+== ch4_sc2
+@bg history_hall dusk
+@bgm bgm_horror
+@amb amb_hallway
+@clearchars
+@if item:item_admin_key
+你把那把黄铜钥匙插进锁孔。
+@sfx sfx_door
+转了半圈，很涩，但开了。
+@flag flag_archive_entered
+@else
+门锁着。
+@show zhouxu flat right
+zhouxu(flat)：让开。
+他从书包里摸出一根弯成钩状的铁丝。
+zhouxu(flat)：我姐以前教我的。她说这所学校，早晚有一天你会需要撬一扇门。
+@sfx sfx_door
+@set truth +1
+@flag flag_archive_entered
+@clearchars
+@endif
+校史馆里没有开灯。雨水的光从高窗照进来，落在一排排玻璃展柜上。
+展柜里是历届的毕业照。
+@wait 0.8
+你沿着照片墙往里走。1998、2003、2010、2016……
+在五年前那一栏，照片是有的。但照片正中间，有一个位置是空的。
+@fx fog 0.7
+不是有人被抠掉了。是那个位置本来就空着——前后两个人的肩膀，中间隔着一个人的宽度。
+@set truth +3
+@set memory_echo +2
+@clue clue_self_repeat
+* 仔细看照片上的每一张脸 -> ch4_faces
+    @set truth +3
+    @set sanity -3
+* 看照片下方的名字栏 -> ch4_names
+    @set truth +3
+* 直接往里走 -> ch4_sc3
+    @set route_obedience +1
+
+== ch4_faces
+你把脸贴近玻璃，一张一张看过去。
+第三排左起第七个。
+@fx flash 0.8
+@sfx sfx_sting
+那是你。
+穿着五年前的校服，站在那儿，表情有点僵，像是刚被人叫到名字。
+@fx glitch 1.0
+@set sanity -5
+@set memory_echo +4
+@flag flag_saw_self_repeat
+@clue clue_self_repeat
+@set truth +3
+五年前你在另一座城市读初二。
+@if !death:梁野
+@show liangye terrified left
+liangye(terrified)：这……这是你？
+me：不知道。
+liangye(terrified)：那你至少告诉我，你是哪年转来的。
+你张开嘴。
+你想不起来。
+@set sanity -3
+@endif
+@goto ch4_sc3
+
+== ch4_names
+照片下方有一排小字，是那届学生的名字。
+你从头看到尾。
+@fx names 1.0
+四十个名字。照片上有四十一个人的位置——包括那个空着的。
+名字里没有沈禾。
+@set truth +3
+@if flag_shenhe_name_full
+> 名字被删掉了，位置却留着。
+> 这就是“删除未完成”。
+@clue clue_terms
+@set truth +2
+@endif
+名字里也没有你。
+但有一个名字，写在最末尾，墨色比其他都新：
+@note 　林昼（补）
+@set memory_echo +3
+@set sanity -3
+@flag flag_saw_self_repeat
+@clue clue_self_repeat
+@goto ch4_sc3
+
+-- ================================================= Scene 3 假墙与内门
+== ch4_sc3
+@bg history_hall dark
+@bgm bgm_truth
+@clearchars
+展厅最里面是一面挂满锦旗的墙。
+你走过去的时候，脚下的地砖响了一声——空的。
+@sfx sfx_step
+@show zhouxu cold right
+zhouxu(cold)：这里原来是走廊。后来砌了墙。
+me：为什么砌？
+zhouxu(cold)：因为墙那边通旧楼。
+* 敲墙，听声音 -> ch4_wall_knock
+    @set truth +2
+* 掀开锦旗看后面 -> ch4_wall_flag
+    @set truth +3
+    @set route_investigate +1
+* [if item:item_admin_key] 找锁孔 -> ch4_wall_key
+    @set truth +2
+
+== ch4_wall_knock
+你用指节敲了三下。
+@sfx sfx_knock_soft
+声音是空的。
+你正要再敲，墙那边回敲了两下。
+@fx bigshake 1.0
+@sfx sfx_knock_hard
+@fx heartbeat 1.4
+三下，停，两下。
+和门外那个东西的节奏，一模一样。
+@set sanity -4
+@set truth +2
+@goto ch4_wall_open
+
+== ch4_wall_flag
+你把最中间那面锦旗掀开。
+锦旗后面不是墙，是一扇被水泥封了一半的铁门。上半截还露着，门牌还在：
+@note 广播维护间（旧）　　禁止入内
+@set truth +3
+@flag flag_fakewall_opened
+@goto ch4_wall_open
+
+== ch4_wall_key
+你沿着墙缝摸过去，在锦旗架子后面摸到一个锁孔——不是新的，锁芯里全是灰。
+黄铜钥匙插进去，正好。
+@sfx sfx_door
+@set truth +2
+@flag flag_fakewall_opened
+@goto ch4_wall_open
+
+-- ================================================= Scene 4 许清现身
+== ch4_wall_open
+@bg history_hall dark
+@bgm bgm_horror
+就在你要推开内门时，背后传来许清的声音。
+@show xuqing cold center
+@fx glitch 0.5
+她没穿鞋。脚踩在地砖上，没有一点水声，却留下了很浅的湿印。
+@clue clue_xuqing_barefoot
+xuqing(cold)：开这扇门之前，我劝你们先想清楚。
+xuqing(cold)：看见了，不代表拿得走。记住了，也不代表还能活着忘掉。
+* “你到底是什么？” -> ch4_xq_a
+    @set truth +2
+* “你五年前就已经死了，对吗？” -> ch4_xq_b
+    @set truth +3
+* “你为什么一直拦着我？” -> ch4_xq_c
+    @set truth +2
+* [if item:item_log_fragment] “名单是你在维护？” -> ch4_xq_d
+    @set truth +3
+
+== ch4_xq_a
+xuqing(flat)：老师。记录员。
+xuqing(flat)：或者你们嘴里那个“替补”。
+xuqing(flat)：名字不重要，工作比较重要。
+@state xuqing_state suspected
+@goto ch4_xq_second
+
+== ch4_xq_b
+她看了你一会儿，忽然笑了。那是你第一次看见她笑意进到眼睛里。
+xuqing(smirk)：是。
+xuqing(smirk)：所以现在站在你面前的，才比活人更适合保管名单。
+@flag flag_xuqing_identity_revealed
+@state xuqing_state revealed
+@clue clue_xuqing_dead
+@set truth +2
+@set sanity -2
+@goto ch4_xq_second
+
+== ch4_xq_c
+xuqing(cold)：因为你每次看完，都想改。
+xuqing(cold)：你一改，学校就要重排一次座位。
+me：“每次”。
+xuqing(cold)：……
+她没有接话。这是她第一次接不上话。
+@set truth +2
+@set memory_echo +2
+@goto ch4_xq_second
+
+== ch4_xq_d
+你举起那半张日志残页。
+xuqing(cold)：不是我维护。
+xuqing(cold)：我是负责把写坏的地方，重新描一遍。
+me：那另一种笔迹呢？红笔那句“不要再代了”。
+她的表情第一次出现裂缝。
+xuqing(sad)：那是我十七岁的时候写的。
+@fx glitch 0.8
+@flag flag_rule_terms_complete
+@clue clue_rule_gap
+@state xuqing_state revealed
+@flag flag_xuqing_identity_revealed
+@clue clue_xuqing_dead
+@set truth +4
+@goto ch4_xq_second
+
+== ch4_xq_second
+@if route_hostility>=4 or taboo_count>=4
+xuqing(cold)：你这种人最麻烦。
+xuqing(cold)：怕的时候想逃，不怕的时候又想当判卷的人。
+@endif
+@if save_route_score>=2 or route_empathy>=4
+xuqing(flat)：你每次都想把她写回去。
+xuqing(flat)：可你知道写回去意味着什么吗？
+* “意味着她该回来。” -> ch4_xq_e
+    @flag flag_chose_save_shenhe
+    @set truth +1
+    @set save_route_score +2
+* “意味着有人得替她留下。” -> ch4_xq_f
+    @set truth +2
+* “所以每次留下的都是我？” -> ch4_xq_g
+    @set truth +3
+    @set memory_echo +2
+@else
+* “让开。” -> ch4_xq_push
+    @set route_hostility +1
+* “你也想让这件事结束，对吗？” -> ch4_xq_soft
+    @set trust_xuqing +1
+    @set truth +1
+@endif
+
+== ch4_xq_e
+xuqing(flat)：该回来。
+xuqing(flat)：可这张桌子只有那么多位置。
+xuqing(flat)：她回来，就得有人出去。
+@goto ch4_sc5
+
+== ch4_xq_f
+xuqing(flat)：你比上一个聪明。
+xuqing(flat)：上一个到最后一秒才想明白这件事。
+@set truth +1
+@goto ch4_sc5
+
+== ch4_xq_g
+xuqing(flat)：不是每次都是你。
+xuqing(flat)：是最后总会轮到你。
+@set truth +2
+@set memory_echo +2
+@flag flag_true_linday_status_known
+> 不是从一开始就是你。是每一次，你都会走到最后。
+@goto ch4_sc5
+
+== ch4_xq_push
+xuqing(cold)：我不会拦第二次。
+她侧过身，让开了半步。你从她身边走过时，闻到那股廉价洗发水的味道。
+@set truth +1
+@set sanity -1
+@goto ch4_sc5
+
+== ch4_xq_soft
+xuqing(sad)：想。
+xuqing(sad)：我描了五年的字。手已经不听使唤了。
+@set trust_xuqing +1
+@set truth +2
+@state xuqing_state observer
+@goto ch4_sc5
+
+-- ================================================= Scene 5 监控内档室
+== ch4_sc5
+@bg monitor_room dark
+@bgm bgm_truth
+@amb amb_broadcast_static
+@clearchars
+@autosave
+内门推开。
+里面不是正常档案室，而像一间被废弃后又反复使用过的监控房。
+几台老式显示器摞在桌上，屏幕发绿。一台录像机还亮着红点——它在录。
+@flag flag_monitor_room_found
+@set truth +3
+桌上有三样东西：一盘贴着标签的录像带，一叠名单，一本厚得像砖的日志总册。
+* 先看录像 -> ch4_video
+* 先看名单核心页 -> ch4_roster
+* 先翻日志总册 -> ch4_log
+* [if !death:梁野] 让梁野先选 -> ch4_ly_choose
+* 让周叙先选 -> ch4_zx_choose
+
+== ch4_ly_choose
+@show liangye fear left
+@if state:liangye_final_state_ch3==anchor_alive
+liangye(fear)：录像。
+liangye(fear)：字会骗人。眼睛不会。
+@set trust_liangye +1
+@goto ch4_video
+@else
+liangye(fear)：……你选。我不敢。
+@goto ch4_sc5_again
+@endif
+
+== ch4_zx_choose
+@show zhouxu cold right
+@if state:zhouxu_final_state_ch3==confessor_protector
+zhouxu(flat)：日志。
+zhouxu(flat)：录像只有一晚，日志有五年。
+@set trust_zhouxu +1
+@goto ch4_log
+@else
+zhouxu(cold)：名单。拿了就走。
+zhouxu(cold)：别的都不重要。
+@goto ch4_roster
+@endif
+
+== ch4_sc5_again
+@bg monitor_room dark
+@clearchars
+* [if !flag_saw_fire_video] 看录像 -> ch4_video
+* [if !flag_roster_core_taken] 看名单核心页 -> ch4_roster
+* [if !flag_rule_terms_complete] 翻日志总册 -> ch4_log
+* 够了，去拿主控 -> ch4_sc7
+
+== ch4_video
+@bg monitor_room dark
+@bgm bgm_horror
+@sfx sfx_rewind
+@fx rewind 1.0
+你把带子推进录像机。屏幕闪了几下，出现日期：五年前，5月17日，21:04。
+画面是旧楼三楼走廊的监控。黑白，有噪点。
+@wait 1.0
+一个女生抱着工具箱走进画面，推开广播室的门，进去了。
+@wait 0.8
+21:11。有一个人从楼梯口上来。
+镜头是俯角，只能看见头顶和肩膀。
+那个人走到广播室门口，蹲下去，做了一个动作。
+@fx static 0.8
+21:12。那个人下楼了。
+21:19。门缝里开始冒烟。
+21:23。门被从里面撞了七次。第七次之后，就没有了。
+@fx heartbeat 1.6
+@set sanity -6
+@set truth +4
+@flag flag_saw_fire_video
+@clue clue_fire_truth
+> 整整十一分钟，没有一个人上楼。
+> 那时候整栋教学楼灯火通明，四十一个班在上晚自习。
+21:31。画面上出现另一个人。他跑上来，扑到门上，喊了什么。
+@wait 0.6
+你把音量调大。
+@sfx sfx_broadcast_static
+> “沈禾！沈——禾——！”
+@show zhouxu sad right
+周叙站在你身后，一动不动。
+zhouxu(sad)：那是我。
+zhouxu(sad)：我念全了她的名字。
+zhouxu(sad)：门开了。
+zhouxu(sad)：火也一起冲出来了。
+@fx bloodburst 0.6
+@sfx sfx_fire_burst
+@set truth +3
+@flag flag_zhouxu_final_confession
+@clue clue_zhouxu_fill
+@goto ch4_after_material
+
+== ch4_roster
+@bg monitor_room dark
+@bgm bgm_truth
+你抽出那叠名单。最上面几页是历年班级花名册，普通得像任何一所学校的东西。
+翻到中间，纸变了——变成一种更粗的、有格线的纸。
+@sfx sfx_page
+@fx names 1.0
+每一页都是同一个班级、同一个学年，只是编号不同。
+第 101 次。第 102 次。第 103 次……
+每一页最后一行都写着同一个名字，只是墨色一次比一次淡。
+@wait 0.8
+你翻到最后一页。
+@note 第109次　高二（三）班　补录名单\n沈禾　（删除未完成）\n林昼　（待定 / 可补）
+@item +item_roster_core
+@flag flag_roster_core_taken
+@set truth +4
+@set memory_echo +4
+@set sanity -4
+@clue clue_109th
+@flag flag_saw_self_repeat
+@clue clue_self_repeat
+> 第109次。
+> 图书馆那本书被撕掉的，正好是第109页。
+@goto ch4_after_material
+
+== ch4_log
+@bg monitor_room dark
+@bgm bgm_truth
+日志总册很厚，封皮是硬的，边角磨得起了毛。
+里面按次编号，每一次都是一份格式一样的记录。
+@sfx sfx_page
+@note 第106次　结果：失败\n失败原因：情感锚断裂（同寝室友于查寝夜失联）\n处理：重排。\n\n第107次　结果：失败\n失败原因：对象过早知晓自身状态，理智崩解。\n处理：重排。\n\n第108次　结果：失败\n失败原因：代答满三次，对象自行替补。名单未销。\n处理：重排。\n\n第109次　进行中\n备注：本次对象记忆残留偏高。建议提前介入。
+@set truth +5
+@set memory_echo +3
+@set sanity -3
+@flag flag_rule_terms_complete
+@clue clue_rule_gap
+@clue clue_109th
+@flag flag_true_linday_status_known
+> 情感锚。
+> 对象。
+> 重排。
+> 这些词写得很平静，像在写实验记录。
+最后一页夹着一张便条，是红笔写的，笔压很重：
+@note 第109次：他记得的东西比前几次都多。\n如果这次还不行，我就不描了。\n——许
+@set truth +2
+@goto ch4_after_material
+
+== ch4_after_material
+@bg monitor_room dark
+@clearchars
+@if flag_saw_fire_video and flag_roster_core_taken and flag_rule_terms_complete
+@goto ch4_sc6
+@endif
+你还可以再看一样东西。
+* [if !flag_saw_fire_video] 看录像 -> ch4_video
+* [if !flag_roster_core_taken] 看名单核心页 -> ch4_roster
+* [if !flag_rule_terms_complete] 翻日志总册 -> ch4_log
+* 够了，我知道得够多了 -> ch4_sc6
+
+-- ================================================= Scene 6 站位锁定
+== ch4_sc6
+@bg monitor_room dark
+@bgm bgm_truth
+@clearchars
+@if state:liangye_final_state_ch3==anchor_alive
+@show liangye fear left
+梁野一直在看那本日志。看到“情感锚断裂”那一行时，他猛地抬头。
+liangye(fear)：情感锚……写的是我？
+* “是你。” -> ch4_ly_a1
+    @set trust_liangye +1
+    @set truth +1
+* “你现在还能走，我就不会丢下你。” -> ch4_ly_a2
+    @set trust_liangye +3
+    @set save_route_score +2
+* “别看了。” -> ch4_ly_a3
+    @set trust_liangye -1
+@elif state:liangye_final_state_ch3==fragile_alive
+@show liangye sad left
+liangye(sad)：所以我活着，就是为了让你舍不得？
+* “不是。” -> ch4_ly_b1
+    @set trust_liangye +2
+    @set save_route_score +1
+* “至少现在不是。” -> ch4_ly_b2
+* 沉默 -> ch4_ly_b3
+    @set trust_liangye -2
+@elif state:liangye_final_state_ch3==rescued_half
+@show liangye hollow left
+@fx glitch 0.5
+liangye(hollow)：林昼。
+liangye(hollow)：门里那个沈禾，不全是她。
+liangye(hollow)：就像现在的你，也不全是你。
+@set truth +3
+@set memory_echo +2
+@flag flag_true_linday_status_known
+@goto ch4_zhouxu_final
+@else
+@goto ch4_ly_absent
+@endif
+
+== ch4_ly_a1
+liangye(sad)：那前面几次的“锚”，也是我吗？
+me：不知道。
+liangye(sad)：……那我们这次赢一回吧。
+@goto ch4_zhouxu_final
+
+== ch4_ly_a2
+他的眼圈一下红了，但没掉泪。
+liangye(fear)：那你等会儿别骗我。
+me：不骗你。
+liangye(fear)：说好了。
+@flag flag_liangye_anchor_promise
+@goto ch4_zhouxu_final
+
+== ch4_ly_a3
+他合上日志，退开半步，没再说话。
+接下来的路上，他一直落在你后面三步的位置。
+@goto ch4_zhouxu_final
+
+== ch4_ly_b1
+me：不是。
+me：你活着就是活着。跟我舍不舍得没关系。
+liangye(sad)：……哦。
+他笑了一下，这次笑得很轻，但是真的。
+@flag flag_liangye_anchor_promise
+@goto ch4_zhouxu_final
+
+== ch4_ly_b2
+liangye(sad)：“至少现在”。
+liangye(sad)：行吧。至少现在。
+@goto ch4_zhouxu_final
+
+== ch4_ly_b3
+你没有回答。
+他等了很久，然后自己转过身去，看着屏幕上滚动的雪花。
+@set sanity -1
+@goto ch4_zhouxu_final
+
+== ch4_ly_absent
+@fx static 0.7
+监控屏幕的雪花里，忽然混进一个声音。很远，很闷，像隔着好几层墙。
+@sfx sfx_whisper
+@if flag_gave_up_roommate
+liangye(hollow)：这次也不拉我吗？
+@fx heartbeat 1.4
+@set sanity -3
+@set memory_echo +2
+@else
+liangye(hollow)：林昼，这次别慢。
+@set sanity -2
+@set memory_echo +2
+@endif
+你猛地看向屏幕。十二块屏，全是走廊。
+第七块屏的走廊尽头，站着一个人。你放大，画面糊成一团马赛克。
+但那个人的校服后背，湿了一大片。
+@set truth +1
+@goto ch4_zhouxu_final
+
+== ch4_zhouxu_final
+@bg monitor_room dark
+@clearchars
+@show zhouxu sad right
+@if flag_zhouxu_final_confession or trust_zhouxu>=4
+周叙靠在门框上，很久没说话。
+zhouxu(sad)：我当年确实把名字补全了。
+zhouxu(sad)：因为门里有人喊救命。
+zhouxu(sad)：我以为把名字念完，规则就会认人，把她放出来。
+* “结果呢？” -> ch4_zx_r1
+    @set truth +1
+* “你是救她，还是害她？” -> ch4_zx_r2
+    @set trust_zhouxu -1
+    @set truth +2
+* “那后来为什么一直护着我？” -> ch4_zx_r3
+    @set trust_zhouxu +2
+* “所以这109次，你都记得？” -> ch4_zx_r4
+    @set truth +3
+    @set memory_echo +2
+@else
+zhouxu(cold)：拿到东西了就走。
+zhouxu(cold)：这栋楼天黑以后不能待。
+* “你还有话没说。” -> ch4_zx_press
+    @set truth +2
+    @set trust_zhouxu -1
+* “走。” -> ch4_sc7
+    @set route_obedience +1
+@endif
+
+== ch4_zx_r1
+zhouxu(sad)：结果门开了。
+zhouxu(sad)：火也一起冲出来了。
+zhouxu(sad)：我这条命是她那扇门挡下来的。
+@set truth +1
+@flag flag_zhouxu_final_confession
+@goto ch4_sc7
+
+== ch4_zx_r2
+zhouxu(sad)：都算。
+zhouxu(sad)：我救过，也害过。
+zhouxu(sad)：这五年我一直在想，如果那天我念的是“沈”，只念一个字，会不会门就不开。
+@set truth +2
+@flag flag_zhouxu_final_confession
+@goto ch4_sc7
+
+== ch4_zx_r3
+zhouxu(sad)：因为后来每次被写上去的人，最后都会变成你。
+zhouxu(sad)：我不想再看一次。
+@set trust_zhouxu +1
+@set truth +2
+@flag flag_zhouxu_final_confession
+@goto ch4_sc7
+
+== ch4_zx_r4
+zhouxu(sad)：不是都记得。
+zhouxu(sad)：但每次听见你问一样的话，我就知道，又来了。
+@set truth +2
+@set memory_echo +2
+@flag flag_zhouxu_final_confession
+@flag flag_true_linday_status_known
+@goto ch4_sc7
+
+== ch4_zx_press
+zhouxu(cold)：我说完了。
+me：那你为什么不敢看那盘录像。
+他沉默了三秒，转身走到门口。
+zhouxu(cold)：因为里面那个撞门的人，撞到第七下就停了。
+zhouxu(cold)：不是她撞不动了。是我在外面喊了一句“别撞了，我去找人”。
+zhouxu(sad)：我没有去找人。我跑下楼，跑回教室，坐回自己的位置。
+@set truth +3
+@flag flag_zhouxu_final_confession
+@goto ch4_sc7
+
+-- ================================================= Scene 7 三路线锁定
+== ch4_sc7
+@bg monitor_room dark
+@bgm bgm_final
+@clearchars
+监控房的灯开始疯狂闪。
+@fx glitch 1.0
+@fx flash 0.6
+录像机自己弹出了带子。桌上的广播分机“咔”地接通了。
+@sfx sfx_broadcast_click
+@amb amb_broadcast_static
+shenhe(hollow)：林昼。
+shenhe(hollow)：名单不够用了。
+shenhe(hollow)：你来选一个。
+@fx heartbeat 1.4
+桌上三样东西同时震动起来：核心名单页、火灾录像带、还有墙上挂着的广播主控钥匙与线路图。
+> 名单能改写谁在、谁不在。
+> 录像能证明这一切是人做的，而不是鬼。
+> 主控能让你说了算。
+* 拿名单页 -> ch4_take_roster
+    @flag flag_roster_core_taken
+    @flag flag_terminal_broadcast_ready
+    @set truth +2
+    @set save_route_score +2
+* 拿录像带 -> ch4_take_tape
+    @flag flag_chose_end_cycle
+    @flag flag_terminal_broadcast_ready
+    @set truth +2
+    @set end_cycle_score +3
+* 拿主控钥匙与线路图 -> ch4_take_key
+    @flag flag_chose_take_control
+    @flag flag_terminal_broadcast_ready
+    @set truth +2
+    @set control_route_score +3
+* 三样都拿 -> ch4_take_all
+    @set truth +1
+    @set taboo_count +2
+
+== ch4_take_roster
+你把那页名单折起来，塞进内袋，贴着心口。
+@item +item_roster_core
+shenhe(hollow)：……你选了纸。
+shenhe(hollow)：纸是可以改的。
+shenhe(hollow)：但改之前，你得先知道要把谁写上去。
+@set save_route_score +1
+@goto ch4_sc8
+
+== ch4_take_tape
+你把录像带抓在手里。塑料壳还是热的。
+@item +item_fire_tape
+shenhe(hollow)：你想让别人看见。
+shenhe(hollow)：五年了，看见的人不少。
+shenhe(hollow)：他们看见之后，都学会了低头。
+@set end_cycle_score +1
+@goto ch4_sc8
+
+== ch4_take_key
+你摘下墙上那串主控钥匙，把线路图折进口袋。
+@item +item_admin_key
+shenhe(hollow)：你想坐我的位置。
+me：我想让这套东西停下来。
+shenhe(hollow)：每一个坐上来的人，一开始都是这么说的。
+@set control_route_score +1
+@goto ch4_sc8
+
+== ch4_take_all
+你三样都拿了。
+@item +item_roster_core
+@item +item_fire_tape
+@item +item_admin_key
+@flag flag_roster_core_taken
+@flag flag_terminal_broadcast_ready
+@fx bigshake 1.0
+@sfx sfx_low_boom
+分机里的声音第一次拔高了。
+shenhe(angry)：贪。
+shenhe(angry)：贪的人，最后什么都拿不住。
+@set sanity -3
+@set taboo_count +1
+@goto ch4_sc8
+
+-- ================================================= Scene 8 档案室崩塌
+== ch4_sc8
+@bg archive dark
+@bgm bgm_chase
+@clearchars
+@fx bigshake 1.0
+@sfx sfx_low_boom
+你刚把东西收好，整间屋子晃了一下。
+不是地震。是这栋楼在收紧——档案架一排排往中间挤过来，像书被人合上。
+@fx fog 1.0
+@flag flag_archive_burn_started
+@show xuqing cold center
+许清站在门口。她没有让开。
+xuqing(cold)：放下。
+* “你也想让这件事结束。” -> ch4_end_soft
+    @set truth +2
+* “你只是站得太久的人。” -> ch4_end_break
+    @set truth +3
+    @set end_cycle_score +2
+* [if item:item_fire_tape] 举起录像带 -> ch4_end_tape
+    @set truth +2
+    @set end_cycle_score +2
+* 硬闯 -> ch4_end_push
+    @set route_hostility +2
+    @set taboo_count +1
+
+== ch4_end_soft
+xuqing(sad)：想。
+xuqing(sad)：可我不能自己停。我停了，就轮到下一个描字的人。
+me：那就让它断在这一次。
+她看了你三秒，然后侧过身。
+@state xuqing_state observer
+@set trust_xuqing +1
+xuqing(sad)：去吧。
+xuqing(sad)：广播室那扇门，从里面反锁过一次。这一次，你从里面开。
+@set truth +2
+@goto ch4_sc9
+
+== ch4_end_break
+me：你不是规则。
+me：你只是一个站在这儿太久，久到自己都以为自己是规则的人。
+@fx glitch 1.0
+@sfx sfx_sting
+她的轮廓晃了一下，像信号不稳的画面。
+@state xuqing_state destabilized
+xuqing(sad)：……
+xuqing(sad)：你上一次也说过这句话。
+xuqing(sad)：上一次说完，你就坐上去了。
+@set memory_echo +3
+@set sanity -3
+她退开了。这一次她没有拦。
+@goto ch4_sc9
+
+== ch4_end_tape
+你举起那盘录像带。
+me：这上面有那天晚上锁门的人。
+me：你要不要看看是谁。
+许清没有伸手。
+xuqing(flat)：我不用看。
+xuqing(flat)：那双鞋是我脱在楼梯口的。我跑得太急，怕滑。
+@fx bloodburst 0.5
+@sfx sfx_flesh
+@set truth +4
+@clue clue_xuqing_dead
+@state xuqing_state revealed
+@flag flag_xuqing_identity_revealed
+xuqing(sad)：我去锁门，是想把火关在里面。
+xuqing(sad)：等我想起来里面还有人的时候，我已经跑到二楼了。
+xuqing(sad)：我又跑上去。门开不了。
+xuqing(sad)：所以我也没出去。
+@fx heartbeat 1.6
+@set sanity -4
+@state xuqing_state observer
+@goto ch4_sc9
+
+== ch4_end_push
+你低头撞过去。
+@fx bigshake 1.0
+@sfx sfx_flesh
+穿过她的时候，你什么都没有撞到。只有一阵极冷的、湿的空气，像撞进了一场没下完的雨。
+@set sanity -4
+@set taboo_count +1
+背后传来她很平静的声音。
+xuqing(flat)：记住这个感觉。
+xuqing(flat)：等你坐上去，别人穿过你的时候，也是这样。
+@state xuqing_state observer
+@goto ch4_sc9
+
+-- ================================================= Scene 9 冲向旧楼
+== ch4_sc9
+@bg schoolyard rain
+@bgm bgm_chase
+@amb amb_rain
+@clearchars
+@fx shake 0.6
+你冲出校史馆，雨兜头浇下来。
+@sfx sfx_steps_run
+校园里一个人也没有。所有教室的灯都亮着，白得刺眼——但每一间都是空的。
+@fx eyes 0.8
+广播开始了。
+@sfx sfx_broadcast_click
+@fx static 1.0
+radio：高二三班，最后一次点名。
+radio：现在开始补录。
+@fx heartbeat 1.6
+@set truth +2
+@settle 4
+@autosave
+@if state:liangye_end_state==present_anchor or state:liangye_end_state==present_fragile_truth
+@show liangye fear left
+梁野跟在你旁边跑，伞早就扔了。
+liangye(fear)：跑！别回头！
+@endif
+@if state:zhouxu_end_state==enter_with_player
+@show zhouxu angry right
+周叙跑在最前面。他一边跑一边喊。
+zhouxu(angry)：这次我进去！
+@elif state:zhouxu_end_state==pressure_player
+@show zhouxu cold right
+zhouxu(cold)：快点。
+zhouxu(cold)：它等的是你，不是我。
+@endif
+> 第四章结束。
+@goto ch4_summary
+
+== ch4_summary
+@bg black
+@title 第四章　照片　结束
+@if state:truth_state==complete
+> 你现在什么都知道了：五年前的火，第109次重排，你自己是什么。
+> 知道之后，反而更难走进那扇门。
+@elif state:truth_state==high
+> 你知道得够多了，但还有一块是空的。空的那块，正好是你自己。
+@else
+> 你还是不明白。但已经没有时间了。
+@endif
+@goto final_start
