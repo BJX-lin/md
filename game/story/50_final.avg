@@ -8,14 +8,93 @@
 @amb amb_rain
 @clearchars
 @autosave
-旧楼的铁丝网破口在雨里泛着白。
-三层最左边那扇窗亮着。这一次不是一点点光——整扇窗都亮，亮得像有人把整个夏天塞进了那间屋子。
-@fx flash 0.5
+雨下到最大。
+从校史馆到旧楼这一段路，正常走要四分钟。你跑了两分钟。
+@sfx sfx_steps_run
+@wait 0.6
+校园里一个人也没有。
+所有教学楼的灯都亮着，白得刺眼——但每一扇窗后面都是空的。没有人影，没有翻书的动作，没有站在讲台上的老师。
+@fx eyes 0.8
+> 现在是晚上八点四十。
+> 这个点，全校两千多人应该都在晚自习。
 @set truth +1
+@set sanity -2
+@wait 1.0
+你跑过操场。
+积水没过鞋面。跑动的时候，水花溅起来，落回去——
+你回头看了一眼。
+@wait 0.8
+> 你身后的水面上，没有涟漪。
+> 你刚才踩过的地方，是平的。
+@fx glitch 0.7
+@set sanity -3
+@set truth +2
+@wait 0.6
+你没有停。
+@wait 0.8
+@bg oldbuilding_out rain
+旧楼的铁丝网破口在雨里泛着白。
+你钻进去的时候，校服后背又被刮了一下——和三天前同一个位置。
+@wait 0.6
+你抬头看。
+三层最左边那扇窗亮着。
+@fx flash 0.5
+这一次不是一点点光了。
+整扇窗都亮，亮得像有人把整个夏天塞进了那间屋子。木条的缝隙里全是光，白的，边缘发蓝。
+@set truth +1
+@wait 1.0
+你站在楼下，喘着气。
+@if state:liangye_end_state==present_anchor or state:liangye_end_state==present_fragile_truth
+身后传来脚步声。梁野跟上来了，扶着膝盖喘，一句话说不出来。
+@elif state:zhouxu_end_state==enter_with_player
+身后传来脚步声。周叙跟上来了，一边喘一边把校服外套脱下来拧水。
+@else
+身后没有脚步声。
+只有雨。
+@endif
+@wait 0.8
 * 直接冲进去 -> final_enter
     @set route_hostility +1
 * 先清点自己手里有什么 -> final_check
     @set truth +1
+* 抬头再看一眼那扇窗 -> final_look_window
+    @set truth +2
+    @set sanity -2
+    @set memory_echo +1
+
+== final_look_window
+你没有立刻进去。
+你在雨里仰着头，看那扇窗。
+@wait 1.2
+光太亮了，看不清里面。
+你眯起眼睛，往旁边挪了两步，换个角度。
+@wait 1.0
+@fx heartbeat 1.2
+窗前有一个人影。
+背对着窗户站着——所以你只能看见一个黑色的轮廓，边缘被光吃掉了一圈。
+@wait 0.8
+它一动不动。
+@wait 1.2
+然后它抬起了手。
+@fx glitch 0.6
+不是挥手。是慢慢抬起来，举到脸的高度，手掌朝外，五指张开。
+> 像在数。
+> 或者像在跟你打招呼。
+@set sanity -3
+@set truth +2
+@wait 1.0
+你也抬起了手。
+你自己都不知道为什么。
+@wait 0.8
+窗前那个影子把手放下了。
+然后它转身，走开，离开了窗口的范围。
+@wait 1.0
+> 它不是在等你上去。
+> 它是在确认你到了。
+@set truth +2
+@set memory_echo +1
+@set shenhe_focus +1
+@goto final_enter
 
 == final_check
 你在雨里停了三秒，摸了摸口袋。
@@ -52,16 +131,58 @@
 @fx fog 1.0
 @clearchars
 @sfx sfx_steps_run
-你冲上楼梯。这一次你不数了。
-楼梯自己在数——每一级台阶亮起一个数字，用粉笔写的，从1开始。
-你数到自己踩过的最后一级：109。
-@fx names 1.0
+你冲上楼梯。
+@wait 0.6
+这一次你不数了。
+@wait 0.8
+但楼梯自己在数。
+@fx names 0.8
+每一级台阶上都亮起一个数字——用粉笔写的，白色的，在黑暗里发着微光。
+从1开始。
+@wait 0.6
+你踩过去。1。2。3。
+数字在你脚离开之后就熄灭。
+@set truth +1
+@wait 0.8
+二楼。数字是 47。
+> 一层楼十四级。两层应该是二十八。
+你没有停。
+@wait 0.6
+你继续往上。
+@wait 1.0
+三楼平台。
+你停下来，回头看最后踩过的那一级。
+@fx heartbeat 1.4
+> 109。
 @set truth +2
 @set memory_echo +2
+@wait 1.0
+你站在那个数字上，站了三秒。
+> 图书馆那本书被撕掉的，是第109页。
+> 档案室名单的最后一页，是第109次。
+> 这段楼梯，是109级。
+@wait 0.8
+> 它在提醒你。
+> 或者说，它在给你计数——像点名册上划掉的行数。
+@set truth +2
+@wait 0.6
 @bg broadcast_door dark
 @amb amb_broadcast_static
+你转过走廊。
+@wait 0.8
 广播室的铁门这一次是全开的。
+门板贴着墙，中间没有任何遮挡。
+里面的光涌出来，把整条走廊照得一清二楚——你能看见地上的灰、墙皮的裂纹、天花板上垂下来的断线。
+@wait 1.0
 门口站着两个人的影子。
+@fx heartbeat 1.2
+不是人。是影子。
+投在地上，一长一短，从门里延伸出来。
+@wait 0.8
+> 门里的光是从正上方来的。
+> 正上方的光，不会把影子投这么长。
+@set sanity -3
+@set truth +2
 @goto final_sc2
 
 -- ================================================= Scene 2 门外对峙
@@ -771,14 +892,75 @@ shenhe(sad)：到。
 == final_c_seat
 @bgm bgm_ending_bad
 你走过去，把手放在椅背上。
+木头是温的。
+@wait 0.8
 shenhe(hollow)：你确定？
 me：确定。
 me：这一格总要有人。那就我。
-她站了起来。站起来的时候，身上的水一下子全干了。
+@wait 1.0
+shenhe(hollow)：你知道我在这儿坐了多久吗。
+me：五年。
+shenhe(hollow)：五年是外面的算法。
+@fx heartbeat 1.0
+shenhe(hollow)：在这儿，一次点名是一晚。
+shenhe(hollow)：一百零九次点名，就是一百零九个晚上。
+shenhe(hollow)：中间的白天，不存在。
+@set truth +2
+@set sanity -2
+@wait 0.8
+me：那也就一百零九天。
+shenhe(hollow)：对。
+shenhe(hollow)：可这一百零九天里，每一天你都在念同一份名单。
+shenhe(hollow)：念到第三十次的时候，你会开始记不住自己的名字排第几。
+shenhe(hollow)：念到第八十次，你会开始怀疑名单上有没有你。
+@wait 1.0
+me：那第一百零九次呢。
+@wait 1.2
+shenhe(hollow)：第一百零九次，你会希望有人来抢这把椅子。
+@set truth +2
+@set memory_echo +2
+@wait 1.0
+她站了起来。
+站起来的时候，身上的水一下子全干了——不是蒸发，是消失，像被谁从画面里抹掉了。
 @fx whiteout 0.8
-你坐下。椅子是温的。
+@wait 0.8
+你坐下。
+椅子是温的。
+@wait 0.6
+> 温度是从坐垫传上来的。
+> 一个坐了一百零九个晚上的人，把这把椅子焐热了。
+> 而她现在站起来了，这个温度就成了你的。
+@set sanity -3
 @set save_route_score +2
 @flag flag_player_self_substitute
+@wait 1.0
+你抬头看她。
+shenhe(sad)：谢谢。
+me：不用谢。
+me：把门带上。
+@wait 0.8
+她走到门口，停了一下。
+shenhe(sad)：名单在左手边第二个抽屉。
+shenhe(sad)：笔在笔筒里，最短的那支最好写。
+shenhe(sad)：十点零七分开始，念完就可以关麦。
+@wait 0.6
+她像在交接工作。
+@wait 1.0
+shenhe(sad)：还有——
+她回过头。
+shenhe(sad)：如果有一天有人站在门外，问你"里面是谁"。
+shenhe(sad)：别答"我"。
+me：那答什么？
+shenhe(sad)：答你的名字。
+shenhe(sad)：完整地答。
+@fx heartbeat 1.2
+@set truth +3
+@set save_route_score +1
+@wait 0.8
+shenhe(sad)：我当年就是没答，才变成现在这样的。
+@wait 1.2
+门关上了。
+@sfx sfx_door_slam
 @goto final_resolve_self
 
 == final_c_control
@@ -800,22 +982,70 @@ me：我可以。名单在我手上。
 == final_c_burn
 @bgm bgm_chase
 @fx redflash 0.8
-你把地上那些名单堆到调音台下面。
+你蹲下去，把地上那些名单堆到调音台底下。
+一沓一沓，五年份。
+纸很脆，抱起来的时候边缘就在碎，碎屑粘在手上，像灰。
+@wait 0.8
 @if item:item_fire_tape
-你把录像带也扔了进去。它比纸难烧，但烧起来味道更冲。
+你把录像带也扔了进去。
+塑料壳，比纸难烧，但烧起来味道更冲。
+@set end_cycle_score +1
 @endif
+@wait 0.6
+你摸出打火机。
+@if item:item_lighter
+> 老秦的那个。机身上有一道烧灼痕。
+> 他给你的时候说："你要是哪天用得上——"
+> 他没说完。
+@set truth +1
+@endif
+@wait 0.8
 @sfx sfx_lighter
-打火机打了三次才着。
+打了三次才着。
+前两次风太大——广播室里明明没有风。
+@wait 0.6
+第三次，火苗立住了。
+你把它凑到最下面那张纸的边缘。
+@wait 1.0
 @sfx sfx_fire_burst
 @amb amb_fire
 @fx bloodburst 0.6
-火先舔上那些名字。纸卷起来，一排一排，像低着头的人。
+火先舔上那些名字。
+纸卷起来，一排一排，像低着头的人。
 @set end_cycle_score +4
 @flag flag_chose_end_cycle
 @set truth +1
+@wait 0.8
+@show shenhe angry center
 shenhe(angry)：你烧不掉。
+me：为什么烧不掉。
+shenhe(angry)：因为名单不在纸上。
+@fx heartbeat 1.2
+shenhe(angry)：纸只是抄下来的。
+@wait 1.0
+me：那它在哪儿。
+她没有回答。
+她只是抬起手，指了指你。
+@fx glitch 0.9
+@set sanity -4
+@set truth +3
+@wait 1.2
+> 在你脑子里。
+> 在每一个记得"晚自习要点名"的人脑子里。
+> 在每一个听见"沈——"会低头的人脑子里。
+@set truth +2
+@wait 0.8
 me：那就一起烧。
 @fx bigshake 1.0
+你把最后一沓纸推进火里。
+火窜上来，燎到你的手背，你没有缩回去。
+@if gore>=1
+手背的皮起了泡，很快破了，黏液粘在袖口上。
+你闻到了自己皮肉的味道。
+@fx bloodburst 0.5
+@set sanity -3
+@endif
+@wait 1.0
 @goto final_resolve_burn
 
 == final_c_answer
