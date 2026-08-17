@@ -44,6 +44,10 @@ md/
 │  ├─ validate_story.py       剧本静态校验（断链 / 死路 / 未知指令 / 可达性）
 │  ├─ check_gdscript.py       GDScript 静态检查（括号 / 路径 / 单例 / 信号）
 │  ├─ simulate.py             剧情运行时模拟器（随机通关 + 结局可达性验证）
+│  ├─ check_text.py           正文质量检查（外文混入 / 占位符 / 标点 / 重复行）
+│  ├─ check_assets.py         美术覆盖率与待生成清单
+│  ├─ asset_manifest.py       94 张美术资源总清单 + 生图提示词
+│  ├─ make_sprite.py          立绘后处理（白底转 alpha / 去重影 / 归位）
 │  └─ preview/                浏览器试玩版（与 Godot 工程同一套剧本）
 │
 └─ a.md ~ f.md                原始策划开发文档
@@ -176,16 +180,20 @@ liangye(fear)：我倒希望是。      角色台词（角色键 + 可选表情�
 ```bash
 python3 tools/validate_story.py    # 剧本校验：断链、死路、未知指令/角色/道具/线索、可达性
 python3 tools/check_gdscript.py    # 代码检查：括号配平、preload 路径、单例、信号、缩进
-python3 tools/simulate.py --runs 600           # 随机通关 600 次 + 定向真结局验证
-python3 tools/simulate.py --trace              # 打印一条完整真结局路径
+python3 tools/simulate.py --runs 800           # 随机通关 800 次 + 定向真结局验证
+python3 tools/check_text.py                    # 正文质量：外文混入、占位符、标点、重复
+python3 tools/check_assets.py --todo           # 美术待办清单
 ```
 
 当前状态：
 
 ```
-剧本   : 9 个文件 / 325 节点 / 1715 行台词 / 71 个选择场景 / 519 条跳转边  —— 0 错误 0 警告
-代码   : 15 个 GDScript / 约 4900 行                                     —— 0 错误 0 警告
-模拟   : 随机通关 600 次全部到达结局，五结局均可达，数值无越界
+剧本   : 11 个文件 / 373 节点 / 4056 行台词 / 76 个选择场景 / 610 条跳转边
+正文   : 58176 字（不含指令）                              —— 0 错误
+代码   : 17 个 GDScript / 约 5400 行                       —— 0 错误 0 警告
+美术   : 6 张 AI 立绘 + 1 张场景（其余按 asset_manifest 待补，缺图自动回退）
+模拟   : 随机通关 800 次全部到达结局，五结局均可达，
+         真结局定向策略 60/60，数值无越界，无死循环
 ```
 
 > 修改剧本后请先跑 `validate_story.py` 与 `simulate.py`，
