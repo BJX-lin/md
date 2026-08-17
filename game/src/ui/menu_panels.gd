@@ -311,6 +311,8 @@ static func _shenhe_desc() -> String:
 		_: return "只是一个只剩半个字的名字。"
 
 static func _oldqin_desc() -> String:
+	if GameState.get_flag("flag_oldqin_survived"):
+		return "你把他从火里拖出来了。他说这是五年来头一回活着走出那间屋子。"
 	match GameState.get_state("oldqin_state"):
 		"burned": return "值班室烧了。他没出来。"
 		"missing": return "钥匙板上少了一把钥匙，人也少了一个。"

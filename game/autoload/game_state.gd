@@ -212,7 +212,9 @@ func settle_chapter_2() -> void:
 	else:
 		set_state("zhouxu_state", "hiding")
 
-	if get_flag("flag_oldqin_burndeath"):
+	if get_flag("flag_oldqin_survived"):
+		set_state("oldqin_state", "alive")
+	elif get_flag("flag_oldqin_burndeath"):
 		set_state("oldqin_state", "burned")
 		register_loss("老秦", "值班室起火")
 	elif get_flag("flag_oldqin_missing"):

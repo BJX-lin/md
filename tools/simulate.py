@@ -200,7 +200,9 @@ class State:
             else:
                 self.states["liangye_state"] = "fear_alive"
             self.states["zhouxu_state"] = "guarding" if self.n("trust_zhouxu") >= 2 else ("coercing" if self.n("trust_zhouxu") <= -2 else "hiding")
-            if self.flags.get("flag_oldqin_burndeath"):
+            if self.flags.get("flag_oldqin_survived"):
+                self.states["oldqin_state"] = "alive"
+            elif self.flags.get("flag_oldqin_burndeath"):
                 self.states["oldqin_state"] = "burned"
             if self.n("shenhe_focus") >= 8 or self.flags.get("flag_first_face_to_face_shenhe"):
                 self.states["shenhe_state"] = "half_present"

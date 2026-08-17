@@ -966,7 +966,36 @@ zhouxu(flat)：但今天早上，值班室没开门。
 @set truth +1
 @endif
 @wait 0.6
-@if flag_oldqin_smoke or trust_oldqin>=2
+@if flag_oldqin_survived
+@bgm bgm_unease
+六点二十，广播响了。这一次是真的校广播，播的是通知。
+radio：全体学生注意，值班室昨夜发生火情，现已扑灭，无人员伤亡。
+radio：警卫值班点临时移至南门传达室。
+@set truth +1
+你跑到校门口。
+值班室烧了一半，窗户是碎的——你砸的那扇。
+老秦坐在旁边的花坛沿上，脚踝缠着绷带，手里端着搪瓷缸。缸子是新的，白的。
+@show oldqin normal center
+oldqin(normal)：来了。
+me：您没事吧。
+oldqin(normal)：崴了脚。校医说养半个月。
+他喝了口水。
+oldqin(flat)：钥匙板烧没了。挂钩全化了。
+oldqin(flat)：那三把旧楼的，也没了。
+@if item:item_admin_key
+oldqin(flat)：你手上那把，是最后一把。
+oldqin(flat)：拿好。
+@set truth +2
+@endif
+@wait 0.8
+oldqin(sad)：昨晚谢谢你。
+me：不用。
+oldqin(sad)：用。
+oldqin(sad)：五年了，我头一回从那个屋子里活着出来。
+@set truth +1
+@set trust_oldqin +1
+@clearchars
+@elif flag_oldqin_smoke or trust_oldqin>=2
 @bgm bgm_horror
 @fx redflash 0.6
 六点二十，广播响了。这一次是真的校广播，播的是通知。

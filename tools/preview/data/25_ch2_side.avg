@@ -165,15 +165,35 @@ oldqin(sad)：我以为是学生在闹。
 @bgm bgm_chase
 @fx redflash 0.8
 值班室的日光灯忽然全灭。
-只剩电视屏幕在亮。屏幕上，那扇门里的火，越烧越大。
+不是跳闸那种"啪"一下——是一根一根灭的，从门口那根开始，往里，像有什么东西走进来，把光一盏一盏关掉。
+@wait 0.8
+只剩电视屏幕在亮。
+屏幕上，那扇门里的火，越烧越大。画面是黑白的，但你能感觉到那个亮度在升高，白得刺眼。
+@wait 0.6
+然后你闻到了味道。
+@fx heartbeat 1.4
+不是电视里的。
+是真的——烧焦的电线味，就在这间十平米的屋子里。
 @sfx sfx_fire_burst
 @amb amb_fire
-然后你闻到了味道。
-不是电视里的。是真的——烧焦的电线味，就在这间十平米的屋子里。
 @fx bloodburst 0.5
 @set sanity -4
-墙上的电线开始冒烟，一节一节地爆开火星。
+你回头看。
+墙上的电线开始冒烟。老式的明线，钉在墙上，外皮鼓起来一个一个泡，然后爆开，溅出火星。
+火星落在堆着的旧报纸上。
 @sfx sfx_lighter
+@wait 0.8
+报纸烧起来的速度比你想的快得多。
+两秒，火苗就窜到了半人高。
+@show oldqin shocked center
+老秦站在原地没动。
+他在看火。不是惊恐地看，是那种……认出来了的看。
+oldqin(shocked)：一模一样。
+me：什么？
+oldqin(shocked)：那年也是这个味儿。
+@set truth +2
+@wait 0.6
+火已经封住了门口一半。
 * 拉老秦一起跑 -> ch2_nd_save
     @set route_empathy +2
     @set trust_oldqin +3
@@ -184,6 +204,91 @@ oldqin(sad)：我以为是学生在闹。
 * 先抢钥匙板上剩下的钥匙 -> ch2_nd_keys
     @set route_investigate +2
     @set taboo_count +1
+* 抓起电视往窗外砸 -> ch2_nd_smash
+    @set route_hostility +2
+    @set truth +2
+
+== ch2_nd_smash
+你不知道自己为什么要这么做。
+可能是因为那个画面——那个还在烧的、五年前的画面。
+你抓起那台十四寸的老彩电。
+@wait 0.6
+它比想象中重得多，而且烫。外壳烫得能听见皮肤的"嗤"声。
+@fx bloodburst 0.4
+@sfx sfx_flesh
+你抱着它转身，砸向窗户。
+@sfx sfx_glass
+@fx bigshake 1.0
+玻璃碎了。电视摔在外面的水泥地上，显像管炸开，"砰"的一声。
+@wait 0.8
+火苗被涌进来的空气一激，猛地窜高。
+但窗户开了。
+@sfx sfx_fire_burst
+me：秦师傅！从这儿走！
+@show oldqin shocked center
+老秦看着碎掉的窗户，又看看你。
+oldqin(shocked)：……你这孩子。
+@wait 0.6
+@if gore>=1
+你的手掌整个是红的。抱电视的那两秒，掌心的皮已经起泡了，有几块粘在了电视外壳上，扯下来的时候连着丝。
+@fx bloodburst 0.6
+@set sanity -3
+@else
+你的手掌被烫伤了，火辣辣地疼。
+@set sanity -2
+@endif
+@set truth +2
+@set trust_oldqin +2
+你把老秦推向窗口。他年纪大了，翻不利索，你在下面托了他一把。
+@wait 0.8
+他落地的时候崴了脚，"哎哟"了一声。
+> 但他出来了。
+@flag flag_oldqin_survived
+@state oldqin_state alive
+@set save_route_score +2
+你自己也翻出去，滚在湿草地上。
+回头看——整间值班室已经全红了。
+@wait 1.0
+@bg schoolyard night
+@stopamb
+@amb amb_rain
+@clearchars
+@show oldqin shocked center
+你们俩坐在草地上，谁都没说话。
+过了很久，老秦从怀里摸出烟盒——已经被压扁了，烟全断了。
+他抽出半根，用打火机点着。手抖得点了三次才着。
+@sfx sfx_lighter
+oldqin(sad)：五年前那天晚上。
+oldqin(sad)：我要是也这么冲一下，就好了。
+@wait 0.8
+me：您那天做了什么？
+@wait 1.2
+oldqin(sad)：我把广播总闸关了。
+@set truth +3
+@clue clue_fire_truth
+oldqin(sad)：她在里面喊救命。喊得整栋楼都听得见。
+oldqin(sad)：值班室有个总闸，一拉，全校广播就断。
+oldqin(sad)：我以为是学生恶作剧。晚自习嘛，总有人闹。
+@wait 1.0
+oldqin(sad)：我拉下去，世界就清净了。
+oldqin(sad)：清净了十一分钟。
+@fx heartbeat 1.2
+@set sanity -4
+@set truth +2
+他把烟按灭在湿草地上。
+oldqin(sad)：后来我天天上夜班。二十三年，我要求上夜班。
+me：为什么？
+oldqin(sad)：因为夜里那栋楼要是再响，我能听见。
+@wait 0.8
+oldqin(sad)：可它一直没响。
+oldqin(sad)：一直到你来的这几天。
+@set truth +2
+@item +item_lighter
+他把打火机塞进你手里。
+oldqin(sad)：拿着。
+oldqin(sad)：你要是哪天用得上——
+他没说完。
+@goto ch2_nd_after
 
 == ch2_nd_save
 你抓住老秦的胳膊往门口拽。
