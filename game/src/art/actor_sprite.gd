@@ -65,7 +65,7 @@ const EMO_FALLBACK := {
 	"nervous": ["nervous", "scared", "fear", "normal"],
 	"fear": ["fear", "nervous", "scared", "normal"],
 	"scared": ["scared", "nervous", "fear", "normal"],
-	"terrified": ["terrified", "scared", "nervous", "fear", "normal"],
+	"terrified": ["terrified", "scared", "nervous", "fear", "urgent", "serious", "frown", "normal", "neutral"],
 	"panic": ["panic", "terrified", "scared", "nervous", "normal"],
 	"blank": ["blank", "hollow", "empty", "half", "normal"],
 	"relief": ["relief", "soft", "fragile", "normal"],
@@ -73,16 +73,16 @@ const EMO_FALLBACK := {
 	"half": ["half", "blank", "hollow", "empty", "normal"],
 	"half_assimilated": ["half", "blank", "hollow", "empty", "normal"],
 	# —— 许清系
-	"stare": ["stare", "cold", "neutral", "normal"],
+	"stare": ["stare", "cold", "empty", "neutral", "normal"],
 	"displeased": ["displeased", "frown", "angry", "neutral", "normal"],
 	"faintsmile": ["faintsmile", "faint_smile", "smile", "smirk", "neutral"],
 	"faint_smile": ["faintsmile", "faint_smile", "smile", "smirk", "neutral"],
-	"smile": ["smile", "faintsmile", "faint_smile", "relief", "neutral"],
+	"smile": ["smile", "faintsmile", "faint_smile", "relief", "soft", "neutral", "normal", "calm"],
 	"smirk": ["smirk", "faintsmile", "faint_smile", "smile", "neutral"],
 	"empty": ["empty", "hollow", "blank", "void", "neutral"],
 	"unstable": ["unstable", "empty", "hollow", "neutral"],
 	# —— 沈禾系
-	"sad": ["sad", "tired", "hurt", "calm", "normal"],
+	"sad": ["sad", "tired", "hurt", "fragile", "empty", "calm", "neutral", "normal"],
 	"hurt": ["hurt", "sad", "tired", "calm"],
 	"hollow": ["hollow", "empty", "blank", "void", "calm"],
 	"release": ["release", "faintsmile", "faint_smile", "calm"],
@@ -95,7 +95,7 @@ const EMO_FALLBACK := {
 	"confused": ["confused", "neutral", "normal"],
 	"determined": ["determined", "serious", "neutral", "normal"],
 	# —— 其它
-	"angry": ["angry", "displeased", "frown", "serious", "normal"],
+	"angry": ["angry", "displeased", "frown", "serious", "stare", "hurt", "sad", "normal", "neutral", "calm"],
 }
 
 func _ready() -> void:
