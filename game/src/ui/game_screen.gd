@@ -4,16 +4,16 @@ extends Control
 signal finished(ending_id: String)
 signal quit_to_title()
 
-const BGPainterS := preload("res://src/art/bg_painter.gd")
-const ActorPainterS := preload("res://src/art/actor_painter.gd")
+const BGLayerS := preload("res://src/art/bg_layer.gd")
+const ActorSpriteS := preload("res://src/art/actor_sprite.gd")
 const EffectsLayerS := preload("res://src/art/effects_layer.gd")
 const OW := preload("res://src/ui/overlay_widgets.gd")
 const MP := preload("res://src/ui/menu_panels.gd")
 
 var world: Control              # 可抖动的容器
-var bg: BGPainter
+var bg: BGLayer
 var actor_root: Control
-var actors := {}                # who -> {"node":ActorPainter,"pos":String}
+var actors := {}                # who -> {"node":ActorSprite,"pos":String}
 var fx: EffectsLayer
 var ui_root: Control
 
@@ -54,7 +54,7 @@ func _build() -> void:
 	world.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(world)
 
-	bg = BGPainterS.new()
+	bg = BGLayerS.new()
 	world.add_child(bg)
 
 	actor_root = Control.new()
@@ -241,15 +241,15 @@ func _on_scene(kind: String, value: String, extra: String) -> void:
 func _on_actor(kind: String, who: String, emo: String, pos: String) -> void:
 	match kind:
 		"show":
-			var a: ActorPainter
+			var a: ActorSprite
 			if actors.has(who):
 				a = actors[who]["node"]
 			else:
-				a = ActorPainterS.new()
+				a = ActorSpriteS.new()
 				a.who = who
 				actor_root.add_child(a)
 				actors[who] = {"node": a, "pos": pos}
-			a.emo = emo if emo != "" else "normal"
+			a.setup(who, emo if emo != "" else "normal")
 			actors[who]["pos"] = pos
 			# 特殊呈现
 			a.glitch = 0.0
@@ -280,15 +280,18 @@ func _layout_actors() -> void:
 	var i := 0
 	for k in keys:
 		var d: Dictionary = actors[k]
-		var a: ActorPainter = d["node"]
+		var a: ActorSprite = d["node"]
 		var pos := String(d["pos"])
 		var fx_ratio: float = float(slots.get(pos, 0.5))
 		if not slots.has(pos):
 			fx_ratio = 0.5 + (i - (keys.size() - 1) * 0.5) * 0.26
-		var h := size.y * 0.72
-		var w := h * 0.42
+		# 立绘素材为 768x1280 竖图，按高度铺满可视区（文本框上沿之上）
+		var box_top := size.y - 252.0 - 20.0
+		var h := clampf(box_top - 62.0, size.y * 0.55, size.y * 0.94)
+		var w := h * (768.0 / 1280.0)
 		a.size = Vector2(w, h)
-		a.position = Vector2(size.x * fx_ratio - w * 0.5, size.y * 0.94 - h - 130.0)
+		# 脚底压在文本框上沿略下方，避免悬空
+		a.position = Vector2(size.x * fx_ratio - w * 0.5, box_top + 26.0 - h)
 		i += 1
 
 func _on_effect(name: String, power: float) -> void:

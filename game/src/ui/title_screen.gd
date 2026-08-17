@@ -5,7 +5,7 @@ signal start_new()
 signal continue_game()
 signal load_slot(i: int)
 
-const BGPainterS := preload("res://src/art/bg_painter.gd")
+const BGLayerS := preload("res://src/art/bg_layer.gd")
 const MenuPanelsS := preload("res://src/ui/menu_panels.gd")
 
 var _t := 0.0
@@ -13,7 +13,7 @@ var subtitle_label: Label
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var bg: BGPainter = BGPainterS.new()
+	var bg: BGLayer = BGLayerS.new()
 	bg.set_scene("oldbuilding_out", "rain")
 	add_child(bg)
 
