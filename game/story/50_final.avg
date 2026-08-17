@@ -3,6 +3,7 @@
 
 == final_start
 @chapter 5 点名
+@time 4 20:40
 @bg oldbuilding_out rain
 @bgm bgm_final
 @amb amb_rain
@@ -452,6 +453,7 @@ shenhe(hollow)：你原来是那个在五年前的晚自习上，第一个低下
 
 -- ================================================= Scene 4 最后一次点名
 == final_sc4
+@time 4 22:07
 @bg broadcast_room dark
 @bgm bgm_final
 @clearchars
@@ -649,6 +651,34 @@ liangye(hollow)：林昼，这次别慢。
 == final_ly_end
 @bg broadcast_room dark
 @bgm bgm_final
+@wait 0.6
+shenhe(hollow)：李恒。
+@wait 1.0
+@if flag_liheng_counts or flag_liheng_seatmap
+> 门外传来一个声音。
+> 很平，很稳，像念一个早就背熟的答案。
+classmate：到。
+@wait 0.8
+> 你没有回头，但你知道那是谁。
+> 他跟到这儿了。
+> 他数了三个月，今天他把自己数进来了。
+@set truth +2
+@set save_route_score +2
+@flag flag_liheng_present
+@if gore>=2
+@fx bloodhand 0.7
+@endif
+@elif flag_liheng_talked
+> 门外传来一个很轻的声音，几乎被电流盖掉。
+classmate：……到。
+@set truth +1
+@set save_route_score +1
+@else
+> 没有人答。
+> 你甚至想不起来 307 的第四个人长什么样。
+@set memory_echo +2
+@set sanity -2
+@endif
 @wait 0.8
 @fx heartbeat 1.8
 shenhe(hollow)：林昼。
@@ -1154,6 +1184,26 @@ xuqing(neutral)：人齐了。
 > 你今天早上特意去摸过。桌板背面是光的，什么都没有。
 @set truth +2
 @wait 1.0
+@if flag_liheng_present
+下课铃响的时候，李恒收拾书包，路过你的座位。
+他停了一下。
+@show unknown flat center
+classmate：昨天晚上。
+me：嗯。
+classmate：我数了。
+classmate：三道。
+@wait 0.8
+me：以后都会是三道。
+他点点头，把耳机塞进兜里——这一次没有戴上。
+classmate：那我不数了。
+@wait 0.6
+他走了两步，又回头。
+classmate：林昼。
+classmate：这是我第一次叫你的名字。
+@set truth +2
+@clearchars
+@wait 1.0
+@endif
 下课的时候，许清叫住你。
 xuqing(flat)：林昼。
 me：老师。

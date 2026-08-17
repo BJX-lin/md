@@ -3,6 +3,7 @@
 
 == ch3_start
 @chapter 3 熄灯
+@time 3 16:30
 @bg dorm_door night
 @bgm bgm_unease
 @amb amb_dorm_night
@@ -42,6 +43,7 @@ radio：今晚不点名。
 
 -- ================================================= Scene 2 307规则纸
 == ch3_sc2
+@time 3 21:20
 @bg dorm night
 @amb amb_dorm_night
 @clearchars
@@ -358,6 +360,7 @@ zhouxu(sad)：不是我怕死。是我替过一次，就知道替一次是什么
 
 -- ================================================= Scene 6 第一次正式查寝
 == ch3_sc6
+@time 3 22:30
 @bg dorm dark
 @bgm bgm_horror
 @amb amb_dorm_night
@@ -661,6 +664,7 @@ liangye(terrified)：别开。求你了。上次就是有人开了。
 
 -- ================================================= Scene 7 名单夜间改写
 == ch3_sc7
+@time 3 23:40
 @bg dorm dark
 @bgm bgm_horror
 @clearchars
@@ -1044,6 +1048,7 @@ liangye(hollow)：这次别慢。
 
 -- ================================================= Scene 9 周叙部分坦白
 == ch3_sc9
+@time 4 02:17
 @bg dorm night
 @bgm bgm_truth
 @clearchars

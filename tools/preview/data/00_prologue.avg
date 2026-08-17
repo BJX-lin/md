@@ -6,6 +6,7 @@
 @bgm bgm_unease
 @amb amb_rain
 @title 南栖中学
+@time 1 19:40
 @wait 0.8
 南方的雨下到第三天。
 校门口的水泥缝里都在冒泡——不是水多得溢出来，是地底下有气顶上来，一串一串，破了又冒。
@@ -59,6 +60,7 @@
 @bg office day
 @amb amb_classroom_day
 @bgm bgm_day_class
+@time 1 14:20
 @title 三月十四日　周四　午后
 @clearchars
 雨停了。

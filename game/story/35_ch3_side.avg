@@ -2,6 +2,7 @@
 -- 高压夜间自由探索，对应 d.md 第三章「宿舍规则实战」
 
 == ch3_night_hub
+@advtime 20
 @bg dorm dark
 @bgm bgm_unease
 @amb amb_dorm_night
@@ -14,6 +15,7 @@
 * [if !visited:ch3_side_water] 去水房接水（顺便看看走廊） -> ch3_side_water
 * [if !visited:ch3_side_roof] 上天台 -> ch3_side_roof
 * [if !visited:ch3_side_lock] 检查宿舍门锁 -> ch3_side_lock
+* 留意李恒 -> liheng_hub
 * 躺下，撑到天亮 -> ch3_night_end
 
 == ch3_side_water

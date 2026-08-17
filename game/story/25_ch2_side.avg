@@ -2,6 +2,7 @@
 -- 对应 e.md 第二章 Scene 3《老秦》支线死亡回流主线
 
 == ch2_night_duty
+@time 3 01:00
 @bg duty_room night
 @bgm bgm_horror
 @amb amb_hallway

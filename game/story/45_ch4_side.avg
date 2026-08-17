@@ -2,6 +2,7 @@
 -- 在进入内档室之前的可选探索，深化"重复的你"与许清身份两条线
 
 == ch4_hall_explore
+@advtime 10
 @bg history_hall dusk
 @bgm bgm_investigate
 @amb amb_hallway

@@ -4,6 +4,7 @@
 
 == ch1_start
 @chapter 1 转入
+@time 1 14:40
 @bg office day
 @bgm bgm_day_class
 @amb amb_classroom_day
@@ -219,6 +220,7 @@ xuqing(flat)：跑起来，脚步声会多。
 
 -- ================================================= 过渡：走向教室
 == ch1_walk_to_class
+@advtime 20
 @bg hallway day
 @amb amb_hallway
 @bgm bgm_unease
@@ -243,6 +245,7 @@ xuqing(flat)：跑起来，脚步声会多。
 
 -- ================================================= Scene 2 进班与座位
 == ch1_sc2
+@advtime 10
 @bg classroom day
 @amb amb_classroom_day
 @bgm bgm_day_class
@@ -433,6 +436,7 @@ liangye(nervous)：反正你就当我放屁。
 
 -- ================================================= Scene 3 课间对抗
 == ch1_sc3
+@time 1 15:50
 @bg hallway day
 @amb amb_hallway
 @bgm bgm_unease

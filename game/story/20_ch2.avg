@@ -3,6 +3,7 @@
 
 == ch2_start
 @chapter 2 旧楼
+@time 2 07:10
 @bg classroom day
 @bgm bgm_day_class
 @amb amb_classroom_day
@@ -468,6 +469,7 @@ liangye(terrified)：林昼，你信我吗？我真的一直在床上。
 
 -- ================================================= 中枢：自由调查
 == ch2_hub
+@time 2 12:20
 @bg hallway day
 @bgm bgm_investigate
 @amb amb_hallway
@@ -966,6 +968,7 @@ zhouxu(sad)：今晚跟紧我。别一个人待着。
 
 -- ================================================= Scene 5 旧楼前
 == ch2_oldbuilding_pre
+@time 2 18:40
 @bg oldbuilding_out dusk
 @bgm bgm_horror
 @amb amb_old_building
@@ -1035,6 +1038,7 @@ zhouxu(cold)：进去以后，谁都别数楼梯，别应声，别单独离队�
 
 -- ================================================= Scene 6 旧楼内部
 == ch2_enter
+@advtime 15
 @bg oldbuilding_stair dark
 @bgm bgm_horror
 @amb amb_old_building

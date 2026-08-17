@@ -3,6 +3,7 @@
 -- 对应 f.md ch1_sc4~ch1_sc7
 
 == ch1_sc4_hub
+@time 1 17:05
 @bg classroom dusk
 @bgm bgm_investigate
 @amb amb_classroom_day
@@ -314,6 +315,7 @@ unknown(cold)：它每次都是在我发现之前，就已经不在了。
 @amb amb_classroom_night
 @clearchars
 @autosave
+@time 1 19:40
 @title 晚自习　19:40
 教室里开着白炽灯。
 窗玻璃被灯照成了镜子，映出一排一排的后脑勺。你从玻璃里能看见整个教室的倒影——包括你自己。
@@ -638,6 +640,7 @@ zhouxu(cold)：……我不知道。
 
 -- ================================================= Scene 6 宿舍熄灯与第一次点名
 == ch1_sc6
+@time 1 21:55
 @bg dorm night
 @bgm bgm_unease
 @amb amb_dorm_night
