@@ -266,6 +266,13 @@ class State:
             self.chapter = 5
 
     def determine_ending(self):
+        # 全员报数路线：三条支线全通才解锁，本身即构成真结局资格
+        if self.flags.get("flag_count_overflow"):
+            self.states["truth_state"] = "complete"
+            self.flags["flag_terminal_broadcast_ready"] = True
+            self.flags["true_end_precondition_1"] = True
+            self.flags["true_end_precondition_2"] = True
+            self.flags["flag_rule_terms_complete"] = True
         if (self.states.get("truth_state") == "complete"
                 and self.flags.get("true_end_precondition_1")
                 and self.flags.get("true_end_precondition_2")

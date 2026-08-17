@@ -931,7 +931,245 @@ shenhe(hollow)：这一格，总要有一个名字。
 * [lock flag_terminal_broadcast_ready] 自己坐上那把椅子 -> final_c_seat
 * [lock item:item_admin_key and flag_terminal_broadcast_ready] 接管主控，重新定规则 -> final_c_control
 * [lock item:item_lighter or item:item_fire_tape] 烧掉名单和这栋楼 -> final_c_burn
+* [lock flag_liheng_pact and flag_xuqing_asked and flag_qin_ally] 谁都不答——让所有人同时报数 -> final_c_count
 * 什么都不做，答一声“到” -> final_c_answer
+
+== final_c_count
+@bg broadcast_room dark
+@bgm bgm_final
+@clearchars
+@show shenhe hollow center
+@advtime 3
+你没有去拿笔，也没有坐下。
+@wait 1.0
+你伸手，把调音台上那个总广播的推子推到底。
+@sfx sfx_broadcast_click
+@wait 0.8
+@fx flash 0.5
+全校的喇叭同时活了。
+@wait 1.2
+@set truth +5
+shenhe(hollow)：你要干什么。
+@wait 0.6
+me：李恒跟我说，想一个没人试过的办法。
+@wait 1.0
+me：一百多轮，每一轮都是一个人答到。
+@wait 0.8
+me：所以答到这件事，本身就是错的。
+@wait 1.4
+@fx heartbeat 1.2
+@set truth +5
+@set memory_echo +3
+你把话筒拉到面前。
+@wait 1.0
+me：不是我答。
+@wait 0.6
+me：是所有人报数。
+@wait 1.2
+@fx glitch 0.9
+@set sanity -3
+@set truth +5
+shenhe(hollow)：……不行。
+shenhe(hollow)：报数要有总数。总数对不上，就会有人被抹掉。
+@wait 1.0
+me：对。
+@wait 0.8
+me：所以这次，我们不报到四十一，也不报到四十二。
+@wait 1.4
+@set truth +5
+@set save_route_score +3
+me：我们一直报下去。
+@wait 1.2
+@wait 0.6
+她愣住了。
+@wait 1.0
+@fx heartbeat 1.4
+@set truth +4
+shenhe(hollow)：一直……报下去？
+@wait 0.8
+me：这栋楼里现在有多少人？宿舍、值班室、办公室、教室。
+@wait 1.0
+me：一千多个。
+@wait 0.6
+me：如果一千多个人一个接一个报数，报到一千多。
+@wait 1.2
+@set truth +5
+@set memory_echo +3
+me：那这个"总数"就不是四十二了。
+@wait 1.0
+me：它得重新算。
+@wait 1.4
+@fx glitch 1.0
+@set sanity -2
+@set truth +5
+@wait 0.8
+调音台上所有的电平表，同时打到了最右边。
+@sfx sfx_low_boom
+@wait 1.2
+你对着话筒说话。你的声音从这栋楼的每一个角落传出去。
+@wait 1.0
+me：三班的同学，还有听得见的所有人。
+@wait 0.6
+me：从一开始报数。
+@wait 1.2
+me：不要停。
+@wait 1.4
+@set truth +4
+@wait 0.8
+静了三秒。
+@wait 1.2
+然后你听见了。
+@wait 1.0
+@fx heartbeat 1.0
+@set truth +5
+@set save_route_score +3
+不是从喇叭里，是从窗外，从楼下，从走廊，从整栋楼。
+@wait 0.8
+> 一。
+@wait 0.6
+一个男生的声音。是周叙。
+@wait 1.0
+> 二。
+@wait 0.6
+梁野。
+@wait 0.8
+> 三。
+@wait 0.6
+@set trust_zhouxu +2
+@set trust_liangye +2
+一个很轻的声音，几乎听不见——但它确实报了。
+@wait 1.2
+@fx heartbeat 1.2
+@set truth +4
+@set save_route_score +3
+是李恒。
+@wait 1.0
+> 四。
+@wait 0.6
+一个五十多岁的男声，从楼下值班室传上来。老秦。
+@wait 1.2
+@set save_route_score +3
+> 五。
+@wait 0.8
+@set truth +4
+一个女声。很稳。
+@wait 1.0
+是许清。
+@wait 0.6
+@set shenhe_focus +3
+@set save_route_score +3
+@wait 1.2
+然后就停不下来了。
+@wait 0.8
+@fx flash 0.6
+@sfx sfx_low_boom
+@set truth +5
+> 六。七。八。九。十。
+@wait 1.0
+三楼的窗户一扇一扇亮起来。宿舍楼那边也亮了。
+@wait 0.6
+> 十七。十八。十九。
+@wait 1.2
+有人被吵醒，骂了一句，然后也报了数。
+@wait 0.8
+@set truth +4
+@set memory_echo +3
+> 四十。
+> 四十一。
+@wait 1.4
+@fx heartbeat 1.6
+到四十一的时候，声音停了一下。
+@wait 1.0
+> 这是这所学校五年来，每一次都会卡住的地方。
+@wait 0.8
+@set truth +5
+@wait 1.2
+然后有人喊了四十二。
+@wait 1.0
+@set truth +5
+@set shenhe_focus +3
+@set save_route_score +3
+不是你。
+@wait 0.6
+是一个你不认识的声音，从对面宿舍楼的某个窗口。
+@wait 1.2
+> 四十三。
+> 四十四。
+@wait 0.8
+@fx glitch 0.8
+@set truth +5
+它没有停在四十二。
+@wait 1.0
+@wait 0.6
+广播室的墙开始震。名单纸从打印机里吐出来，但这次上面是空白的。
+@wait 1.2
+@sfx sfx_low_boom
+@set sanity -3
+@set truth +5
+> 二百一十。
+> 三百六十。
+> 五百。
+@wait 1.0
+@fx whiteout 0.8
+数字越报越快，最后混成一片声音，分不出是谁在报。
+@wait 0.8
+@set truth +5
+@set memory_echo +3
+@wait 1.2
+你转头看沈禾。
+@wait 1.0
+@show shenhe hurt center
+她站在那儿，嘴唇在动。
+@wait 0.6
+你听不见她的声音，但你看清了口型。
+@wait 1.4
+@fx names 1.0
+@set shenhe_focus +3
+@set save_route_score +3
+@set truth +5
+> 她在报数。
+@wait 1.2
+@wait 0.8
+> 一个五年没有被念过名字的人，
+> 终于不需要等别人念了。
+@wait 1.0
+@set truth +5
+@set memory_echo +3
+> 她自己报了一个数。
+@wait 1.4
+@fx flash 1.0
+@sfx sfx_bell
+@set truth +5
+@set save_route_score +3
+@wait 0.8
+所有的喇叭同时断了。
+@wait 1.2
+不是坏掉，是关掉——那种正常的、有人按下开关的关掉。
+@wait 1.0
+@set truth +4
+@wait 0.6
+房间里安静下来。
+@wait 1.2
+调音台上的红灯，一颗一颗重新亮起来。
+@wait 0.8
+十二颗，全亮。
+@wait 1.0
+@set truth +4
+@flag flag_count_overflow
+@flag flag_terminal_broadcast_ready
+@wait 0.6
+> 这一格，总要有一个名字。
+@wait 1.2
+> 但如果格子有一千个呢。
+@wait 0.8
+> 如果总数永远算不完呢。
+@wait 1.0
+@set truth +5
+@set save_route_score +3
+> 它不是被打败的。
+> 它是被算不过来了。
+@wait 1.2
+@goto final_resolve
 
 == final_c_write
 @bgm bgm_truth
@@ -1276,6 +1514,58 @@ xuqing(neutral)：人齐了。
 > 你今天早上特意去摸过。桌板背面是光的，什么都没有。
 @set truth +2
 @wait 1.0
+@if flag_count_overflow
+一周以后，学校做了一件很奇怪的事。
+@wait 1.0
+教务处重新统计了全校人数。
+@wait 0.6
+不是例行的那种，是一个一个数——每个班主任带着名册去教室，
+点一个名，划一个勾，再让学生自己在后面签字。
+@wait 1.2
+@set truth +3
+折腾了整整两天。
+@wait 0.8
+最后贴在公告栏上的数字是：一千二百三十七人。
+@wait 1.0
+> 而上一次公示的数字，是一千二百三十六。
+@wait 1.4
+@fx heartbeat 0.9
+@set truth +4
+@set save_route_score +2
+多了一个。
+@wait 0.8
+没有人知道多出来的是谁。教务处查了三遍，每个学号都有对应的人，
+每个人都签了字。
+@wait 1.0
+@set truth +3
+@wait 0.6
+那天下午，你看见许清站在公告栏前面看那张纸。
+@wait 1.2
+她看了很久。
+@wait 0.8
+然后她做了一件你从来没见过的事——
+@wait 1.0
+@fx names 0.7
+@set truth +4
+@set shenhe_focus +3
+她笑了。
+@wait 1.2
+@wait 0.6
+她转身走的时候，你听见了脚步声。
+@wait 1.4
+@fx heartbeat 1.2
+@set truth +5
+@set save_route_score +3
+@set memory_echo +3
+很轻，赤脚踩在水磨石地上，啪、啪、啪。
+@wait 1.0
+> 五年了。
+> 这是她第一次走出声音来。
+@wait 0.8
+@set truth +4
+@clearchars
+@wait 1.0
+@endif
 @if flag_zhouyun_proof
 放学后，周叙在校门口等你。
 @show zhouxu neutral right

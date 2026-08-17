@@ -270,8 +270,12 @@ def main():
 
 
 def check_cond(expr, nums, items, clues, enums, loc, warnings):
+    # DSL 的条件求值是扁平的（先按 or 拆、再按 and 拆），不支持括号分组。
+    # 写了括号会被静默误解，必须拦下来。
+    if "(" in expr or ")" in expr:
+        warnings.append(f"{loc} 条件不支持括号分组，请改用单一 flag: {expr.strip()}")
     for atom in re.split(r"\s+(?:and|or)\s+", expr.strip()):
-        a = atom.strip().lstrip("!")
+        a = atom.strip().strip("()").strip().lstrip("!").strip()
         if not a:
             continue
         if a.startswith(("item:", "clue:", "state:", "visited:", "death:")):

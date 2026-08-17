@@ -262,6 +262,7 @@
 > 是"住在这里"这件事本身。
 @set truth +4
 @flag flag_liheng_erased
+@flag flag_can_meet_liheng
 @clue clue_liheng
 @goto ch2_night_hub
 
@@ -786,6 +787,7 @@ zhouxu(serious)：我只是证明不了。
 @set truth +4
 @set memory_echo +2
 @flag flag_liheng_erased
+@flag flag_can_meet_liheng
 @clue clue_liheng
 @clearchars
 @goto ch2_night_hub

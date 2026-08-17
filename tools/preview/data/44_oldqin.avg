@@ -251,6 +251,7 @@ oldqin(normal)：每一个补位的，都是上一轮被顶掉的。
 @wait 1.0
 @set truth +4
 @flag flag_rule_terms_complete
+@flag flag_can_meet_liheng
 @clue clue_replacement
 @goto oldqin_hub
 
@@ -356,7 +357,9 @@ oldqin(normal)：只是没有人叫他的名字了。
 > 李恒。
 @set truth +3
 @flag flag_true_linday_status_known
+@flag flag_can_meet_liheng
 @flag flag_rule_terms_complete
+@flag flag_can_meet_liheng
 @clue clue_liheng
 @goto oldqin_hub
 
@@ -748,5 +751,6 @@ oldqin(normal)：替你答的次数够了，那个位置就归他了。
 @wait 1.0
 > 因为如果哪天那三块亮了，说明有人还在那儿。
 @set truth +3
+@flag flag_oldqin_done
 @clearchars
-@goto ch4_sc2
+@goto ch4_prep_hub

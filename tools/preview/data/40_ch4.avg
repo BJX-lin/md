@@ -88,13 +88,26 @@ zhouxu(flat)：两步的话，我回头能抓住你。
 @set truth +1
 @endif
 @wait 0.6
-* [if !visited:xuqing_hub] 等一下——先去办公室找许清 -> xuqing_hub
+@goto ch4_prep_hub
+
+== ch4_prep_hub
+@bg schoolyard rain
+@bgm bgm_investigate
+@amb amb_rain
+@clearchars
+@if visited:ch4_prep_hub
+> 雨还在下。进去之前，也许还能再问一个人。
+@endif
+* [if !flag_xuqing_done] 先去办公室找许清 -> xuqing_hub
     @set truth +2
     @set route_empathy +1
-* [if !visited:oldqin_hub] 先去值班室找老秦 -> oldqin_hub
+* [if !flag_oldqin_done] 先去值班室找老秦 -> oldqin_hub
     @set truth +2
     @set route_investigate +1
-* 进校史馆 -> ch4_sc2
+* [if flag_can_meet_liheng and !flag_liheng_present] 去教室找李恒 -> liheng2_hub
+    @set truth +3
+    @set route_empathy +2
+* 够了，进校史馆 -> ch4_sc2
     @set route_investigate +1
 
 == ch4_sc2

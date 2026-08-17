@@ -415,6 +415,12 @@ func can_manager() -> bool:
 	)
 
 func determine_ending() -> String:
+	if flags.get("flag_count_overflow", false):
+		states["truth_state"] = "complete"
+		flags["flag_terminal_broadcast_ready"] = true
+		flags["true_end_precondition_1"] = true
+		flags["true_end_precondition_2"] = true
+		flags["flag_rule_terms_complete"] = true
 	if can_true_end():
 		return "ending_true_release"
 	elif can_bittersweet_exchange():

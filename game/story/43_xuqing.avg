@@ -922,5 +922,6 @@ xuqing(neutral)：不知道该问什么，说明你还正常。
 > 这些是抵抗。
 @set truth +4
 @set save_route_score +3
+@flag flag_xuqing_done
 @clearchars
-@goto ch4_sc2
+@goto ch4_prep_hub

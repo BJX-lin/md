@@ -98,6 +98,7 @@ const CHARACTERS := {
 	"oldqin": {"name": "老秦", "color": Color(0.70, 0.66, 0.55), "pitch": 104.0, "build": 0.60},
 	"voice": {"name": "女声", "color": Color(0.66, 0.84, 0.82), "pitch": 226.0, "build": 0.42},
 	"radio": {"name": "广播", "color": Color(0.80, 0.55, 0.48), "pitch": 190.0, "build": 0.0},
+	"liheng": {"name": "李恒", "color": Color(0.58, 0.62, 0.70), "pitch": 108.0, "build": 0.47},
 	"classmate": {"name": "同学", "color": Color(0.70, 0.70, 0.72), "pitch": 172.0, "build": 0.48},
 	"crowd": {"name": "众人", "color": Color(0.66, 0.66, 0.68), "pitch": 160.0, "build": 0.48},
 	"unknown": {"name": "？？？", "color": Color(0.60, 0.60, 0.66), "pitch": 140.0, "build": 0.46},
