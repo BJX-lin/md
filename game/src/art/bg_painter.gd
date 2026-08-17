@@ -298,7 +298,7 @@ func _draw_hallway(s: Vector2, p: Dictionary, lm: float) -> void:
 		var lw := lerpf(s.x * 0.16, s.x * 0.03, f2)
 		var on := 1.0
 		if i == 1:
-			on = 0.25 + 0.75 * step(0.5, fmod(_t * 3.1, 1.0))
+			on = 0.25 + 0.75 * (1.0 if fmod(_t * 3.1, 1.0) >= 0.5 else 0.0)
 		draw_rect(Rect2(vp.x - lw * 0.5, ly, lw, maxf(2.0, 8.0 * (1.0 - f2))), Color(0.92, 0.94, 0.88, 0.5 * on * lm))
 		_light_cone(Vector2(vp.x, ly), lw * 1.6, s.y * 0.6, p["light"], 0.035 * on * lm)
 
@@ -465,7 +465,7 @@ func _draw_broadcast_room(s: Vector2, p: Dictionary, lm: float) -> void:
 	# 播音椅（空/有人由 actor 层负责）
 	draw_rect(Rect2(s.x * 0.44, s.y * 0.78, s.x * 0.12, s.y * 0.05), Color(0.20, 0.16, 0.15) * lm)
 	# 红色 ON AIR
-	var on_air := 0.4 + 0.6 * step(0.5, fmod(_t * 1.4, 1.0))
+	var on_air := 0.4 + 0.6 * (1.0 if fmod(_t * 1.4, 1.0) >= 0.5 else 0.0)
 	draw_rect(Rect2(s.x * 0.40, s.y * 0.03, s.x * 0.2, s.y * 0.05), Color(0.5, 0.08, 0.06, 0.35 + 0.5 * on_air))
 
 func _draw_duty_room(s: Vector2, p: Dictionary, lm: float) -> void:

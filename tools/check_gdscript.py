@@ -10,6 +10,7 @@
   6. signal 连接的信号是否在目标脚本中声明（跨脚本按名字宽松匹配）
   7. 关键字拼写：func/var/const/signal 行的基本形态
   8. 自定义方法是否覆盖 Node/Object 原生方法（Godot 会当成错误）
+  9. 是否误用了 GLSL/着色器专有函数（GDScript 中不存在）
 """
 import os
 import re
@@ -36,6 +37,20 @@ NATIVE_METHODS = {
     "remove_from_group", "get_groups", "get_viewport", "get_window", "get_rect",
     "get_size", "set_size", "get_position", "set_position", "grab_focus", "has_focus",
     "get_global_position", "update", "raise",
+}
+
+# 这些是着色器(GLSL)函数，GDScript 里不存在，误用会报
+# "Function xxx() not found in base self."
+GLSL_ONLY = {
+    "step": "改用 (1.0 if x >= edge else 0.0)",
+    "mix": "改用 lerp() / lerpf()",
+    "fract": "改用 fmod(x, 1.0)",
+    "clamp01": "改用 clampf(x, 0.0, 1.0)",
+    "dFdx": "着色器专用",
+    "dFdy": "着色器专用",
+    "refract": "着色器专用",
+    "faceforward": "着色器专用",
+    "inversesqrt": "改用 1.0 / sqrt(x)",
 }
 
 GAME = _find_root()
@@ -214,6 +229,20 @@ def main():
                 errors.append(
                     f"{rel}:{ln} 方法 {m.group(1)}() 覆盖了原生方法，"
                     f"Godot 会报错，请改名（如 {m.group(1)}_x）")
+
+        # 9. GLSL 专有函数误用
+        own_funcs = all_funcs.get(path, set())
+        for name, hint in GLSL_ONLY.items():
+            for m in re.finditer(r"(?<![\w.])" + name + r"\s*\(", src):
+                # 自己定义了同名函数(如 _step)或作为方法调用则跳过
+                if name in own_funcs:
+                    continue
+                ln = src[:m.start()].count("\n") + 1
+                line_txt = src.split("\n")[ln - 1]
+                if line_txt.strip().startswith(("#", "//")):
+                    continue
+                errors.append(
+                    f"{rel}:{ln} 误用着色器函数 {name}()，GDScript 中不存在。{hint}")
 
         # 7. func 行基本形态
         for ln, raw in enumerate(src.split("\n"), 1):
