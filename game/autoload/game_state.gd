@@ -128,7 +128,7 @@ func reset_run() -> void:
 		nums["memory_echo"] = mini(3 + cyc, 8)
 
 # ---------------------------------------------------------------- 剧情时间
-const DAY_LABEL := ["", "第一天", "第二天", "第三天", "第四天", "第五天"]
+const DAY_LABEL: Array[String] = ["", "第一天", "第二天", "第三天", "第四天", "第五天"]
 
 func set_story_time(day: int, minute: int) -> void:
 	story_day = maxi(1, day)
@@ -165,7 +165,7 @@ func time_phase() -> String:
 	return "深夜"
 
 func time_display() -> String:
-	var d := DAY_LABEL[clampi(story_day, 0, DAY_LABEL.size() - 1)] if story_day < DAY_LABEL.size() else ("第%d天" % story_day)
+	var d: String = DAY_LABEL[clampi(story_day, 0, DAY_LABEL.size() - 1)] if story_day < DAY_LABEL.size() else ("第%d天" % story_day)
 	return "%s　%s %s" % [d, time_phase(), time_hhmm()]
 
 # ---------------------------------------------------------------- 数值

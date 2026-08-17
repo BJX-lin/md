@@ -11,6 +11,7 @@
   7. 关键字拼写：func/var/const/signal 行的基本形态
   8. 自定义方法是否覆盖 Node/Object 原生方法（Godot 会当成错误）
   9. 是否误用了 GLSL/着色器专有函数（GDScript 中不存在）
+ 10. := 三元表达式两分支类型不一致 / 分支返回 Variant，导致无法推断类型
 """
 import os
 import re
@@ -243,6 +244,43 @@ def main():
                     continue
                 errors.append(
                     f"{rel}:{ln} 误用着色器函数 {name}()，GDScript 中不存在。{hint}")
+
+        # 10. := 无法推断类型：三元表达式两分支类型不一致，
+        #     或分支里索引了未标注元素类型的集合（返回 Variant）。
+        #     Godot 报 "Cannot infer the type of "x" variable because
+        #     the value doesn't have a set type."
+        untyped_colls = set(
+            re.findall(r"^\s*(?:const|var)\s+([A-Za-z_0-9]+)\s*:=\s*[\[{]", src, re.M))
+        for ln, raw in enumerate(src.split("\n"), 1):
+            st = raw.strip()
+            if st.startswith(("#", "//")):
+                continue
+            m = re.match(r"var\s+([A-Za-z_0-9]+)\s*:=\s*(.+)$", st)
+            if not m:
+                continue
+            name, expr = m.group(1), m.group(2)
+            if " if " not in expr or " else " not in expr:
+                continue
+            then_part = expr.split(" if ")[0].strip()
+            else_part = expr.split(" else ", 1)[1].strip()
+
+            def _variant_src(part):
+                # 索引未标注元素类型的集合
+                for coll in untyped_colls:
+                    if re.search(r"(?<![\w.])" + re.escape(coll) + r"\s*\[", part):
+                        return f"{coll}[...] 返回 Variant"
+                # Dictionary.get() / Array.pop 等返回 Variant
+                if re.search(r"\.get\s*\(", part) and not re.search(
+                        r"\b(?:float|int|str|bool)\s*\(\s*[^)]*\.get\s*\(", part):
+                    return ".get() 返回 Variant"
+                return None
+
+            reason = _variant_src(then_part) or _variant_src(else_part)
+            if reason:
+                errors.append(
+                    f"{rel}:{ln} var {name} := 三元表达式无法推断类型（{reason}）。"
+                    f"请改为显式标注，如 var {name}: String = ...，"
+                    f"或给集合加元素类型（Array[String]）")
 
         # 7. func 行基本形态
         for ln, raw in enumerate(src.split("\n"), 1):
