@@ -115,7 +115,7 @@ xuqing(flat)：听话是好事。至少能少吃点苦头。
 今天是三月十四日。
 可这张纸的黄，这些折痕，绝不是今天才有的。
 @clue clue_record_table
-@set sanity -2
+@set sanity -1
 许清抬起头。这一次她看你的时间比之前都长。
 xuqing(stare)：你叫什么？
 me：……林昼。您刚才叫过我。
@@ -523,7 +523,7 @@ me：他们现在呢？
 liangye(fear)：走了。转走了。
 liangye(fear)：至少……班主任是这么说的。
 @fx glitch 0.6
-@set sanity -3
+@set sanity -1
 @set memory_echo +2
 @clue clue_missing_one
 @goto ch1_s3_mid
@@ -611,7 +611,7 @@ zhouxu(cold)：现在有了。
 zhouxu(cold)：满意了吗。
 他转身走了。这一次，你听见了他的脚步声——每一步都很重，重得像故意的。
 @fx heartbeat 0.6
-@set sanity -2
+@set sanity -1
 @set truth +1
 @goto ch1_s3_end
 

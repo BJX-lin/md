@@ -215,24 +215,24 @@ func settle_chapter_1() -> void:
 		set_state("liangye_state", "fear_alive")
 	elif get_num("trust_liangye") < 0 and not get_flag("flag_liangye_library"):
 		set_state("liangye_state", "missing_marked")
-	elif get_num("trust_liangye") >= 2:
+	elif get_num("trust_liangye") >= 4:
 		set_state("liangye_state", "ally_shaken")
 	else:
 		set_state("liangye_state", "normal")
 
 	if get_num("trust_zhouxu") >= 2:
 		set_state("zhouxu_state", "guarding")
-	elif get_num("trust_zhouxu") <= -2:
+	elif get_num("trust_zhouxu") <= -3:
 		set_state("zhouxu_state", "hiding")
 	else:
 		set_state("zhouxu_state", "normal")
 
-	if get_num("shenhe_focus") >= 5:
+	if get_num("shenhe_focus") >= 9:
 		set_state("shenhe_state", "calling")
 	else:
 		set_state("shenhe_state", "echo")
 
-	if get_num("trust_xuqing") <= -2:
+	if get_num("trust_xuqing") <= -3:
 		set_state("xuqing_state", "suspected")
 	current_chapter = 2
 
@@ -245,7 +245,7 @@ func settle_chapter_2() -> void:
 		register_loss("梁野", "被点名带走")
 	elif get_flag("flag_liangye_half"):
 		set_state("liangye_state", "half_assimilated")
-	elif get_num("trust_liangye") >= 2:
+	elif get_num("trust_liangye") >= 4:
 		set_state("liangye_state", "ally_shaken")
 	elif get_flag("flag_liangye_library") and get_flag("flag_library_page109"):
 		set_state("liangye_state", "fear_alive")
@@ -254,7 +254,7 @@ func settle_chapter_2() -> void:
 
 	if get_num("trust_zhouxu") >= 2:
 		set_state("zhouxu_state", "guarding")
-	elif get_num("trust_zhouxu") <= -2:
+	elif get_num("trust_zhouxu") <= -3:
 		set_state("zhouxu_state", "coercing")
 	else:
 		set_state("zhouxu_state", "hiding")
@@ -268,9 +268,9 @@ func settle_chapter_2() -> void:
 		set_state("oldqin_state", "missing")
 		register_loss("老秦", "失踪")
 
-	if get_num("shenhe_focus") >= 8 or get_flag("flag_first_face_to_face_shenhe"):
+	if get_num("shenhe_focus") >= 20 or get_flag("flag_first_face_to_face_shenhe"):
 		set_state("shenhe_state", "half_present")
-	elif get_num("shenhe_focus") >= 4:
+	elif get_num("shenhe_focus") >= 9:
 		set_state("shenhe_state", "calling")
 
 	if get_num("trust_xuqing") <= -3 or get_flag("flag_found_xuqing_log_fragment"):
@@ -284,8 +284,8 @@ func settle_chapter_3() -> void:
 		set_state("liangye_final_state_ch3", "abandoned")
 		register_loss("梁野", "被放弃")
 	elif get_flag("flag_liangye_half_assimilated"):
-		set_state("liangye_final_state_ch3", "rescued_half" if get_num("trust_liangye") >= 1 else "missing")
-	elif get_flag("flag_liangye_returned") and get_num("trust_liangye") >= 3:
+		set_state("liangye_final_state_ch3", "rescued_half" if get_num("trust_liangye") >= 2 else "missing")
+	elif get_flag("flag_liangye_returned") and get_num("trust_liangye") >= 5:
 		set_state("liangye_final_state_ch3", "anchor_alive")
 	elif get_flag("flag_liangye_returned"):
 		set_state("liangye_final_state_ch3", "fragile_alive")
@@ -298,7 +298,7 @@ func settle_chapter_3() -> void:
 	# 周叙
 	if get_num("trust_zhouxu") >= 3 and get_flag("flag_zhouxu_confessed_part"):
 		set_state("zhouxu_final_state_ch3", "confessor_protector")
-	elif get_num("trust_zhouxu") <= -2:
+	elif get_num("trust_zhouxu") <= -3:
 		set_state("zhouxu_final_state_ch3", "coercer")
 	else:
 		set_state("zhouxu_final_state_ch3", "split_guard")
@@ -308,7 +308,7 @@ func settle_chapter_3() -> void:
 		set_flag("true_end_precondition_1", true)
 	if get_flag("flag_night_roster_taken") or has_item("item_night_roster"):
 		set_flag("true_end_precondition_2", true)
-	if get_flag("flag_found_xuqing_log_fragment") and get_num("truth") >= 18:
+	if get_flag("flag_found_xuqing_log_fragment") and get_num("truth") >= 240:
 		set_flag("archive_route_bonus", true)
 	current_chapter = 4
 
@@ -317,9 +317,9 @@ func settle_chapter_4() -> void:
 	# 真相层级
 	var t := get_num("truth")
 	var core := get_flag("flag_saw_fire_video") and get_flag("flag_saw_self_repeat") and get_flag("flag_rule_terms_complete")
-	if t >= 25 and core and get_flag("flag_true_linday_status_known"):
+	if t >= 330 and core and get_flag("flag_true_linday_status_known"):
 		set_state("truth_state", "complete")
-	elif t >= 18 and (get_flag("flag_saw_fire_video") or get_flag("flag_roster_core_taken")):
+	elif t >= 240 and (get_flag("flag_saw_fire_video") or get_flag("flag_roster_core_taken")):
 		set_state("truth_state", "high")
 	else:
 		set_state("truth_state", "partial")
@@ -347,7 +347,7 @@ func settle_chapter_4() -> void:
 	# 终章广播改写条件
 	var ready_broadcast := (has_item("item_roster_core") or has_item("item_night_roster")) \
 		and (has_item("item_admin_key") or get_flag("flag_fakewall_opened")) \
-		and get_num("truth") >= 18
+		and get_num("truth") >= 240
 	if ready_broadcast:
 		set_flag("flag_terminal_broadcast_ready", true)
 	current_chapter = 5
@@ -361,7 +361,7 @@ func can_true_end() -> bool:
 		get_state("truth_state") == "complete"
 		and get_flag("true_end_precondition_1")
 		and get_flag("true_end_precondition_2")
-		and get_num("save_route_score") >= 5
+		and get_num("save_route_score") >= 18
 		and get_flag("flag_rule_terms_complete")
 		and get_flag("flag_terminal_broadcast_ready")
 		and not get_flag("flag_gave_up_roommate")
@@ -370,7 +370,7 @@ func can_true_end() -> bool:
 
 func can_bittersweet_exchange() -> bool:
 	return (
-		get_num("save_route_score") >= 4
+		get_num("save_route_score") >= 12
 		and get_flag("flag_terminal_broadcast_ready")
 		and (
 			get_state("liangye_end_state") == "absent_echo"
@@ -381,15 +381,15 @@ func can_bittersweet_exchange() -> bool:
 
 func can_destroyer() -> bool:
 	return (
-		get_num("end_cycle_score") >= 5
+		get_num("end_cycle_score") >= 9
 		and get_flag("flag_terminal_broadcast_ready")
 		and player_triggered_fire_sequence
 	)
 
 func can_manager() -> bool:
 	return (
-		get_num("control_route_score") >= 5
-		or (get_flag("flag_gave_up_roommate") and get_num("control_route_score") >= 4)
+		get_num("control_route_score") >= 9
+		or (get_flag("flag_gave_up_roommate") and get_num("control_route_score") >= 7)
 	)
 
 func determine_ending() -> String:

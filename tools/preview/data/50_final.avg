@@ -4,6 +4,7 @@
 == final_start
 @chapter 5 点名
 @time 4 20:40
+@set sanity +8
 @bg oldbuilding_out rain
 @bgm bgm_final
 @amb amb_rain
@@ -19,7 +20,7 @@
 > 现在是晚上八点四十。
 > 这个点，全校两千多人应该都在晚自习。
 @set truth +1
-@set sanity -2
+@set sanity -1
 @wait 1.0
 你跑过操场。
 积水没过鞋面。跑动的时候，水花溅起来，落回去——
@@ -28,7 +29,7 @@
 > 你身后的水面上，没有涟漪。
 > 你刚才踩过的地方，是平的。
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +2
 @wait 0.6
 你没有停。
@@ -60,7 +61,7 @@
     @set truth +1
 * 抬头再看一眼那扇窗 -> final_look_window
     @set truth +2
-    @set sanity -2
+    @set sanity -1
     @set memory_echo +1
 
 == final_look_window
@@ -81,7 +82,7 @@
 不是挥手。是慢慢抬起来，举到脸的高度，手掌朝外，五指张开。
 > 像在数。
 > 或者像在跟你打招呼。
-@set sanity -3
+@set sanity -1
 @set truth +2
 @wait 1.0
 你也抬起了手。
@@ -182,7 +183,7 @@
 @wait 0.8
 > 门里的光是从正上方来的。
 > 正上方的光，不会把影子投这么长。
-@set sanity -3
+@set sanity -1
 @set truth +2
 @goto final_sc2
 
@@ -210,10 +211,10 @@ liangye(hollow)：我上次就站在这个位置。
 天花板里传来梁野的声音，很远。
 @if flag_gave_up_roommate
 liangye(hollow)：这次也不拉我吗？
-@set sanity -3
+@set sanity -1
 @else
 liangye(hollow)：林昼，这次别慢。
-@set sanity -2
+@set sanity -1
 @endif
 @endif
 @if state:zhouxu_end_state==enter_with_player
@@ -309,12 +310,12 @@ zhouxu(angry)：你要是三分钟不出来，我就进来拖你。
 你看了一眼地面。
 > 地上是干的。
 > 水滴下去，落地就没了。
-@set sanity -3
+@set sanity -1
 shenhe(hollow)：坐吧。
 shenhe(hollow)：那把椅子，你坐过很多次了。
 你环顾四周。
 只有一把椅子。她坐着的那把。
-@set sanity -2
+@set sanity -1
 @if gore>=1
 她的校服后背，从肩胛到腰，是焦的。
 布料和皮肤粘在一起，边缘卷曲。焦痕里有些地方还发着暗红——不是血的红，是余烬的红，像还没完全熄灭。
@@ -330,7 +331,7 @@ shenhe(hollow)：那把椅子，你坐过很多次了。
     @set truth +2
 * “把脸转过来。” -> final_s3_b
     @set truth +2
-    @set sanity -4
+    @set sanity -1
 * [if item:item_roster_core] 把名单摊在调音台上 -> final_s3_c
     @set truth +3
     @set save_route_score +1
@@ -355,7 +356,7 @@ shenhe(hollow)：那把椅子，你坐过很多次了。
 上面是铅笔字，很淡，但能看清：
 @note 值日表\n本周五：沈禾\n下周五：沈禾\n下下周五：沈禾\n\n（旁边有另一个人的字迹，圆珠笔，写得很用力）\n为什么每周都是你？\n\n（铅笔字回复）\n因为没人跟我换。
 @wait 1.0
-@set sanity -3
+@set sanity -1
 @set truth +3
 @set save_route_score +1
 @clue clue_dont_answer
@@ -408,7 +409,7 @@ shenhe(hollow)：这是你们定的规矩。不是我的。
 五官都在，位置也对。眉毛的形状，鼻梁的弧度，下巴那颗很小的痣。
 @fx eyes 1.0
 和你每天早上在盥洗室镜子里看见的，是同一张。
-@set sanity -6
+@set sanity -2
 @set memory_echo +4
 @flag flag_true_linday_status_known
 @clue clue_self_repeat
@@ -441,7 +442,7 @@ shenhe(smirk)：描到第109次，笔画已经很淡了。
 @fx names 1.0
 @set memory_echo +4
 @set truth +4
-@set sanity -5
+@set sanity -1
 me：那我原来是谁。
 shenhe(hollow)：原来？
 shenhe(hollow)：你原来是那个在五年前的晚自习上，第一个低下头装作没听见的人。
@@ -565,7 +566,7 @@ me：到。
 整间屋子的红灯同时亮到最大。
 shenhe(hollow)：你替他答了。
 shenhe(hollow)：那从现在起，你们两个名字在同一格。
-@set sanity -4
+@set sanity -1
 @set memory_echo +2
 @flag flag_liangye_final_loss
 @if gore>=1
@@ -595,7 +596,7 @@ liangye(hollow)：这个名字，现在不一定全是我的。
     @set sanity +2
 * 问他记起了什么 -> final_ly_f3
     @set truth +4
-    @set sanity -3
+    @set sanity -1
     @set memory_echo +2
 
 == final_ly_f1
@@ -640,11 +641,11 @@ shenhe(hollow)：不答的，记“未到”。
 @if flag_gave_up_roommate
 liangye(hollow)：这次也不拉我吗？
 @fx heartbeat 1.6
-@set sanity -4
+@set sanity -1
 @set memory_echo +2
 @else
 liangye(hollow)：林昼，这次别慢。
-@set sanity -2
+@set sanity -1
 @endif
 @goto final_ly_end
 
@@ -677,7 +678,7 @@ classmate：……到。
 > 没有人答。
 > 你甚至想不起来 307 的第四个人长什么样。
 @set memory_echo +2
-@set sanity -2
+@set sanity -1
 @endif
 @wait 0.8
 @fx heartbeat 1.8
@@ -686,13 +687,13 @@ shenhe(hollow)：林昼。
 @fx glitch 1.0
 广播室里所有线路都亮了一下。
 调音台的玻璃面板上，映出很多个你。它们全部同时转过头，看着真正的你。
-@set sanity -3
+@set sanity -1
 @set truth +1
 @goto final_answer
 
 == final_answer
 * “到。” -> final_a_yes
-    @set sanity -3
+    @set sanity -1
 * 不答 -> final_a_silent
     @set sanity +1
 * [lock flag_true_linday_status_known] “这个名字不完整。” -> final_a_incomplete
@@ -814,12 +815,12 @@ me：我要把这次点名，从头念一遍。
 上面只印着一行字，重复了几百遍：
 > 未到齐。未到齐。未到齐。未到齐。
 @fx names 1.0
-@set sanity -3
+@set sanity -1
 @wait 1.0
 shenhe(hollow)：选吧。
 shenhe(hollow)：这一格，总要有一个名字。
 @wait 0.8
-@if truth>=20
+@if truth>=280
 > 你现在明白了。
 > 规则从来不在乎是谁。
 > 它只在乎那一格不能空着——就像点名册上不能有空行，就像毕业照上不能有缺口。
@@ -936,7 +937,7 @@ shenhe(hollow)：在这儿，一次点名是一晚。
 shenhe(hollow)：一百零九次点名，就是一百零九个晚上。
 shenhe(hollow)：中间的白天，不存在。
 @set truth +2
-@set sanity -2
+@set sanity -1
 @wait 0.8
 me：那也就一百零九天。
 shenhe(hollow)：对。
@@ -960,7 +961,7 @@ shenhe(hollow)：第一百零九次，你会希望有人来抢这把椅子。
 > 温度是从坐垫传上来的。
 > 一个坐了一百零九个晚上的人，把这把椅子焐热了。
 > 而她现在站起来了，这个温度就成了你的。
-@set sanity -3
+@set sanity -1
 @set save_route_score +2
 @flag flag_player_self_substitute
 @wait 1.0
@@ -1057,7 +1058,7 @@ me：那它在哪儿。
 她没有回答。
 她只是抬起手，指了指你。
 @fx glitch 0.9
-@set sanity -4
+@set sanity -1
 @set truth +3
 @wait 1.2
 > 在你脑子里。
@@ -1073,7 +1074,7 @@ me：那就一起烧。
 手背的皮起了泡，很快破了，黏液粘在袖口上。
 你闻到了自己皮肉的味道。
 @fx bloodburst 0.5
-@set sanity -3
+@set sanity -1
 @endif
 @wait 1.0
 @goto final_resolve_burn
@@ -1271,7 +1272,7 @@ me：那你这五年，记得什么？
 shenhe(sad)：记得值日表。
 shenhe(sad)：记得我那周该扫地。
 shenhe(sad)：我一直在想，那天地没扫，第二天他们会不会骂我。
-@set sanity -3
+@set sanity -1
 @set truth +2
 @wait 0.8
 me：不会。
@@ -1373,7 +1374,7 @@ me：删除未完成的，封存。不销，也不补。
 shenhe(hollow)：那我呢。
 me：你留在封存里。
 @fx glitch 1.0
-@set sanity -3
+@set sanity -1
 她张了张嘴。
 然后就像信号断了一样，慢慢淡下去。
 不是消失——是变薄。像一张纸被反复复印，一次比一次浅。
@@ -1468,7 +1469,7 @@ me：填你的表。
 火从纸烧到桌腿，从桌腿烧到隔音棉。
 隔音棉烧起来有股很冲的味道，比电线味还呛。黑烟贴着天花板往门口涌。
 @sfx sfx_fire_burst
-@set sanity -3
+@set sanity -1
 @show shenhe angry center
 shenhe(angry)：你以为烧掉纸，那一格就不存在了？
 me：不。
@@ -1513,7 +1514,7 @@ liangye(terrified)：你他妈说话不算话！
 你自己往门口走了两步，然后回头看了一眼那把椅子。
 椅子已经烧起来了。
 火苗从椅背往上舔，把那个坐了五年的形状，一点一点吃掉。
-@set sanity -2
+@set sanity -1
 @endif
 @fx whiteout 1.0
 @wait 1.0
@@ -1571,7 +1572,7 @@ me：到。
 @wait 1.0
 很奇怪，说完之后你就轻松了。
 就像终于把一件背了很久的东西放下——你甚至不记得自己什么时候开始背它的。
-@set sanity -3
+@set sanity -1
 shenhe(smirk)：谢谢。
 她站起来，往旁边让了半步。
 shenhe(smirk)：坐吧。
@@ -1584,7 +1585,7 @@ shenhe(smirk)：坐吧。
 > 你的腿长坐这个高度正合适。
 > 上一个坐这儿的人，腿比你短一点。
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set memory_echo +3
 @wait 1.0
 沈禾走到门口。

@@ -9,20 +9,20 @@ const VERSION := "1.0.0"
 # ---------------------------------------------------------------- 数值上下限
 # 对应 f.md 《全局变量总表 · 1.1 数值变量表》
 const NUM_RANGE := {
-	"truth": [0, 30],
+	"truth": [0, 420],
 	"sanity": [0, 100],
-	"memory_echo": [0, 15],
-	"shenhe_focus": [0, 15],
-	"trust_zhouxu": [-5, 5],
-	"trust_liangye": [-5, 5],
-	"trust_xuqing": [-5, 3],
-	"trust_oldqin": [-5, 5],
-	"route_obedience": [0, 10],
-	"route_investigate": [0, 10],
-	"route_empathy": [0, 10],
-	"route_hostility": [0, 10],
-	"taboo_count": [0, 20],
-	"save_route_score": [0, 20],
+	"memory_echo": [0, 140],
+	"shenhe_focus": [0, 60],
+	"trust_zhouxu": [-8, 8],
+	"trust_liangye": [-8, 10],
+	"trust_xuqing": [-8, 5],
+	"trust_oldqin": [-5, 8],
+	"route_obedience": [0, 24],
+	"route_investigate": [0, 24],
+	"route_empathy": [0, 14],
+	"route_hostility": [0, 14],
+	"taboo_count": [0, 25],
+	"save_route_score": [0, 40],
 	"end_cycle_score": [0, 20],
 	"control_route_score": [0, 20],
 }
@@ -102,12 +102,12 @@ const CHARACTERS := {
 
 # ---------------------------------------------------------------- 阈值表（f.md 六）
 const TH_TRUTH := [
-	[5, "能确认异常不是错觉"],
-	[10, "能读懂基础规则文本"],
-	[15, "能理解待定 / 删除的危险差别"],
-	[18, "第三章末可稳定推进校史馆线"],
-	[20, "可主动质问补位 / 循环"],
-	[25, "真相层级可判为 complete 候选"],
+	[60, "能确认异常不是错觉"],
+	[120, "能读懂基础规则文本"],
+	[190, "能理解待定 / 删除的危险差别"],
+	[240, "第三章末可稳定推进校史馆线"],
+	[280, "可主动质问补位 / 循环"],
+	[330, "真相层级可判为 complete 候选"],
 ]
 
 const TH_SANITY := [

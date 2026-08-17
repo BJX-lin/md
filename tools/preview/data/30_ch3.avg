@@ -4,6 +4,7 @@
 == ch3_start
 @chapter 3 熄灯
 @time 3 16:30
+@set sanity +12
 @bg dorm_door night
 @bgm bgm_unease
 @amb amb_dorm_night
@@ -27,7 +28,7 @@ classmate：他撑不过这个月。
 classmate：上次那个也是这样，先是上课发呆……
 她们没有恶意。这才是最糟的——她们只是在陈述一个见过很多次的规律。
 @set truth +2
-@set sanity -2
+@set sanity -1
 @wait 0.8
 晚自习提前结束了。
 广播里通知：因雷雨天气，今晚晚自习提前至九点结束，请同学们尽快回宿舍。
@@ -150,7 +151,7 @@ liangye(fear)：镜子里就我一个。
 他抬起头。
 liangye(terrified)：可我数了一下，镜子里那个人，眨眼的次数比我多。
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +2
 @set memory_echo +1
 @endif
@@ -197,7 +198,7 @@ liangye(sad)：林昼，我跟你说个事。
 liangye(sad)：我妈那个声音，昨晚在走廊上又叫了一次。
 liangye(sad)：这次它叫的是你的小名。
 @fx heartbeat 0.8
-@set sanity -2
+@set sanity -1
 @set truth +2
 @flag flag_liangye_returned
 @goto ch3_sc4
@@ -232,7 +233,7 @@ me：昨天我们一起去的旧楼。
 liangye(hollow)：（他想了想）
 liangye(hollow)：……对。是一起去的。
 liangye(hollow)：我们明天一起去，好不好。
-@set sanity -4
+@set sanity -1
 @set truth +3
 @set memory_echo +2
 @flag flag_liangye_half_assimilated
@@ -250,7 +251,7 @@ liangye(hollow)：我们明天一起去，好不好。
 @sfx sfx_water
 被子下面压着一团湿头发。不多，一小撮，用红绳扎着。
 @fx bloodburst 0.4
-@set sanity -4
+@set sanity -1
 @set truth +2
 @set memory_echo +2
 @show zhouxu sad right
@@ -406,7 +407,7 @@ unknown(flat)：307，查寝。
 * 让周叙处理 -> ch3_s6_zhouxu
 * 数宿舍里的呼吸声 -> ch3_s6_count_breath
     @set truth +3
-    @set sanity -3
+    @set sanity -1
 
 == ch3_s6_count_breath
 你没有动。
@@ -426,7 +427,7 @@ unknown(flat)：307，查寝。
 > 而你自己，正屏着呼吸。
 @fx glitch 1.0
 @sfx sfx_breath
-@set sanity -5
+@set sanity -1
 @set memory_echo +3
 @clue clue_headcount
 你没有睁眼。
@@ -455,7 +456,7 @@ unknown(flat)：307，查寝。
 @flag flag_shadow_count_wrong
 @clue clue_headcount
 @set truth +2
-@set sanity -2
+@set sanity -1
 @fx shake 0.6
 > 三道影子，四个人的脚步声。
 > 那么第四个，是没有影子的那个。
@@ -467,7 +468,7 @@ unknown(flat)：307，查寝。
 你能听见门另一侧的呼吸——就在你头顶三十厘米的地方，隔着一层门板。
 它也蹲下来了。
 它在和你做同一个动作。
-@set sanity -3
+@set sanity -1
 你屏住呼吸，慢慢往后退。
 退到第三步，你听见门缝那边传来一个很轻的声音。
 unknown(flat)：数完了？
@@ -486,7 +487,7 @@ unknown(flat)：307，查寝。
 unknown(flat)：307，查寝。
 这一遍更像了。
 @fx glitch 0.5
-@set sanity -2
+@set sanity -1
 > 它在学。
 > 它每说一遍，就更像一点。
 @set truth +2
@@ -500,7 +501,7 @@ unknown(faintsmile)：林昼。
 @fx glitch 0.7
 它没有回答工号。
 它只是叫了你的名字——在四个人的宿舍里，它准确地知道刚才说话的是谁。
-@set sanity -2
+@set sanity -1
 @set shenhe_focus +1
 @wait 0.8
 unknown(flat)：你昨天问过一样的问题。
@@ -508,7 +509,7 @@ me：我没有。
 unknown(flat)：不是昨天。
 unknown(flat)：是上一次。
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set memory_echo +3
 @set truth +2
 @goto ch3_s6_round2
@@ -548,23 +549,23 @@ zhouxu(flat)：别管它。
 @fx heartbeat 1.2
 unknown(flat)：林昼，开门。妈来接你了。
 @flag flag_heard_parent_voice
-@set sanity -3
+@set sanity -1
 > 你妈今年春天刚送你来这所学校。
 > 她送你到校门口就走了，因为要赶最后一班车。
 > 她的声音，就是这样的。
 * “……妈？” -> ch3_s6_mom
     @set taboo_count +2
     @set shenhe_focus +2
-    @set sanity -3
+    @set sanity -1
 * “先确认床位，别理它。” -> ch3_s6_bed
     @set trust_zhouxu +1
     @set truth +2
 * 去看梁野的床 -> ch3_s6_look_ly
     @set truth +2
-    @set sanity -2
+    @set sanity -1
 * 去照镜子确认自己清醒 -> ch3_s6_mirror
     @set taboo_count +2
-    @set sanity -5
+    @set sanity -1
     @set shenhe_focus +3
 
 == ch3_s6_mom
@@ -584,7 +585,7 @@ zhouxu(terrified)：不许再说话！
 没有人拉你。你自己后退了一步，撞在床架上。
 门把手转到底，然后——停住了。
 门没有开。它只是让你知道，它随时可以开。
-@set sanity -3
+@set sanity -1
 @endif
 @goto ch3_sc7
 
@@ -593,7 +594,7 @@ zhouxu(terrified)：不许再说话！
 @if death:梁野
 梁野的床是空的。被子还是叠着的。
 > 门外那个声音在叫你妈的名号，但你连梁野都没能留住。
-@set sanity -2
+@set sanity -1
 @else
 梁野在。他缩在被子里，只露出一只手，死死抓着那张借书卡。
 @set trust_liangye +1
@@ -611,14 +612,14 @@ zhouxu(terrified)：不许再说话！
 @fx bloodburst 0.5
 取而代之的，是一滩还温着的水，形状像一个蜷着的人。
 @sfx sfx_water
-@set sanity -3
+@set sanity -1
 @set truth +2
 @elif flag_liangye_half_assimilated
 梁野睁着眼，一眨不眨地看着门。
 你在他面前挥手，他没有反应。
 但当门外那个声音再次响起时，他的嘴唇跟着动了——一模一样的口型，一个字都不差。
 @fx glitch 0.9
-@set sanity -4
+@set sanity -1
 @set truth +3
 @else
 梁野蜷在被子里，抖得整张床都在响。
@@ -652,7 +653,7 @@ liangye(terrified)：别开。求你了。上次就是有人开了。
 @set truth +3
 @set memory_echo +3
 @flag flag_mirror_contact
-@set sanity -3
+@set sanity -1
 @if gore>=1
 镜子在你面前裂开一道缝，缝里渗出的不是玻璃碴，是很细的一线血。
 @fx bloodburst 0.7
@@ -691,7 +692,7 @@ unknown(flat)：梁野，已听见。
 > "已听见"。
 > 不是"在册"，不是"未到"。
 > 是"已听见"。
-@set sanity -3
+@set sanity -1
 @set truth +2
 @elif flag_liangye_half_assimilated
 unknown(flat)：梁野，待定。
@@ -699,7 +700,7 @@ unknown(flat)：梁野，待定。
 你听见对面床上梁野动了一下。
 不是翻身——是坐起来了。
 在黑暗里，他坐得笔直，面朝门口。
-@set sanity -3
+@set sanity -1
 @set truth +2
 @else
 unknown(flat)：梁野，在册。
@@ -719,13 +720,13 @@ unknown(flat)：林昼——
 你的名字念了一半。
 > 就像广播里的"沈——"。
 @fx glitch 0.6
-@set sanity -2
+@set sanity -1
 @set truth +2
 @wait 1.0
 然后它把后半个字补上了。
 unknown(flat)：——待定。
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +2
 @sfx sfx_write
 笔尖划纸的声音。
@@ -770,7 +771,7 @@ unknown(flat)：——待定。
 > 两画、五画——
 你在脑子里过了一遍。
 > "可补"。
-@set sanity -4
+@set sanity -1
 @set memory_echo +3
 @set truth +2
 @clue clue_night_rewrite
@@ -794,7 +795,7 @@ unknown(flat)：因为你的名字，不是原装的。
 me：什么意思？
 unknown(flat)：意思是，写你名字的那支笔，之前写过别人。
 @fx names 1.0
-@set sanity -4
+@set sanity -1
 @set truth +3
 @set memory_echo +3
 @flag flag_true_linday_status_hint
@@ -819,7 +820,7 @@ unknown(flat)：意思是，写你名字的那支笔，之前写过别人。
 @sfx sfx_sting
 @fx heartbeat 1.4
 那只手很凉，也很轻。它没有用力，只是按着，像在确认你手的温度。
-@set sanity -5
+@set sanity -1
 然后它松开了。
 你把纸拽了进来。
 @item +item_night_roster
@@ -860,7 +861,7 @@ liangye(half)：我该去了。
 me：去哪儿？
 liangye(half)：轮到我值日了。
 @fx glitch 0.8
-@set sanity -4
+@set sanity -1
 @set truth +2
 @wait 0.8
 > 值日。
@@ -880,7 +881,7 @@ liangye(terrified)：我控制不住……
 他的腿已经落地了。
 liangye(terrified)：我的腿自己在走……
 @fx heartbeat 1.6
-@set sanity -3
+@set sanity -1
 @endif
 @wait 0.8
 你能听见门外的呼吸。
@@ -921,7 +922,7 @@ me：不许过来。
 @fx heartbeat 1.6
 @sfx sfx_breath
 你能听见它的呼吸，就在你后脑勺的位置，隔着一层三公分厚的木板。
-@set sanity -4
+@set sanity -1
 @set truth +2
 me：梁野。回床上去。
 liangye(terrified)：我……
@@ -950,7 +951,7 @@ me：回去。
 不是从里面按的——布料的纤维是往里压的，说明力是从外面来的。
 可门一直关着。
 @fx bloodburst 0.4
-@set sanity -2
+@set sanity -1
 @endif
 @goto ch3_night_hub
 
@@ -968,7 +969,7 @@ liangye(terrified)：我的！是我的！
 门外发出一声很短的、像是被打断的抽气声。
 然后脚步声退开了。
 @set truth +2
-@set sanity -2
+@set sanity -1
 @flag flag_liangye_returned
 @if gore>=1
 你松手的时候，发现自己手臂上有一道很长的抓痕——不是他抓的，方向是从外往里。
@@ -1021,7 +1022,7 @@ liangye(sad)：……哦。
 @wait 1.2
 @death 梁野 被放弃
 @flag flag_gave_up_roommate
-@set sanity -6
+@set sanity -2
 @set memory_echo +3
 @item +item_library_card
 床上留着那张借书卡。上面的名字，比昨天淡了很多。
@@ -1040,7 +1041,7 @@ liangye(sad)：……哦。
 @fx heartbeat 1.0
 liangye(hollow)：林昼。
 liangye(hollow)：这次别慢。
-@set sanity -3
+@set sanity -1
 @set memory_echo +2
 @set truth +1
 > 他还在。或者说，还有什么东西，在用他的声音。
@@ -1172,7 +1173,7 @@ radio：全体学生注意，值班室发生火情，现已扑灭。请勿靠近
 @sfx sfx_fire_burst
 @flag flag_oldqin_burndeath
 @death 老秦 值班室起火
-@set sanity -4
+@set sanity -1
 @set truth +2
 你跑到校门口时，只看见一地被水泡烂的烟盒，和那块烧黑的钥匙板。
 钥匙板上的挂钩，全空了。

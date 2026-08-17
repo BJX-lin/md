@@ -13,6 +13,7 @@
 @endif
 * [if !visited:ch1_side_wash] 去盥洗室洗把脸 -> ch1_side_wash
 * [if !visited:ch1_side_board] 去操场后面的公告栏 -> ch1_side_board
+    @set route_investigate +1
 * [if !visited:ch1_side_lost] 去女生宿舍楼下的失物招领箱 -> ch1_side_lost
 * [if !visited:ch1_side_office] 去教师办公室外面的走廊 -> ch1_side_office
 * 回教室 -> ch1_free_end
@@ -34,7 +35,7 @@
 @set memory_echo +1
 * 再看一次 -> ch1_wash_again
     @set truth +2
-    @set sanity -2
+    @set sanity -1
 * 擦干脸就走 -> ch1_wash_leave
     @set route_obedience +1
 * 数镜子里的人数 -> ch1_wash_count
@@ -56,7 +57,7 @@
 镜子里那件的标签，已经被剪掉了。
 剪口是毛的，剪得不太齐，像是自己动手剪的。
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set memory_echo +2
 @set truth +2
 你伸手到脖子后面，摸到那片还在的标签。
@@ -77,7 +78,7 @@
 @fx glitch 0.8
 @sfx sfx_sting
 它又抬了一次。
-@set sanity -2
+@set sanity -1
 @set memory_echo +2
 @set truth +1
 你的手还垂在身侧。
@@ -130,7 +131,7 @@
 > 两双脚，一前一后，站在同一个隔间里。
 @fx glitch 0.6
 @set truth +2
-@set sanity -2
+@set sanity -1
 @clue clue_headcount
 隔间只有半平米。两个人站进去，得贴着。
 你等了一会儿。
@@ -193,6 +194,7 @@
     @set truth +2
     @set memory_echo +1
 * 算了 -> ch1_free_hub
+    @set route_obedience +1
 
 == ch1_lost_log
 箱子旁边的墙上钉着一块木板，上面挂着一个活页本，用尼龙绳拴着。
@@ -257,7 +259,7 @@
     @set truth +1
 * 把盒子里的东西数一遍 -> ch1_lost_count
     @set truth +3
-    @set sanity -2
+    @set sanity -1
 
 == ch1_lost_count
 你把盒子里的东西一件一件拿出来，摆在箱子盖上。
@@ -274,7 +276,7 @@
 @note 值日表\n本周五：沈禾\n下周五：沈禾\n下下周五：沈禾\n\n（旁边有另一个人的字迹，圆珠笔，写得很用力）\n为什么每周都是你？\n\n（铅笔字回复）\n因为没人跟我换。
 @wait 1.2
 @set truth +3
-@set sanity -2
+@set sanity -1
 @set memory_echo +2
 你把纸重新折好，放回夹层。
 把四件东西一件一件放回去，位置和刚才一模一样。
@@ -336,6 +338,7 @@
 * 数一数这张表用了多少年 -> ch1_office_count
     @set truth +3
 * 走开 -> ch1_free_hub
+    @set route_obedience +1
 
 == ch1_office_count
 值班表的角上有编号：第 261 周。

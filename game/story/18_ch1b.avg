@@ -84,7 +84,7 @@ liangye(fear)：它会变淡。
 liangye(fear)：不是墨水褪色那种淡。是……我早上看还好好的，下午再看，就浅了一层。
 liangye(fear)：所以我每天都描。
 @fx heartbeat 0.7
-@set sanity -2
+@set sanity -1
 @set memory_echo +2
 @clue clue_repeat_name
 @item +item_library_card
@@ -151,7 +151,7 @@ liangye(sad)：……行吧。当我没说。
 @fx glitch 0.8
 你的手指停在自己的名字上。
 最早那条"林昼"的日期，是四年前。
-@set sanity -4
+@set sanity -1
 @set memory_echo +3
 @set shenhe_focus +1
 @clue clue_repeat_name
@@ -224,7 +224,7 @@ me：什么意思？
 unknown(cold)：那个人说，他帮梁野还。
 @fx glitch 0.6
 @set memory_echo +2
-@set sanity -2
+@set sanity -1
 me：那个人长什么样？
 她想了想。
 unknown(flat)：记不清了。
@@ -279,7 +279,7 @@ me：那页上写了什么？
 unknown(cold)：我不知道。我在这儿十九年，从来没看见过那一页。
 unknown(cold)：它每次都是在我发现之前，就已经不在了。
 @fx heartbeat 1.0
-@set sanity -3
+@set sanity -1
 @set truth +3
 @set memory_echo +2
 @clue clue_109th
@@ -302,7 +302,7 @@ unknown(cold)：它每次都是在我发现之前，就已经不在了。
 你没有回头。你告诉自己那是延迟。
 但延迟应该是"你走过之后它才亮"，而不是"你站着不动，身后有东西走过去把它触发了"。
 @fx heartbeat 0.8
-@set sanity -2
+@set sanity -1
 @set memory_echo +1
 你抱着书快步走完剩下的楼梯。
 出楼的时候，天已经全黑了。
@@ -328,7 +328,7 @@ unknown(cold)：它每次都是在我发现之前，就已经不在了。
 你再看玻璃。
 > 四十二。
 @fx glitch 0.5
-@set sanity -2
+@set sanity -1
 你揉了揉眼睛。第三遍数的时候，玻璃里也是四十一了。
 @show zhouxu cold left
 @show liangye nervous right
@@ -446,7 +446,7 @@ radio：沈——
 后半个字没有出来。
 不是没念。是念了，但你听不见。
 就像有人在那一瞬间，把你的耳朵按住了——你能感觉到声波打在耳膜上，但大脑接不住它。
-@set sanity -4
+@set sanity -1
 @set truth +2
 @clue clue_first_rollcall
 @wait 0.6
@@ -468,11 +468,11 @@ radio：沈——
 * 抬头看喇叭 -> ch1_s5_look
     @set truth +2
     @set shenhe_focus +2
-    @set sanity -2
+    @set sanity -1
 * 替她答“到” -> ch1_s5_answer
     @set taboo_count +2
     @set shenhe_focus +4
-    @set sanity -6
+    @set sanity -2
     @flag flag_first_night_response
 * 说“那个名字不完整” -> ch1_s5_incomplete
     @set truth +3
@@ -507,7 +507,7 @@ zhouxu(flat)：写你的作业。
 @sfx sfx_sting
 那是一片指甲。
 指甲盖，从里面抵着网罩。
-@set sanity -4
+@set sanity -1
 @set memory_echo +2
 广播断了。
 @sfx sfx_broadcast_click
@@ -533,7 +533,7 @@ me：到。
 > 他们的表情不是惊讶。
 > 是那种"又来了"的表情。
 > 有几个人甚至叹了口气，然后重新低下头去写作业。
-@set sanity -3
+@set sanity -1
 广播没有断。
 它安静了很久，久到你能听见喇叭里的电流在爬。
 radio：谢谢。
@@ -564,7 +564,7 @@ me：这个名字不完整。
 那个变化很奇怪——像有人被呛到了，或者像有人正要说话，突然被打断。
 女声再开口时，语调第一次有了变化。
 voice：……你听出来了。
-@set sanity -3
+@set sanity -1
 教室里所有人都僵住了。
 你后来才知道，这是它五年来第一次说名单以外的话。
 voice：你是第几个？
@@ -602,7 +602,7 @@ zhouxu(cold)：……我不知道。
 > "到"。
 > 但他没有发出声音。
 @fx heartbeat 1.2
-@set sanity -2
+@set sanity -1
 @set truth +2
 @set memory_echo +1
 @clue clue_zhouxu_fill
@@ -704,7 +704,7 @@ liangye(terrified)：……又来了。
     @set shenhe_focus +1
 * 起身去看门镜 -> ch1_s6_d
     @set truth +2
-    @set sanity -3
+    @set sanity -1
     @set shenhe_focus +2
     @flag flag_peeped_door
 
@@ -749,7 +749,7 @@ unknown(flat)：零。
 me：什么？
 unknown(flat)：零号。没有登记。
 unknown(flat)：所以我可以进任何一间。
-@set sanity -3
+@set sanity -1
 @set truth +2
 @clue clue_knock_pattern
 你听见周叙在上铺极轻地骂了一句脏话。
@@ -777,7 +777,7 @@ me：我就看一眼。
 是一只眼睛。贴得极近，睫毛几乎刷在玻璃上。
 瞳孔在动。左右，左右——它在找角度。
 > 它在试图看清里面有几个人。
-@set sanity -3
+@set sanity -1
 @set memory_echo +2
 @clue clue_headcount
 你没有出声。
@@ -828,7 +828,7 @@ unknown(flat)：林昼。
 * 答“到” -> ch1_s6_yes_answer
     @set taboo_count +3
     @set shenhe_focus +5
-    @set sanity -8
+    @set sanity -2
     @flag flag_first_night_response
 * 反问“你是谁” -> ch1_s6_who
     @set truth +2
@@ -855,7 +855,7 @@ unknown(flat)：未到。
 > 走廊只有五步宽。
 @set truth +2
 @set memory_echo +1
-@set sanity -2
+@set sanity -1
 @goto ch1_end
 
 == ch1_s6_yes_answer
@@ -883,7 +883,7 @@ zhouxu(terrified)：晚自习一次。刚才一次。
 zhouxu(terrified)：还差一次。
 me：差一次什么？
 他没有回答。他躺了回去，把被子拉过头。
-@set sanity -2
+@set sanity -1
 @goto ch1_end
 
 == ch1_s6_who
@@ -899,7 +899,7 @@ unknown(flat)：还差一个。
 unknown(flat)：一直差一个。
 @set truth +3
 @clue clue_missing_one
-@set sanity -2
+@set sanity -1
 me：差谁？
 门外没有回答。
 脚步声离开了。这一次你数了——七步。
@@ -964,7 +964,7 @@ liangye(sad)：我只是……忘了那天该谁值日。
 @sfx sfx_click
 "您拨打的号码是空号，请核对后再拨。"
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set memory_echo +2
 你挂了，又拨了一次。
 一样。
@@ -977,7 +977,7 @@ liangye(sad)：我只是……忘了那天该谁值日。
 > 你今天下午填过那一栏。
 > 你填的就是这个号码。
 @fx glitch 0.6
-@set sanity -2
+@set sanity -1
 @set truth +1
 @wait 1.2
 你在黑暗里躺到天亮。
@@ -1010,10 +1010,10 @@ liangye(sad)：我只是……忘了那天该谁值日。
 > 你答过"到"。
 > 这件事已经被记下了。有些事情记下来，就不能划掉，只能替换。
 @endif
-@if truth>=10
+@if truth>=140
 > 你已经确定：这不是错觉。
 > 这所学校在按一套你还看不懂的规则运转，而所有人都默认你应该懂。
-@elif truth>=5
+@elif truth>=70
 > 你还不确定发生了什么。但你知道，最后一排靠窗那个位置，原本是有人的。
 @else
 > 你告诉自己这只是新环境的不适应。明天就会好。

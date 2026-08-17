@@ -4,10 +4,10 @@
 
 // ---------------------------------------------------------------- 配置（对应 config.gd）
 const NUM_RANGE = {
-  truth:[0,30], sanity:[0,100], memory_echo:[0,15], shenhe_focus:[0,15],
-  trust_zhouxu:[-5,5], trust_liangye:[-5,5], trust_xuqing:[-5,3], trust_oldqin:[-5,5],
-  route_obedience:[0,10], route_investigate:[0,10], route_empathy:[0,10], route_hostility:[0,10],
-  taboo_count:[0,20], save_route_score:[0,20], end_cycle_score:[0,20], control_route_score:[0,20],
+  truth:[0,420], sanity:[0,100], memory_echo:[0,140], shenhe_focus:[0,60],
+  trust_zhouxu:[-12,14], trust_liangye:[-12,18], trust_xuqing:[-10,6], trust_oldqin:[-6,12],
+  route_obedience:[0,24], route_investigate:[0,24], route_empathy:[0,14], route_hostility:[0,14],
+  taboo_count:[0,25], save_route_score:[0,40], end_cycle_score:[0,20], control_route_score:[0,20],
 };
 const NUM_DEFAULT = { truth:0, sanity:70, memory_echo:0, shenhe_focus:0, trust_zhouxu:0,
   trust_liangye:0, trust_xuqing:0, trust_oldqin:0, route_obedience:0, route_investigate:0,
@@ -168,15 +168,15 @@ function settle(ch){
   } else if(ch===4){
     const t=n("truth");
     const core = F.flag_saw_fire_video && F.flag_saw_self_repeat && F.flag_rule_terms_complete;
-    st.truth_state = (t>=25&&core&&F.flag_true_linday_status_known) ? "complete"
-      : ((t>=18&&(F.flag_saw_fire_video||F.flag_roster_core_taken)) ? "high" : "partial");
+    st.truth_state = (t>=330&&core&&F.flag_true_linday_status_known) ? "complete"
+      : ((t>=240&&(F.flag_saw_fire_video||F.flag_roster_core_taken)) ? "high" : "partial");
     const m={anchor_alive:"present_anchor",rescued_half:"present_fragile_truth",fragile_alive:"present_unstable"};
     st.liangye_end_state = F.flag_liangye_final_loss ? "absent_echo" : (m[st.liangye_final_state_ch3]||"absent_echo");
     st.zhouxu_end_state = st.zhouxu_final_state_ch3==="confessor_protector"
       ? (n("trust_zhouxu")>=3?"enter_with_player":"follow_to_threshold")
       : (st.zhouxu_final_state_ch3==="coercer"?"pressure_player":"follow_to_threshold");
     const ready = (S.items.has("item_roster_core")||S.items.has("item_night_roster"))
-      && (S.items.has("item_admin_key")||F.flag_fakewall_opened) && n("truth")>=18;
+      && (S.items.has("item_admin_key")||F.flag_fakewall_opened) && n("truth")>=240;
     if(ready) F.flag_terminal_broadcast_ready=true;
     S.chapter=5;
   }
@@ -184,15 +184,15 @@ function settle(ch){
 function determineEnding(){
   const F=S.flags, st=S.states;
   if(st.truth_state==="complete" && F.true_end_precondition_1 && F.true_end_precondition_2
-     && n("save_route_score")>=5 && F.flag_rule_terms_complete && F.flag_terminal_broadcast_ready
+     && n("save_route_score")>=18 && F.flag_rule_terms_complete && F.flag_terminal_broadcast_ready
      && !F.flag_gave_up_roommate && ["present_anchor","present_fragile_truth"].includes(st.liangye_end_state))
     return "ending_true_release";
-  if(n("save_route_score")>=4 && F.flag_terminal_broadcast_ready
+  if(n("save_route_score")>=12 && F.flag_terminal_broadcast_ready
      && (st.liangye_end_state==="absent_echo" || !F.flag_rule_terms_complete || F.flag_player_self_substitute))
     return "ending_bittersweet_exchange";
-  if(n("end_cycle_score")>=5 && F.flag_terminal_broadcast_ready && F.flag_chose_end_cycle)
+  if(n("end_cycle_score")>=9 && F.flag_terminal_broadcast_ready && F.flag_chose_end_cycle)
     return "ending_destroyer";
-  if(n("control_route_score")>=5 || (F.flag_gave_up_roommate && n("control_route_score")>=4))
+  if(n("control_route_score")>=9 || (F.flag_gave_up_roommate && n("control_route_score")>=7))
     return "ending_manager";
   return "ending_empty_seat";
 }

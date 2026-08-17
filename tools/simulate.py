@@ -178,13 +178,13 @@ class State:
                 self.states["liangye_state"] = "fear_alive"
             elif self.n("trust_liangye") < 0 and not self.flags.get("flag_liangye_library"):
                 self.states["liangye_state"] = "missing_marked"
-            elif self.n("trust_liangye") >= 2:
+            elif self.n("trust_liangye") >= 4:
                 self.states["liangye_state"] = "ally_shaken"
             else:
                 self.states["liangye_state"] = "normal"
-            self.states["zhouxu_state"] = "guarding" if self.n("trust_zhouxu") >= 2 else ("hiding" if self.n("trust_zhouxu") <= -2 else "normal")
-            self.states["shenhe_state"] = "calling" if self.n("shenhe_focus") >= 5 else "echo"
-            if self.n("trust_xuqing") <= -2:
+            self.states["zhouxu_state"] = "guarding" if self.n("trust_zhouxu") >= 2 else ("hiding" if self.n("trust_zhouxu") <= -3 else "normal")
+            self.states["shenhe_state"] = "calling" if self.n("shenhe_focus") >= 9 else "echo"
+            if self.n("trust_xuqing") <= -3:
                 self.states["xuqing_state"] = "suspected"
             self.chapter = 2
         elif ch == 2:
@@ -195,18 +195,18 @@ class State:
                 self.deaths.append("梁野")
             elif self.flags.get("flag_liangye_half"):
                 self.states["liangye_state"] = "half_assimilated"
-            elif self.n("trust_liangye") >= 2:
+            elif self.n("trust_liangye") >= 4:
                 self.states["liangye_state"] = "ally_shaken"
             else:
                 self.states["liangye_state"] = "fear_alive"
-            self.states["zhouxu_state"] = "guarding" if self.n("trust_zhouxu") >= 2 else ("coercing" if self.n("trust_zhouxu") <= -2 else "hiding")
+            self.states["zhouxu_state"] = "guarding" if self.n("trust_zhouxu") >= 2 else ("coercing" if self.n("trust_zhouxu") <= -3 else "hiding")
             if self.flags.get("flag_oldqin_survived"):
                 self.states["oldqin_state"] = "alive"
             elif self.flags.get("flag_oldqin_burndeath"):
                 self.states["oldqin_state"] = "burned"
-            if self.n("shenhe_focus") >= 8 or self.flags.get("flag_first_face_to_face_shenhe"):
+            if self.n("shenhe_focus") >= 20 or self.flags.get("flag_first_face_to_face_shenhe"):
                 self.states["shenhe_state"] = "half_present"
-            elif self.n("shenhe_focus") >= 4:
+            elif self.n("shenhe_focus") >= 9:
                 self.states["shenhe_state"] = "calling"
             if self.n("trust_xuqing") <= -3 or self.flags.get("flag_found_xuqing_log_fragment"):
                 self.states["xuqing_state"] = "suspected"
@@ -215,8 +215,8 @@ class State:
             if self.flags.get("flag_gave_up_roommate"):
                 self.states["liangye_final_state_ch3"] = "abandoned"
             elif self.flags.get("flag_liangye_half_assimilated"):
-                self.states["liangye_final_state_ch3"] = "rescued_half" if self.n("trust_liangye") >= 1 else "missing"
-            elif self.flags.get("flag_liangye_returned") and self.n("trust_liangye") >= 3:
+                self.states["liangye_final_state_ch3"] = "rescued_half" if self.n("trust_liangye") >= 2 else "missing"
+            elif self.flags.get("flag_liangye_returned") and self.n("trust_liangye") >= 5:
                 self.states["liangye_final_state_ch3"] = "anchor_alive"
             elif self.flags.get("flag_liangye_returned"):
                 self.states["liangye_final_state_ch3"] = "fragile_alive"
@@ -226,7 +226,7 @@ class State:
                 self.states["liangye_final_state_ch3"] = "fragile_alive"
             if self.n("trust_zhouxu") >= 3 and self.flags.get("flag_zhouxu_confessed_part"):
                 self.states["zhouxu_final_state_ch3"] = "confessor_protector"
-            elif self.n("trust_zhouxu") <= -2:
+            elif self.n("trust_zhouxu") <= -3:
                 self.states["zhouxu_final_state_ch3"] = "coercer"
             else:
                 self.states["zhouxu_final_state_ch3"] = "split_guard"
@@ -238,9 +238,9 @@ class State:
         elif ch == 4:
             t = self.n("truth")
             core = self.flags.get("flag_saw_fire_video") and self.flags.get("flag_saw_self_repeat") and self.flags.get("flag_rule_terms_complete")
-            if t >= 25 and core and self.flags.get("flag_true_linday_status_known"):
+            if t >= 330 and core and self.flags.get("flag_true_linday_status_known"):
                 self.states["truth_state"] = "complete"
-            elif t >= 18 and (self.flags.get("flag_saw_fire_video") or self.flags.get("flag_roster_core_taken")):
+            elif t >= 240 and (self.flags.get("flag_saw_fire_video") or self.flags.get("flag_roster_core_taken")):
                 self.states["truth_state"] = "high"
             else:
                 self.states["truth_state"] = "partial"
@@ -260,7 +260,7 @@ class State:
                 self.states["zhouxu_end_state"] = "follow_to_threshold"
             ready = (("item_roster_core" in self.items or "item_night_roster" in self.items)
                      and ("item_admin_key" in self.items or self.flags.get("flag_fakewall_opened"))
-                     and self.n("truth") >= 18)
+                     and self.n("truth") >= 240)
             if ready:
                 self.flags["flag_terminal_broadcast_ready"] = True
             self.chapter = 5
@@ -269,21 +269,21 @@ class State:
         if (self.states.get("truth_state") == "complete"
                 and self.flags.get("true_end_precondition_1")
                 and self.flags.get("true_end_precondition_2")
-                and self.n("save_route_score") >= 5
+                and self.n("save_route_score") >= 18
                 and self.flags.get("flag_rule_terms_complete")
                 and self.flags.get("flag_terminal_broadcast_ready")
                 and not self.flags.get("flag_gave_up_roommate")
                 and self.states.get("liangye_end_state") in ("present_anchor", "present_fragile_truth")):
             return "ending_true_release"
-        if (self.n("save_route_score") >= 4 and self.flags.get("flag_terminal_broadcast_ready")
+        if (self.n("save_route_score") >= 12 and self.flags.get("flag_terminal_broadcast_ready")
                 and (self.states.get("liangye_end_state") == "absent_echo"
                      or not self.flags.get("flag_rule_terms_complete")
                      or self.flags.get("flag_player_self_substitute"))):
             return "ending_bittersweet_exchange"
-        if (self.n("end_cycle_score") >= 5 and self.flags.get("flag_terminal_broadcast_ready")
+        if (self.n("end_cycle_score") >= 9 and self.flags.get("flag_terminal_broadcast_ready")
                 and self.flags.get("flag_chose_end_cycle")):
             return "ending_destroyer"
-        if self.n("control_route_score") >= 5 or (self.flags.get("flag_gave_up_roommate") and self.n("control_route_score") >= 4):
+        if self.n("control_route_score") >= 9 or (self.flags.get("flag_gave_up_roommate") and self.n("control_route_score") >= 7):
             return "ending_manager"
         return "ending_empty_seat"
 
