@@ -119,62 +119,11 @@ zhouxu(flat)：我姐以前教我的。她说这所学校，早晚有一天你�
 @set truth +3
 @set memory_echo +2
 @clue clue_self_repeat
-* 仔细看照片上的每一张脸 -> ch4_faces
-    @set truth +3
-    @set sanity -3
-* 看照片下方的名字栏 -> ch4_names
-    @set truth +3
+* 在展厅里仔细看看 -> ch4_hall_explore
+    @set route_investigate +1
 * 直接往里走 -> ch4_sc3
     @set route_obedience +1
 
-== ch4_faces
-你把脸贴近玻璃，一张一张看过去。
-第三排左起第七个。
-@fx flash 0.8
-@sfx sfx_sting
-那是你。
-穿着五年前的校服，站在那儿，表情有点僵，像是刚被人叫到名字。
-@fx glitch 1.0
-@set sanity -5
-@set memory_echo +4
-@flag flag_saw_self_repeat
-@clue clue_self_repeat
-@set truth +3
-五年前你在另一座城市读初二。
-@if !death:梁野
-@show liangye terrified left
-liangye(terrified)：这……这是你？
-me：不知道。
-liangye(terrified)：那你至少告诉我，你是哪年转来的。
-你张开嘴。
-你想不起来。
-@set sanity -3
-@endif
-@goto ch4_sc3
-
-== ch4_names
-照片下方有一排小字，是那届学生的名字。
-你从头看到尾。
-@fx names 1.0
-四十个名字。照片上有四十一个人的位置——包括那个空着的。
-名字里没有沈禾。
-@set truth +3
-@if flag_shenhe_name_full
-> 名字被删掉了，位置却留着。
-> 这就是“删除未完成”。
-@clue clue_terms
-@set truth +2
-@endif
-名字里也没有你。
-但有一个名字，写在最末尾，墨色比其他都新：
-@note 　林昼（补）
-@set memory_echo +3
-@set sanity -3
-@flag flag_saw_self_repeat
-@clue clue_self_repeat
-@goto ch4_sc3
-
--- ================================================= Scene 3 假墙与内门
 == ch4_sc3
 @bg history_hall dark
 @bgm bgm_truth

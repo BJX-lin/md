@@ -1507,18 +1507,40 @@ shenhe(hollow)：但他们都走不到这扇门。
 @bg broadcast_door dark
 @bgm bgm_horror
 广播室内忽然传来一阵翻找纸张的声音。
-接着，门“吱呀”开出更宽的缝。
+很急。哗啦哗啦，像有人在一摞纸里找某一张，找不到，就整摞掀开重找。
+@sfx sfx_page
+@wait 0.8
+找了大概十几秒，声音停了。
+接着，门"吱呀"开出更宽的缝。
 @sfx sfx_door
-一只苍白、指节发青的手从里面伸出来，掌心压着一张名单。
+@wait 0.6
+一只手从里面伸出来。
 @fx bloodburst 0.5
 @sfx sfx_flesh 0.6
-指甲缝里有黑色的东西——不是泥。是烧焦的皮。
+苍白。指节发青。指甲很长，但不是留长的那种长——是指尖的肉往回缩之后，显出来的长。
+掌心压着一张名单。
+@wait 0.8
+@if gore>=1
+指甲缝里有黑色的东西。
+不是泥。泥是松的，会掉。那个东西嵌在肉里，边缘和指甲盖长在一起了。
+> 是烧焦的皮。
+@set sanity -2
+@endif
+@wait 0.6
 @roster
 @set truth +5
 @flag flag_seen_repeat_name
 @set sanity -3
+@wait 1.0
 shenhe(hollow)：进来。
 shenhe(hollow)：或者把名单还给我。
+@wait 0.8
+> "还给我"。
+> 她说的是"还"。
+> 那张名单现在在她手里，你根本没拿过。
+@fx heartbeat 1.0
+@set truth +2
+@set memory_echo +2
 * 进去 -> ch2_go_in
     @set sanity -3
     @set truth +2
@@ -1532,6 +1554,62 @@ shenhe(hollow)：或者把名单还给我。
 * [if item:item_library_card] 把借书卡递过去 -> ch2_give_card
     @set shenhe_focus +2
 * [if flag_zhouxu_with_you] 看向周叙 -> ch2_look_zhouxu
+* “我什么时候拿过你的名单？” -> ch2_ask_return
+    @set truth +3
+    @set memory_echo +3
+
+== ch2_ask_return
+me：等一下。
+me：你说"还给你"。
+me：我什么时候拿过你的名单？
+@wait 1.4
+那只手停在半空。
+名单还压在掌心，纸角被风吹得抖了一下。
+@wait 1.0
+shenhe(hollow)：……
+@wait 0.8
+shenhe(hollow)：上一次。
+me：哪一次？
+@wait 1.2
+shenhe(hollow)：你抢走的那一次。
+shenhe(hollow)：你说你要拿去给校长看。
+shenhe(hollow)：你说你会带人回来。
+@fx glitch 0.9
+@set sanity -5
+@set memory_echo +4
+@set truth +4
+@wait 1.0
+me：我没有。
+me：我三天前才转来这所学校。
+@wait 1.2
+她笑了。
+不是嘲笑——是那种"我早就知道你会这么说"的笑。听起来很累。
+shenhe(hollow)：他们都是三天前转来的。
+@wait 0.8
+shenhe(hollow)：第一天填表。
+shenhe(hollow)：第二天看见旧楼的灯。
+shenhe(hollow)：第三天站在这扇门外面，问我同一个问题。
+@fx heartbeat 1.6
+@set sanity -3
+@set truth +3
+@flag flag_true_linday_status_hint
+@wait 1.0
+她把手往前伸了一点。
+shenhe(hollow)：拿去吧。
+shenhe(hollow)：这次我不抢了。
+shenhe(hollow)：抢了也没用。你还是会带回来。
+@wait 0.8
+@item +item_partial_roster
+@flag flag_partial_roster
+@set truth +2
+你伸手接过那张纸。
+她的指尖碰到你的手背。
+@wait 0.6
+> 是凉的。
+> 但不是尸体那种凉。
+> 是一个人在雨里站了很久之后，皮肤的那种凉。
+@set memory_echo +2
+@goto ch2_leave
 
 == ch2_go_in
 你伸手推门。

@@ -836,24 +836,52 @@ unknown(flat)：意思是，写你名字的那支笔，之前写过别人。
 @if death:梁野
 @goto ch3_s8_absent
 @endif
-@wait 0.8
-门外的声音又响了一遍，这一次很清晰，也很近。
+@wait 1.0
+门外的声音又响了一遍。
+这一次很清晰，也很近——不是隔着门板的闷声，是像门已经开了一样清楚。
+@wait 0.6
 @if flag_liangye_half_assimilated
 unknown(flat)：梁野。请到门口来。
+@wait 0.8
 梁野站了起来。
-@show liangye hollow left
-他走得很稳，一点都不像这三天里那个抖得握不住笔的人。
+@show liangye half left
+他掀被子、坐起、下床、站直——四个动作，一气呵成，中间没有一点犹豫。
+> 这三天里，他连从椅子上起来都要先撑两下。
+@fx heartbeat 1.2
+他走得很稳。脚步落地的声音很轻，很匀。
 me：梁野！
-liangye(hollow)：我该去了。
-liangye(hollow)：轮到我值日了。
+他停下来，转过头。
+转的时候脖子先动，眼睛慢了一拍才跟上。
+liangye(half)：我该去了。
+me：去哪儿？
+liangye(half)：轮到我值日了。
+@fx glitch 0.8
+@set sanity -4
+@set truth +2
+@wait 0.8
+> 值日。
+> 这个词你今天听过——在失物招领箱的那张纸上。
+> 在沈禾的手抄值日表上。
+@set memory_echo +2
 @else
 unknown(flat)：梁野。请到门口来。
+@wait 0.8
 @show liangye terrified left
 梁野的身体像被线提起来一样，慢慢从床上坐起。
-他的眼睛是清醒的，脸上全是眼泪。
-liangye(terrified)：林昼……我控制不住……我的腿自己在走……
-@endif
+被子滑到地上，他没有去捡。
+他的眼睛是清醒的。你能看见——月光从窗户照进来一点，他的眼睛在动，在找你。
+脸上全是眼泪。
+liangye(terrified)：林昼……
+liangye(terrified)：我控制不住……
+他的腿已经落地了。
+liangye(terrified)：我的腿自己在走……
 @fx heartbeat 1.6
+@set sanity -3
+@endif
+@wait 0.8
+你能听见门外的呼吸。
+它就在门那边，等着。
+@wait 0.6
 * 抓住他 -> ch3_s8_hold
     @set trust_liangye +3
     @set route_empathy +2
@@ -869,6 +897,58 @@ liangye(terrified)：林昼……我控制不住……我的腿自己在走…�
     @set trust_liangye -5
     @set control_route_score +3
     @flag flag_gave_up_roommate
+* 冲到门口挡在他前面 -> ch3_s8_block
+    @set trust_liangye +2
+    @set route_hostility +1
+    @set save_route_score +1
+    @set taboo_count +1
+
+== ch3_s8_block
+你从床上翻下来，三步冲到门口，背贴着门，张开手臂。
+@fx bigshake 0.8
+你和梁野面对面。他还在往前走。
+me：不许过来。
+@wait 0.8
+他停下了。
+就停在离你半米的地方。
+@wait 1.0
+然后你感觉到背后的门——在动。
+不是被推开，是门板本身在往里凸，像有什么东西整个贴在门上，用身体压。
+@fx heartbeat 1.6
+@sfx sfx_breath
+你能听见它的呼吸，就在你后脑勺的位置，隔着一层三公分厚的木板。
+@set sanity -4
+@set truth +2
+me：梁野。回床上去。
+liangye(terrified)：我……
+me：回去。
+@wait 0.8
+他后退了一步。
+两步。
+然后他坐回床上，抱住膝盖。
+@wait 1.0
+背后的压力消失了。
+门板"咯"地弹回原位。
+@sfx sfx_door
+@wait 0.8
+你在门口站了很久，不敢挪开。
+> 你挡的不是梁野。
+> 你挡的是门。
+> 而你现在意识到一件事：门是从里面能开的。
+> 只要有人走过去，拧一下把手。
+@set truth +2
+@set memory_echo +1
+@flag flag_liangye_returned
+@wait 0.6
+你在门口坐了一夜，背靠着门。
+@if gore>=1
+天亮的时候你发现，你后背的校服上印着一个手印。
+不是从里面按的——布料的纤维是往里压的，说明力是从外面来的。
+可门一直关着。
+@fx bloodburst 0.4
+@set sanity -2
+@endif
+@goto ch3_night_hub
 
 == ch3_s8_hold
 你从床上扑过去，双手环住他的腰，整个人往后拽。

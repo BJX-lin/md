@@ -163,11 +163,13 @@
   "00_prologue.avg",
   "10_ch1.avg",
   "15_ch1_side.avg",
+  "18_ch1b.avg",
   "20_ch2.avg",
   "25_ch2_side.avg",
   "30_ch3.avg",
   "35_ch3_side.avg",
   "40_ch4.avg",
+  "45_ch4_side.avg",
   "50_final.avg"
  ]
 }
