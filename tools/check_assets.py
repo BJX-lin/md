@@ -1,118 +1,129 @@
 #!/usr/bin/env python3
-"""美术资源覆盖率检查
+"""美术资源覆盖率检查（对照 asset_manifest.py 的总清单）
 
-扫描剧本里实际用到的 @bg / @show，对照 assets/ 下已有的图，
-列出还缺哪些背景与立绘差分。缺图不会导致报错（引擎会回退到代码绘制），
-但这份清单能告诉你「还差多少张」。
+用法：
+  python3 tools/check_assets.py            # 覆盖率总览
+  python3 tools/check_assets.py --todo     # 只列还没做的，按优先级排序
+  python3 tools/check_assets.py --prompt 3 # 打印接下来 3 张的 AI 生图提示词
 """
+import argparse
 import os
-import re
 import sys
-from collections import defaultdict
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import asset_manifest as M
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GAME = os.path.join(ROOT, "game")
-STORY = os.path.join(GAME, "story")
-BG_DIR = os.path.join(GAME, "assets", "bg")
 SP_DIR = os.path.join(GAME, "assets", "sprites")
+BG_DIR = os.path.join(GAME, "assets", "bg")
 
-# 与 actor_sprite.gd 的 EMO_FALLBACK 对应：这些表情可由已有图降级顶替
-FALLBACK_ROOTS = {
-    "normal", "neutral", "calm",
-}
+PRIO_ORDER = {"S": 0, "A": 1, "B": 2}
 
 
-def scan_story():
-    bgs, sprites = defaultdict(set), defaultdict(set)
-    for fn in sorted(os.listdir(STORY)):
-        if not fn.endswith(".avg"):
-            continue
-        for line in open(os.path.join(STORY, fn), encoding="utf-8"):
-            s = line.strip()
-            m = re.match(r"@bg\s+(\S+)(?:\s+(\S+))?", s)
-            if m:
-                bgs[m.group(1)].add(m.group(2) or "")
-            m = re.match(r"@show\s+(\S+)(?:\s+(\S+))?", s)
-            if m:
-                sprites[m.group(1)].add(m.group(2) or "normal")
-    return bgs, sprites
+def sprite_path(char_id, pose, exp):
+    return os.path.join(SP_DIR, char_id, M.sprite_filename(char_id, pose, exp))
 
 
-def have_bg(scene, var):
-    for cand in ([var, ""] if var else [""]):
-        suffix = "" if cand == "" else "_" + cand
-        if os.path.exists(os.path.join(BG_DIR, f"{scene}{suffix}.png")):
-            return True
-    return False
+def bg_path(name):
+    return os.path.join(BG_DIR, name + ".png")
 
 
-def have_sprite(char_id, emo):
-    d = os.path.join(SP_DIR, char_id)
-    if not os.path.isdir(d):
-        return False
-    files = os.listdir(d)
-    if any(f.endswith(f"_{emo}.png") for f in files):
-        return True
-    # 能被基础表情顶替也算「可显示」（会降级，但不开天窗）
-    return any(any(f.endswith(f"_{r}.png") for f in files) for r in FALLBACK_ROOTS)
+def collect():
+    todo, done = [], []
+    for char_id, pose, exp, prio in M.SPRITES:
+        item = {
+            "kind": "sprite", "prio": prio,
+            "id": f"{char_id}_{pose}_{exp}",
+            "path": sprite_path(char_id, pose, exp),
+            "rel": f"assets/sprites/{char_id}/{M.sprite_filename(char_id, pose, exp)}",
+            "prompt": M.sprite_prompt(char_id, pose, exp),
+        }
+        (done if os.path.exists(item["path"]) else todo).append(item)
 
+    bgmap = {n: d for n, _, d in M.BACKGROUNDS}
+    for name, prio, desc in M.BACKGROUNDS:
+        item = {
+            "kind": "bg", "prio": prio, "id": name,
+            "path": bg_path(name), "rel": f"assets/bg/{name}.png",
+            "prompt": M.bg_prompt(desc),
+        }
+        (done if os.path.exists(item["path"]) else todo).append(item)
 
-def exact_sprite(char_id, emo):
-    d = os.path.join(SP_DIR, char_id)
-    if not os.path.isdir(d):
-        return False
-    return any(f.endswith(f"_{emo}.png") for f in os.listdir(d))
+    for name, base, prio, vdesc in M.VARIANTS:
+        item = {
+            "kind": "variant", "prio": prio, "id": name,
+            "path": bg_path(name), "rel": f"assets/bg/{name}.png",
+            "prompt": M.variant_prompt(bgmap.get(base, ""), vdesc),
+        }
+        (done if os.path.exists(item["path"]) else todo).append(item)
+
+    todo.sort(key=lambda x: (PRIO_ORDER.get(x["prio"], 9), x["kind"], x["id"]))
+    return todo, done
 
 
 def main():
-    bgs, sprites = scan_story()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--todo", action="store_true")
+    ap.add_argument("--prompt", type=int, default=0)
+    args = ap.parse_args()
 
-    print("=" * 66)
-    print("美术资源覆盖率")
-    print("=" * 66)
+    todo, done = collect()
+    total = len(todo) + len(done)
 
-    # 背景
-    total = missing = 0
-    miss_list = []
-    for scene in sorted(bgs):
-        for var in sorted(bgs[scene]):
-            if scene in ("black", "white"):
-                continue
-            total += 1
-            if not have_bg(scene, var):
-                missing += 1
-                miss_list.append(f"{scene}" + (f"_{var}" if var else ""))
-    print(f"\n【背景】剧本用到 {total} 种，已有 {total - missing} 种，缺 {missing} 种")
-    if miss_list:
-        seen = []
-        for m in miss_list:
-            if m not in seen:
-                seen.append(m)
-        for m in seen:
-            print(f"    缺  assets/bg/{m}.png")
+    if args.prompt:
+        print(f"接下来 {min(args.prompt, len(todo))} 张的生图提示词\n")
+        for it in todo[:args.prompt]:
+            print("=" * 70)
+            print(f"[{it['prio']}] {it['id']}   →  {it['rel']}")
+            print("-" * 70)
+            print(it["prompt"])
+            print()
+        return 0
 
-    # 立绘
-    print(f"\n【立绘】")
-    t_exact = t_total = 0
-    for char_id in sorted(sprites):
-        if char_id in ("radio", "voice", "crowd", "classmate", "unknown", "me"):
-            continue   # 无实体立绘的旁白型说话人
-        emos = sorted(sprites[char_id])
-        have = [e for e in emos if exact_sprite(char_id, e)]
-        t_exact += len(have)
-        t_total += len(emos)
-        d = os.path.join(SP_DIR, char_id)
-        n_files = len(os.listdir(d)) if os.path.isdir(d) else 0
-        status = "✓" if len(have) == len(emos) else " "
-        print(f"  {status} {char_id:9s} 现有图 {n_files} 张 | "
-              f"剧本用到 {len(emos)} 种表情，精确匹配 {len(have)} 种")
-        lack = [e for e in emos if not exact_sprite(char_id, e)]
-        if lack:
-            print(f"      待补: {', '.join(lack)}")
+    if args.todo:
+        print(f"待生成 {len(todo)} 张（按优先级排序）\n")
+        cur = None
+        for it in todo:
+            if it["prio"] != cur:
+                cur = it["prio"]
+                label = {"S": "S 必做", "A": "A 重要", "B": "B 可选"}[cur]
+                print(f"\n—— {label} ——")
+            print(f"  {it['kind']:7s} {it['rel']}")
+        return 0
 
-    print("-" * 66)
-    print(f"立绘表情精确覆盖 {t_exact}/{t_total}")
-    print("注：缺图不会报错，引擎按 EMO_FALLBACK 降级，最终回退代码绘制。")
+    print("=" * 68)
+    print("美术资源覆盖率（对照《场景图片需求表》《角色立绘表情表》）")
+    print("=" * 68)
+
+    for kind, label in [("sprite", "立绘"), ("bg", "场景"), ("variant", "变体")]:
+        d = [x for x in done if x["kind"] == kind]
+        t = [x for x in todo if x["kind"] == kind]
+        n = len(d) + len(t)
+        bar_len = 30
+        filled = int(bar_len * len(d) / n) if n else 0
+        bar = "█" * filled + "·" * (bar_len - filled)
+        print(f"\n{label}  {bar}  {len(d)}/{n}")
+        if d:
+            for x in sorted(d, key=lambda y: y["id"]):
+                print(f"    ✓ {x['id']}")
+        by_prio = {}
+        for x in t:
+            by_prio.setdefault(x["prio"], []).append(x)
+        for p in ["S", "A", "B"]:
+            if p in by_prio:
+                print(f"    待做[{p}] {len(by_prio[p])} 张")
+
+    print("\n" + "-" * 68)
+    print(f"总计 {len(done)}/{total} 张已就位")
+    s_todo = [x for x in todo if x["prio"] == "S"]
+    if s_todo:
+        print(f"最高优先级(S) 还差 {len(s_todo)} 张：")
+        for x in s_todo:
+            print(f"    {x['rel']}")
+    print("\n缺图不会导致报错：立绘按 EMO_FALLBACK 降级，背景按 BG_MAP 回退，")
+    print("最终都能回落到代码绘制（bg_painter / actor_painter）。")
+    print("用 --todo 看完整待办，--prompt N 取下 N 张的生图提示词。")
     return 0
 
 

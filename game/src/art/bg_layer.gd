@@ -1,11 +1,13 @@
 extends Control
 class_name BGLayer
-## 背景层：优先使用 AI 生成的 PNG 背景，缺图时自动回退到代码绘制（bg_painter.gd）。
+## 背景层：优先使用 PNG 背景图，缺图自动回退到代码绘制（bg_painter.gd），不会开天窗。
 ##
-## 资源命名规范：
-##   res://assets/bg/<scene_id>_<variant>.png   例：classroom_night.png
-##   res://assets/bg/<scene_id>.png             无变体通用图
-## 找不到时回退 BGPainter，保证任何场景都不会开天窗。
+## 资源命名规范（对应《场景图片需求表》的 file_name 列）：
+##   res://assets/bg/<file_name>.png
+##   例：classroom_evening.png / dorm_307_night.png / broadcast_room.png
+##
+## 剧本里写的是引擎 scene_id（如 @bg classroom night），
+## 由 BG_MAP 映射到资源表的文件名，并支持按变体逐级回退。
 
 const BG_ROOT := "res://assets/bg"
 const BGPainterS := preload("res://src/art/bg_painter.gd")
@@ -21,16 +23,86 @@ var _painter: BGPainter = null
 var _t := 0.0
 var _cur_key := ""
 
-## 变体回退链：夜景缺图时退到通用图，而不是直接掉回代码绘制
-const VAR_FALLBACK := {
-	"night": ["night", "dark", ""],
-	"dark": ["dark", "night", ""],
-	"dusk": ["dusk", "night", ""],
-	"day": ["day", ""],
-	"rain": ["rain", "night", "dusk", ""],
-	"blood": ["blood", "dark", "night", ""],
-	"fire": ["fire", "dark", "night", ""],
-	"": [""],
+## scene_id + variant → 候选文件名（按优先级，前面找不到就试后面）
+## 与《场景图片需求表》二、三节完全对应
+const BG_MAP := {
+	"office": {
+		"": ["office_day"], "day": ["office_day"], "dusk": ["office_day"],
+	},
+	"classroom": {
+		"": ["classroom_day"],
+		"day": ["classroom_day"],
+		"dusk": ["classroom_evening", "classroom_day"],
+		"night": ["classroom_evening"],
+		"dark": ["classroom_evening"],
+		"blood": ["classroom_evening"],
+	},
+	"hallway": {
+		"": ["hallway_day"],
+		"day": ["hallway_day"],
+		"dusk": ["hallway_night", "hallway_day"],
+		"night": ["hallway_night"],
+		"dark": ["hallway_night"],
+	},
+	"library": {
+		"": ["library_day"],
+		"day": ["library_day"],
+		"dusk": ["library_dim", "library_day"],
+		"night": ["library_dim"], "dark": ["library_dim"],
+	},
+	"dorm": {
+		"": ["dorm_307_day"],
+		"day": ["dorm_307_day"],
+		"night": ["dorm_307_night"],
+		"dark": ["dorm_307_night"],
+		"blood": ["dorm_307_night"],
+	},
+	"dorm_door": {
+		"": ["dorm_corridor_night"],
+		"night": ["dorm_corridor_night"],
+		"dark": ["dorm_corridor_night"],
+	},
+	"duty_room": {
+		"": ["duty_room"], "day": ["duty_room"], "night": ["duty_room"],
+	},
+	"oldbuilding_out": {
+		"": ["old_building_gate_rain"],
+		"rain": ["old_building_gate_rain"],
+		"dusk": ["old_building_gate_rain"],
+		"night": ["old_building_gate_rain"],
+	},
+	"oldbuilding_stair": {
+		"": ["old_building_stairs"],
+		"dark": ["old_building_stairs"], "night": ["old_building_stairs"],
+	},
+	"broadcast_door": {
+		"": ["broadcast_door"],
+		"dark": ["broadcast_door"], "night": ["broadcast_door"],
+	},
+	"broadcast_room": {
+		"": ["broadcast_room"],
+		"dark": ["broadcast_room"],
+		"fire": ["broadcast_room_fireedge", "broadcast_room"],
+	},
+	"history_hall": {
+		"": ["school_history_hall"],
+		"dusk": ["school_history_hall"], "dark": ["school_history_hall"],
+	},
+	"archive": {
+		"": ["archive_inner_door"], "dark": ["archive_inner_door"],
+	},
+	"monitor_room": {
+		"": ["monitor_room"], "dark": ["monitor_room"],
+	},
+	"schoolyard": {
+		"": ["campus_rain"],
+		"rain": ["campus_rain"], "night": ["campus_rain"],
+		"day": ["title_school", "campus_rain"],
+		"dusk": ["title_school", "campus_rain"],
+	},
+	"mirror": {
+		"": ["dorm_307_night"], "dark": ["dorm_307_night"], "day": ["dorm_307_day"],
+	},
 }
 
 func _ready() -> void:
@@ -59,11 +131,22 @@ func set_scene(id: String, v: String = "") -> void:
 
 func _find_texture(id: String, v: String) -> Texture2D:
 	if id == "black" or id == "white":
-		return null       # 纯色由代码画，无需贴图
-	var chain: Array = VAR_FALLBACK.get(v, [v, ""])
-	for cand in chain:
-		var suffix := "" if String(cand) == "" else "_" + String(cand)
-		var p := "%s/%s%s.png" % [BG_ROOT, id, suffix]
+		return null
+	var candidates: Array = []
+	if BG_MAP.has(id):
+		var table: Dictionary = BG_MAP[id]
+		if table.has(v):
+			candidates.append_array(table[v])
+		if table.has("") and v != "":
+			candidates.append_array(table[""])
+		# 兜底：该场景下所有登记过的文件
+		for k in table:
+			candidates.append_array(table[k])
+	# 直接按 scene_id 命名的图也认
+	candidates.append(id + ("_" + v if v != "" else ""))
+	candidates.append(id)
+	for name in candidates:
+		var p := "%s/%s.png" % [BG_ROOT, String(name)]
 		if ResourceLoader.exists(p):
 			return load(p) as Texture2D
 	return null
@@ -81,20 +164,32 @@ func _draw() -> void:
 	var s := size
 	if _tex == null:
 		return
-	# 等比铺满（cover），多余部分裁掉，避免黑边
 	var tw := float(_tex.get_width())
 	var th := float(_tex.get_height())
 	if tw <= 0.0 or th <= 0.0:
 		return
+	# cover 铺满
 	var scale := maxf(s.x / tw, s.y / th)
 	var dw := tw * scale
 	var dh := th * scale
 	var pos := Vector2((s.x - dw) * 0.5, (s.y - dh) * 0.5)
-	# 灯光闪烁：整体压暗
 	var lm := 1.0 - flicker * 0.55
-	draw_texture_rect(_tex, Rect2(pos, Vector2(dw, dh)), false, Color(lm, lm, lm, 1.0))
+	# 变体调色：没有专门的变体图时，用色调模拟昼夜/血/火
+	var tint := Color(lm, lm, lm, 1.0)
+	match variant:
+		"night", "dark":
+			tint = Color(lm * 0.62, lm * 0.66, lm * 0.78, 1.0)
+		"dusk":
+			tint = Color(lm * 0.92, lm * 0.78, lm * 0.68, 1.0)
+		"rain":
+			tint = Color(lm * 0.74, lm * 0.80, lm * 0.88, 1.0)
+		"blood":
+			tint = Color(lm * 1.0, lm * 0.62, lm * 0.60, 1.0)
+		"fire":
+			tint = Color(lm * 1.0, lm * 0.74, lm * 0.52, 1.0)
+	draw_texture_rect(_tex, Rect2(pos, Vector2(dw, dh)), false, tint)
 
-	# 雨（贴图之上叠加动态雨丝）
+	# fg_rain_heavy：雨层
 	if wet > 0.01 or variant == "rain":
 		var rng := RandomNumberGenerator.new()
 		rng.seed = 4242
@@ -105,7 +200,7 @@ func _draw() -> void:
 			draw_line(Vector2(x, y), Vector2(x - 5, y + 26 * sp),
 				Color(0.75, 0.82, 0.88, 0.15), 1.2)
 
-	# 血污
+	# 血污层
 	if blood_amount > 0.01 and SaveSystem.gore_level() > 0:
 		var lv := SaveSystem.gore_level()
 		var col: Color = Cfg.PALETTE["blood"]

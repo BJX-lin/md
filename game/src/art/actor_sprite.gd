@@ -1,11 +1,17 @@
 extends Control
 class_name ActorSprite
-## 立绘显示节点：优先加载 AI 生成的 PNG 立绘（带 alpha），
-## 找不到对应表情文件时按「表情回退链」降级，全都没有则回退到代码绘制。
+## 立绘显示节点
 ##
-## 资源命名规范（对应 e.md 立绘表 / 用户提供的 character_expression_sheet）：
-##   res://assets/sprites/<char_id>/<char_id>_<pose>_<exp>.png
-##   例：assets/sprites/zhouxu/zhouxu_01_neutral.png
+## 资源命名规范（对应《角色立绘表情表》）：
+##   res://assets/sprites/<char_id>/<char_id>_pose<NN>_<exp>.png
+##   例：assets/sprites/zhouxu/zhouxu_pose01_neutral.png
+##
+## 查找顺序：
+##   1. 剧情指定的姿态 + 精确表情
+##   2. 剧情指定的姿态 + 表情回退链
+##   3. 其它姿态 + 表情回退链
+##   4. 该角色任意一张图
+##   5. 全都没有 → 回退 actor_painter 代码绘制（不会开天窗）
 
 const SPRITE_ROOT := "res://assets/sprites"
 const ActorPainterS := preload("res://src/art/actor_painter.gd")
@@ -15,53 +21,81 @@ var emo := "normal"
 var active := true
 var glitch := 0.0
 var wounded := 0.0
+var pose := ""          # 留空=按状态自动选姿态
 
 var _tex: Texture2D = null
 var _fallback: ActorPainter = null
 var _t := 0.0
 var _cur_key := ""
 
-# 每个角色的默认姿态号（多数只有 01）
-const DEFAULT_POSE := {
-	"linzhou": "01", "zhouxu": "01", "liangye": "01",
-	"xuqing": "01", "shenhe": "01", "oldqin": "01",
+## 剧本角色键 → 立绘目录名（主角在资源表里叫 linday）
+const CHAR_DIR := {
+	"linzhou": "linday", "me": "linday",
+	"zhouxu": "zhouxu", "liangye": "liangye",
+	"xuqing": "xuqing", "shenhe": "shenhe", "oldqin": "oldqin",
 }
 
-## 表情回退链：找不到该表情时依次尝试后面的
+## 每角色可用姿态（对应资源表 pose 配置）
+const POSES := {
+	"zhouxu": ["pose01", "pose02"],
+	"liangye": ["pose01", "pose02", "pose03", "pose04"],
+	"xuqing": ["pose01", "pose02", "pose03"],
+	"shenhe": ["pose01", "pose02", "pose03", "pose04"],
+	"oldqin": ["pose01", "pose02"],
+	"linday": ["pose01", "pose02", "pose03"],
+}
+
+## 表情回退链（覆盖剧本用到的全部表情 + 资源表定义的表情）
 const EMO_FALLBACK := {
+	# —— 通用基底
 	"normal": ["normal", "neutral", "calm"],
 	"neutral": ["neutral", "normal", "calm"],
 	"calm": ["calm", "neutral", "normal"],
+	# —— 周叙系
 	"flat": ["flat", "neutral", "normal", "calm"],
-	"cold": ["cold", "stare", "neutral", "flat", "normal"],
-	"stare": ["stare", "cold", "neutral", "normal"],
-	"smile": ["smile", "faint_smile", "relief", "normal"],
-	"smirk": ["smirk", "faint_smile", "smile", "normal"],
-	"faint_smile": ["faint_smile", "smile", "smirk", "normal"],
-	"sad": ["sad", "tired", "hurt", "normal"],
-	"tired": ["tired", "sad", "normal"],
-	"hurt": ["hurt", "sad", "tired", "normal"],
-	"fear": ["fear", "nervous", "scared", "normal"],
-	"nervous": ["nervous", "fear", "scared", "normal"],
-	"scared": ["scared", "fear", "nervous", "normal"],
-	"terrified": ["terrified", "scared", "fear", "nervous", "normal"],
-	"angry": ["angry", "displeased", "frown", "serious", "normal"],
-	"displeased": ["displeased", "angry", "frown", "normal"],
-	"frown": ["frown", "displeased", "serious", "normal"],
+	"cold": ["cold", "dark", "stare", "frown", "neutral", "normal"],
+	"frown": ["frown", "displeased", "serious", "neutral", "normal"],
 	"serious": ["serious", "frown", "neutral", "normal"],
-	"hollow": ["hollow", "blank", "empty", "void", "normal"],
-	"blank": ["blank", "hollow", "empty", "normal"],
-	"empty": ["empty", "hollow", "blank", "normal"],
-	"void": ["void", "hollow", "empty", "normal"],
-	"dead": ["dead", "hollow", "empty", "normal"],
-	"half_assimilated": ["half_assimilated", "blank", "hollow", "normal"],
-	"unstable": ["unstable", "empty", "hollow", "normal"],
-	"urgent": ["urgent", "serious", "frown", "normal"],
-	"dark": ["dark", "cold", "serious", "normal"],
-	"relief": ["relief", "smile", "normal"],
+	"urgent": ["urgent", "serious", "frown", "neutral", "normal"],
+	"dark": ["dark", "cold", "serious", "neutral", "normal"],
+	"soft": ["soft", "relief", "neutral", "normal"],
+	"tired": ["tired", "sad", "neutral", "normal", "calm"],
+	# —— 梁野系
 	"annoyed": ["annoyed", "displeased", "frown", "normal"],
-	"release": ["release", "faint_smile", "calm", "normal"],
-	"panic": ["panic", "terrified", "scared", "fear", "normal"],
+	"nervous": ["nervous", "scared", "fear", "normal"],
+	"fear": ["fear", "nervous", "scared", "normal"],
+	"scared": ["scared", "nervous", "fear", "normal"],
+	"terrified": ["terrified", "scared", "nervous", "fear", "normal"],
+	"panic": ["panic", "terrified", "scared", "nervous", "normal"],
+	"blank": ["blank", "hollow", "empty", "half", "normal"],
+	"relief": ["relief", "soft", "fragile", "normal"],
+	"fragile": ["fragile", "relief", "sad", "normal"],
+	"half": ["half", "blank", "hollow", "empty", "normal"],
+	"half_assimilated": ["half", "blank", "hollow", "empty", "normal"],
+	# —— 许清系
+	"stare": ["stare", "cold", "neutral", "normal"],
+	"displeased": ["displeased", "frown", "angry", "neutral", "normal"],
+	"faintsmile": ["faintsmile", "faint_smile", "smile", "smirk", "neutral"],
+	"faint_smile": ["faintsmile", "faint_smile", "smile", "smirk", "neutral"],
+	"smile": ["smile", "faintsmile", "faint_smile", "relief", "neutral"],
+	"smirk": ["smirk", "faintsmile", "faint_smile", "smile", "neutral"],
+	"empty": ["empty", "hollow", "blank", "void", "neutral"],
+	"unstable": ["unstable", "empty", "hollow", "neutral"],
+	# —— 沈禾系
+	"sad": ["sad", "tired", "hurt", "calm", "normal"],
+	"hurt": ["hurt", "sad", "tired", "calm"],
+	"hollow": ["hollow", "empty", "blank", "void", "calm"],
+	"release": ["release", "faintsmile", "faint_smile", "calm"],
+	"void": ["void", "hollow", "empty", "blank", "calm"],
+	"dead": ["dead", "hollow", "empty", "calm"],
+	# —— 老秦系
+	"warning": ["warning", "nervous", "serious", "normal"],
+	"shocked": ["shocked", "terrified", "scared", "nervous", "normal"],
+	# —— 林昼系
+	"confused": ["confused", "neutral", "normal"],
+	"determined": ["determined", "serious", "neutral", "normal"],
+	# —— 其它
+	"angry": ["angry", "displeased", "frown", "serious", "normal"],
 }
 
 func _ready() -> void:
@@ -69,19 +103,19 @@ func _ready() -> void:
 	set_process(true)
 	_refresh()
 
-func setup(who_id: String, emotion: String) -> void:
+func setup(who_id: String, emotion: String, pose_id: String = "") -> void:
 	who = who_id
 	emo = emotion if emotion != "" else "normal"
+	pose = pose_id
 	_refresh()
 
 func _refresh() -> void:
-	var key := who + "/" + emo
+	var key := "%s/%s/%s" % [who, emo, _auto_pose()]
 	if key == _cur_key:
 		return
 	_cur_key = key
 	_tex = _find_texture(who, emo)
 	if _tex == null:
-		# 没有任何贴图 → 启用代码绘制回退
 		if _fallback == null:
 			_fallback = ActorPainterS.new()
 			_fallback.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -93,20 +127,71 @@ func _refresh() -> void:
 		_fallback.visible = false
 	queue_redraw()
 
+## 按剧情状态自动挑姿态（剧本没显式指定时）
+func _auto_pose() -> String:
+	if pose != "":
+		return pose
+	match who:
+		"liangye":
+			var half := GameState.get_state("liangye_state") == "half_assimilated"
+			if half or GameState.get_flag("flag_liangye_half_assimilated"):
+				return "pose04"
+			if emo in ["blank", "hollow", "empty"]:
+				return "pose03"
+			if emo in ["nervous", "scared", "terrified", "fear", "panic", "relief", "fragile"]:
+				return "pose02"
+			return "pose01"
+		"zhouxu":
+			if emo in ["dark", "tired", "urgent"] or GameState.get_num("trust_zhouxu") <= -2:
+				return "pose02"
+			return "pose01"
+		"xuqing":
+			if GameState.get_state("xuqing_state") in ["revealed", "destabilized", "observer"]:
+				return "pose03"
+			if emo in ["empty", "unstable"]:
+				return "pose03"
+			if emo in ["stare", "faintsmile", "faint_smile"] and GameState.current_chapter >= 3:
+				return "pose02"
+			return "pose01"
+		"shenhe":
+			if emo == "release":
+				return "pose04"
+			if GameState.current_chapter >= 5:
+				return "pose03"
+			if emo in ["sad", "tired", "hurt"]:
+				return "pose02"
+			return "pose01"
+		"linzhou", "me":
+			if emo == "empty":
+				return "pose03"
+			if emo in ["shocked", "determined"]:
+				return "pose02"
+			return "pose01"
+	return "pose01"
+
 func _find_texture(char_id: String, emotion: String) -> Texture2D:
-	var pose := String(DEFAULT_POSE.get(char_id, "01"))
+	var dir := String(CHAR_DIR.get(char_id, char_id))
 	var chain: Array = EMO_FALLBACK.get(emotion, [emotion, "normal", "neutral", "calm"])
-	# 先按默认姿态找完整回退链
+	var want := _auto_pose()
+
+	# 1+2. 指定姿态 + 表情回退链
 	for e in chain:
-		var p := "%s/%s/%s_%s_%s.png" % [SPRITE_ROOT, char_id, char_id, pose, String(e)]
+		var p := "%s/%s/%s_%s_%s.png" % [SPRITE_ROOT, dir, dir, want, String(e)]
 		if ResourceLoader.exists(p):
 			return load(p) as Texture2D
-	# 再扫该角色目录下任意姿态的同表情
+	# 3. 其它姿态 + 表情回退链
+	var all_poses: Array = POSES.get(dir, ["pose01", "pose02", "pose03", "pose04"])
 	for e in chain:
-		for pz in ["01", "02", "03", "04"]:
-			var p2 := "%s/%s/%s_%s_%s.png" % [SPRITE_ROOT, char_id, char_id, pz, String(e)]
+		for pz in all_poses:
+			var p2 := "%s/%s/%s_%s_%s.png" % [SPRITE_ROOT, dir, dir, String(pz), String(e)]
 			if ResourceLoader.exists(p2):
 				return load(p2) as Texture2D
+	# 4. 该角色任意一张
+	for pz in all_poses:
+		for e in ["neutral", "normal", "calm"]:
+			var p3 := "%s/%s/%s_%s_%s.png" % [SPRITE_ROOT, dir, dir, String(pz), e]
+			if ResourceLoader.exists(p3):
+				return load(p3) as Texture2D
 	return null
 
 func _process(delta: float) -> void:
@@ -128,17 +213,13 @@ func _draw() -> void:
 	var th := float(_tex.get_height())
 	if tw <= 0.0 or th <= 0.0:
 		return
-	# 等比缩放，底部对齐（立绘脚底贴合站位基线）
 	var scale := minf(s.x / tw, s.y / th)
 	var dw := tw * scale
 	var dh := th * scale
 	var breathe := sin(_t * 1.1) * 1.5
 	var pos := Vector2((s.x - dw) * 0.5, s.y - dh + breathe)
-
-	# 未说话者压暗，突出当前说话人
 	var tint := Color(1, 1, 1, 1) if active else Color(0.55, 0.58, 0.62, 0.92)
 
-	# 异常状态：错位重影（沈禾 / 半同化梁野）
 	if glitch > 0.02:
 		var off := Vector2(sin(_t * 7.0) * 9.0 * glitch, 0.0)
 		draw_texture_rect(_tex, Rect2(pos + off, Vector2(dw, dh)), false,
@@ -148,7 +229,6 @@ func _draw() -> void:
 
 	draw_texture_rect(_tex, Rect2(pos, Vector2(dw, dh)), false, tint)
 
-	# 血腥叠加（受设置分级控制）
 	if wounded > 0.0 and SaveSystem.gore_level() > 0:
 		var lv := SaveSystem.gore_level()
 		var amount: float = wounded * (0.5 if lv == 1 else 1.0)
