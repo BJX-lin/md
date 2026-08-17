@@ -35,6 +35,9 @@
     @set truth +1
 * [if !visited:ch3_deep_bed] 检查自己的床板 -> ch3_deep_bed
     @set memory_echo +1
+* [if flag_zhouxu_sister and !visited:zhouyun_hub] 让周叙拿出他姐姐的东西 -> zhouyun_hub
+    @set truth +2
+    @set trust_zhouxu +1
 * 闭眼，撑到天亮 -> ch3_deep_end
     @set route_obedience +2
 

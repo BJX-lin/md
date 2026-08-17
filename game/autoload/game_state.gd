@@ -50,6 +50,8 @@ const ITEMS := {
 	"item_lighter": {"name": "老秦的打火机", "desc": "机身有烧灼痕。毁灭路线的火种。"},
 	"item_candle": {"name": "半截蜡烛", "desc": "梁野塞给你的。停电时它比手机好用。"},
 	"item_seat_chart": {"name": "旧座位表", "desc": "最后一排靠窗的名字被擦了三次，纸都毛了。"},
+	"item_bus_ticket": {"name": "周芸的车票", "desc": "座位号 42。背面是周叙写的：「如果到站没人接，就在原地等。别自己走。」"},
+	"item_seat41_stub": {"name": "41 号票根", "desc": "藏在周芸手机电池底下。背面擦掉的压痕写着：「她让我坐这儿的。」"},
 	"item_mirror_shard": {"name": "镜片碎片", "desc": "碎片里的你，总比你慢半拍。边缘割过手。"},
 }
 

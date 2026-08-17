@@ -52,6 +52,14 @@
    "name": "旧座位表",
    "desc": "最后一排靠窗的名字被擦了三次，纸都毛了。"
   },
+  "item_bus_ticket": {
+   "name": "周芸的车票",
+   "desc": "座位号 42。背面是周叙写的：「如果到站没人接，就在原地等。别自己走。」"
+  },
+  "item_seat41_stub": {
+   "name": "41 号票根",
+   "desc": "藏在周芸手机电池底下。背面擦掉的压痕写着：「她让我坐这儿的。」"
+  },
   "item_mirror_shard": {
    "name": "镜片碎片",
    "desc": "碎片里的你，总比你慢半拍。边缘割过手。"
@@ -171,6 +179,7 @@
   "30_ch3.avg",
   "33_ch3_deep.avg",
   "35_ch3_side.avg",
+  "37_zhouyun.avg",
   "40_ch4.avg",
   "45_ch4_side.avg",
   "47_ch4_archive.avg",

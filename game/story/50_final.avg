@@ -704,6 +704,97 @@ shenhe(hollow)：林昼。
 * [lock flag_rule_terms_complete] “名单错了。” -> final_a_wrong
     @set truth +2
 * [lock flag_terminal_broadcast_ready] 直接去改广播 -> final_a_broadcast
+* [lock flag_zhouyun_known] “周芸也是你点的名吗。” -> final_a_zhouyun
+
+== final_a_zhouyun
+me：等一下。
+me：周芸。
+@wait 1.2
+@fx heartbeat 1.2
+调音台上所有的电平表指针，同时归零。
+@sfx sfx_broadcast_static
+@wait 0.8
+shenhe(hollow)：……你从哪儿知道这个名字。
+me：她弟弟告诉我的。
+me：她五年前坐上一辆车，票是 42 号。
+me：车上卖出四十二张票，到站只下来四十一个人。
+@wait 1.0
+@set truth +4
+@set memory_echo +2
+shenhe(hollow)：那不是我。
+me：我知道不是你。你在这栋楼里，出不去。
+@wait 0.8
+me：所以问题是——
+me：为什么两百公里外的一辆长途车上，也会少一个人。
+@wait 1.4
+@fx glitch 0.9
+@set sanity -3
+@set truth +3
+她很久没有说话。
+@wait 1.0
+shenhe(hollow)：因为不是这栋楼在点名。
+@fx heartbeat 1.4
+@set truth +5
+@set memory_echo +3
+shenhe(hollow)：这栋楼只是最先开始记录的地方。
+@wait 0.8
+me：那是什么在点名？
+@wait 1.2
+shenhe(hollow)：你数过人吗。
+shenhe(hollow)：小学排队，中学点名，坐车对票，开会签到。
+shenhe(hollow)：人这一辈子，被数过多少次？
+@wait 1.0
+shenhe(hollow)：每数一次，就得有个总数。
+shenhe(hollow)：总数对不上的时候，人会怎么做？
+@wait 0.8
+me：……重数一遍。
+shenhe(hollow)：对。
+shenhe(hollow)：重数一遍还是不对呢？
+@wait 1.2
+me：就当自己数错了。
+@wait 1.0
+shenhe(hollow)：所以少的那个，就永远少下去了。
+@fx glitch 1.0
+@set sanity -4
+@set truth +5
+@set save_route_score +3
+@clue clue_missing_one
+@wait 1.4
+> 不是鬼在吃人。
+> 是"总数必须对得上"这件事，会自己把对不上的部分抹掉。
+> 而所有人都会配合它——因为承认少了一个人，比当作数错了要麻烦得多。
+@set truth +4
+@wait 1.0
+@if item:item_bus_ticket
+你把那张车票掏出来，放在调音台上。
+@sfx sfx_page
+@wait 0.8
+me：这张票是 42 号。
+me：她上了车。这是剪口。
+me：她没有下车。这里没有核销章。
+@wait 1.0
+me：所以她不是"数错了"。她是真的上了那辆车。
+@wait 0.8
+@fx names 0.8
+@set truth +3
+@set save_route_score +2
+沈禾低头看着那张票，看了很久。
+@wait 1.2
+shenhe(sad)：……有人替她留着票。
+me：她弟弟留了五年。
+@wait 0.8
+shenhe(sad)：那她就还没被销掉。
+@fx heartbeat 1.0
+@set truth +4
+@set save_route_score +3
+@flag flag_zhouyun_proof
+@wait 1.0
+> 有人留着凭证，人就还在册。
+> 这是这套规则里唯一一条对活人有利的条款。
+@set truth +2
+@endif
+@wait 0.8
+@goto final_answer
 
 == final_a_yes
 me：到。
@@ -1185,6 +1276,40 @@ xuqing(neutral)：人齐了。
 > 你今天早上特意去摸过。桌板背面是光的，什么都没有。
 @set truth +2
 @wait 1.0
+@if flag_zhouyun_proof
+放学后，周叙在校门口等你。
+@show zhouxu neutral right
+他手里拿着那张车票。
+zhouxu(neutral)：我妈今天早上打电话。
+zhouxu(neutral)：说省城东站给家里寄了个东西，压了五年，最近清仓才翻出来。
+@wait 1.0
+me：什么东西？
+他把一个牛皮纸袋递过来。
+@sfx sfx_page
+@wait 0.8
+里面是一件白衬衫，洗过，叠得整整齐齐。
+领口内侧用圆珠笔写着两个字：周芸。
+@wait 1.2
+@fx heartbeat 1.0
+@set truth +3
+zhouxu(neutral)：站里的人说，是清理失物招领时找到的。
+zhouxu(neutral)：登记日期是五年前六月二十八号。
+@wait 0.8
+me：那天她到站了。
+zhouxu(neutral)：……她到站了。
+@wait 1.0
+他没有哭。他只是把衬衫抱在怀里，站了很久。
+@wait 0.8
+zhouxu(neutral)：人没找到。
+zhouxu(neutral)：但至少现在有登记了。
+@wait 1.0
+> 有登记，就说明有人到过。
+> 到过的人，就不能被当成"数错了"。
+@set truth +3
+@set save_route_score +2
+@clearchars
+@wait 1.0
+@endif
 @if flag_liheng_present
 下课铃响的时候，李恒收拾书包，路过你的座位。
 他停了一下。
