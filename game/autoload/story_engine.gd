@@ -262,7 +262,7 @@ func start(node_id: String) -> void:
 	node_started.emit(node_id)
 	advance()
 
-func has_node(id: String) -> bool:
+func has_story_node(id: String) -> bool:
 	return nodes.has(id)
 
 ## 推进到下一个需要玩家交互的点

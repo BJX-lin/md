@@ -61,7 +61,7 @@ func _load_payload(d: Dictionary) -> void:
 	g.quit_to_title.connect(goto_title)
 	_switch(g)
 	var node := String(d.get("node", "prologue"))
-	g.begin(node if StoryEngine.has_node(node) else "prologue")
+	g.begin(node if StoryEngine.has_story_node(node) else "prologue")
 
 func _on_story_finished(ending_id: String) -> void:
 	var e := EndingScreen.new()

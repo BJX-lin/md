@@ -9,6 +9,7 @@
   5. autoload 单例名是否在 project.godot 中注册
   6. signal 连接的信号是否在目标脚本中声明（跨脚本按名字宽松匹配）
   7. 关键字拼写：func/var/const/signal 行的基本形态
+  8. 自定义方法是否覆盖 Node/Object 原生方法（Godot 会当成错误）
 """
 import os
 import re
@@ -22,6 +23,20 @@ def _find_root():
             if os.path.isfile(os.path.join(cand, "project.godot")):
                 return cand
     return os.path.join(os.path.dirname(here), "game")
+
+# 自定义同名会触发 "overrides a method from native class" 错误
+NATIVE_METHODS = {
+    "has_node", "get_node", "find_child", "find_children", "add_child", "remove_child",
+    "get_parent", "get_children", "get_child", "get_index", "queue_free", "is_inside_tree",
+    "get_tree", "set_process", "set_physics_process", "connect", "disconnect",
+    "emit_signal", "has_signal", "has_method", "get_class", "is_class", "set_script",
+    "get_script", "duplicate", "free", "notification", "to_string", "get", "set", "call",
+    "callv", "get_path", "set_name", "get_name", "print_tree", "replace_by", "show",
+    "hide", "is_visible", "set_owner", "get_owner", "add_to_group", "is_in_group",
+    "remove_from_group", "get_groups", "get_viewport", "get_window", "get_rect",
+    "get_size", "set_size", "get_position", "set_position", "grab_focus", "has_focus",
+    "get_global_position", "update", "raise",
+}
 
 GAME = _find_root()
 ROOT = GAME
@@ -191,6 +206,14 @@ def main():
             }
             if sig not in all_signals and sig not in builtin:
                 warnings.append(f"{rel} 连接了未声明的信号: {sig}")
+
+        # 8. 覆盖原生方法
+        for m in re.finditer(r"^\s*(?:static\s+)?func\s+([a-zA-Z_0-9]+)", src, re.M):
+            if m.group(1) in NATIVE_METHODS:
+                ln = src[:m.start()].count("\n") + 1
+                errors.append(
+                    f"{rel}:{ln} 方法 {m.group(1)}() 覆盖了原生方法，"
+                    f"Godot 会报错，请改名（如 {m.group(1)}_x）")
 
         # 7. func 行基本形态
         for ln, raw in enumerate(src.split("\n"), 1):

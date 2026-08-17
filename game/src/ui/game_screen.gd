@@ -541,7 +541,7 @@ func _open_saves() -> void:
 		GameState.from_dict(d)
 		_refresh_status()
 		var n := String(d.get("node", "prologue"))
-		StoryEngine.start(n if StoryEngine.has_node(n) else "prologue")
+		StoryEngine.start(n if StoryEngine.has_story_node(n) else "prologue")
 	)
 	_push_panel(p)
 
