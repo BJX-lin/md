@@ -752,6 +752,8 @@ oldqin(flat)：只怕明天你就不想来了。
 * [if !visited:ch2_library2] 去图书馆核对借阅记录 -> ch2_library2
 * [if !visited:ch2_zhouxu_talk] 去找周叙问清楚 -> ch2_zhouxu_talk
     @set truth +1
+* [if !visited:ch2_school_hub] 换个方向：去问活人 -> ch2_school_hub
+    @set route_investigate +2
 * 去旧楼 -> ch2_oldbuilding_pre
     @set route_hostility +1
 
