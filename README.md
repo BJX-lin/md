@@ -44,7 +44,6 @@ md/
 │  ├─ validate_story.py       剧本静态校验（断链 / 死路 / 未知指令 / 可达性）
 │  ├─ check_gdscript.py       GDScript 静态检查（括号 / 路径 / 单例 / 信号）
 │  ├─ simulate.py             剧情运行时模拟器（随机通关 + 结局可达性验证）
-│  ├─ package.py              发布打包（校验 → 打包 → 解压回验）
 │  └─ preview/                浏览器试玩版（与 Godot 工程同一套剧本）
 │
 └─ a.md ~ f.md                原始策划开发文档
@@ -198,15 +197,6 @@ python3 tools/simulate.py --trace              # 打印一条完整真结局路�
 cp game/story/*.avg tools/preview/data/
 ```
 
-### 打发布包
-
-```bash
-python3 tools/package.py        # 输出到 dist/（该目录不入库，可随时重新生成）
-```
-
-`package.py` 会先跑完整校验，再打包，最后解压回验一次；
-产物强制写入 UTF-8 文件名标志位，避免 Windows 自带解压出现中文乱码，
-并同时生成一份 ASCII 文件名副本（内容相同）供下载工具异常时使用。
 
 ---
 

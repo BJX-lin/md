@@ -17,6 +17,3 @@ build/
 Thumbs.db
 __pycache__/
 *.pyc
-
-# 发布产物（可由 tools/package.py 重新生成，不入库）
-dist/
