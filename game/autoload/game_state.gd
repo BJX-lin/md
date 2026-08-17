@@ -51,6 +51,8 @@ const ITEMS := {
 	"item_candle": {"name": "半截蜡烛", "desc": "梁野塞给你的。停电时它比手机好用。"},
 	"item_seat_chart": {"name": "旧座位表", "desc": "最后一排靠窗的名字被擦了三次，纸都毛了。"},
 	"item_dorm_rules": {"name": "住宿生守则", "desc": "宿管给的旧打印件。前十条是正常校规，最后三条字体不同，是后来加上去的。"},
+	"item_qin_list": {"name": "老秦的名单", "desc": "逐年手抄的学生名单，勾＝还记得脸，叉＝只记得名字。今年那页只剩三个勾，其中一个是你——「趁我还记得」。"},
+	"item_backdoor_key": {"name": "东楼后门钥匙", "desc": "老秦一直没挂上钥匙板的真钥匙，怕它被换成假的。「待定的人才进得去。它防在册的人，不防待定的。」"},
 	"item_missing_poster": {"name": "寻人启事", "desc": "从食堂墙上揭下来的。背面有铅笔字：「别贴了 她没走 她在楼里 每年都有人贴 每年都被撕」"},
 	"item_bus_ticket": {"name": "周芸的车票", "desc": "座位号 42。背面是周叙写的：「如果到站没人接，就在原地等。别自己走。」"},
 	"item_seat41_stub": {"name": "41 号票根", "desc": "藏在周芸手机电池底下。背面擦掉的压痕写着：「她让我坐这儿的。」"},
@@ -67,6 +69,9 @@ const CLUES := {
 	"clue_shenhe_fire": {"name": "五月十七日的广播", "ch": 4, "text": "起火当晚广播话筒开着，全校喇叭响了四十分钟。沈禾在念高二三班名册，念完四十六个从头再念，念了七遍。一千多人听见，没有一个人应。"},
 	"clue_shenhe_dead": {"name": "「已故」会褪成「转出」", "ch": 4, "text": "教务处原件写沈禾「转出临川第三中学」（该校不存在）。许清自己打印一份改成「已故」——但那两个字每年会自行变淡成「转出」。她已重打第五份。"},
 	"clue_cycle": {"name": "间隔在缩短", "ch": 4, "text": "转出人数逐年上升，间隔从七个月缩到九天。「一开始它一年吃一个，现在它九天吃一个。」最后会变成零天——不需要间隔，就是一次拿走所有人。"},
+	"clue_replacement": {"name": "补位机制", "ch": 4, "text": "三种状态：在册／待定／删除。待定＝名字还在、人也还在，但两边对不上号。位置空着就会有人补上来，然后你变成多余的那个。每一个补位的，都是上一轮被顶掉的——不是一个鬼在吃人，是一条队。"},
+	"clue_gate": {"name": "入校 109，出校 0", "ch": 4, "text": "校门刷卡记录：你入校 4 次、出校 0 次。你记得刷卡、记得响声，却想不起闸门打开走过去那一秒。全校五年共 109 个学号有入校无出校——「第 109 次」「第 109 页」都是这个数。"},
+	"clue_qin_records": {"name": "老秦的手抄名单", "ch": 4, "text": "躺椅底下一箱纸：从未贴出的寻人启事，和逐年手抄的名单。勾＝还记得脸，叉＝只记得名字。今年那页只剩三个勾：沈禾、每天数座位表的男生、以及你。"},
 	"clue_empty_seat": {"name": "被照料的空位", "ch": 1, "text": "最后一排靠窗的桌子每天早上都是干净的。保洁只扫地不擦桌。没有人知道是谁擦的。"},
 	"clue_duty_swap": {"name": "值日表上的修正液", "ch": 1, "text": "周三第四个位置被修正液盖了不止一层，最下面那层已经发黄。现在写着你的名字。"},
 	"clue_shenhe_missing": {"name": "寻人启事", "ch": 1, "text": "食堂墙角的寻人启事，沈禾，5 月 17 日晚离校未归。同样的启事一层压一层贴了至少五张。"},
@@ -325,7 +330,7 @@ func settle_chapter_3() -> void:
 		set_flag("true_end_precondition_1", true)
 	if get_flag("flag_night_roster_taken") or has_item("item_night_roster"):
 		set_flag("true_end_precondition_2", true)
-	if get_flag("flag_found_xuqing_log_fragment") and get_num("truth") >= 357:
+	if get_flag("flag_found_xuqing_log_fragment") and get_num("truth") >= 564:
 		set_flag("archive_route_bonus", true)
 	current_chapter = 4
 
@@ -334,9 +339,9 @@ func settle_chapter_4() -> void:
 	# 真相层级
 	var t := get_num("truth")
 	var core := get_flag("flag_saw_fire_video") and get_flag("flag_saw_self_repeat") and get_flag("flag_rule_terms_complete")
-	if t >= 488 and core and get_flag("flag_true_linday_status_known"):
+	if t >= 771 and core and get_flag("flag_true_linday_status_known"):
 		set_state("truth_state", "complete")
-	elif t >= 357 and (get_flag("flag_saw_fire_video") or get_flag("flag_roster_core_taken")):
+	elif t >= 564 and (get_flag("flag_saw_fire_video") or get_flag("flag_roster_core_taken")):
 		set_state("truth_state", "high")
 	else:
 		set_state("truth_state", "partial")
@@ -364,7 +369,7 @@ func settle_chapter_4() -> void:
 	# 终章广播改写条件
 	var ready_broadcast := (has_item("item_roster_core") or has_item("item_night_roster")) \
 		and (has_item("item_admin_key") or get_flag("flag_fakewall_opened")) \
-		and get_num("truth") >= 357
+		and get_num("truth") >= 564
 	if ready_broadcast:
 		set_flag("flag_terminal_broadcast_ready", true)
 	current_chapter = 5
@@ -378,7 +383,7 @@ func can_true_end() -> bool:
 		get_state("truth_state") == "complete"
 		and get_flag("true_end_precondition_1")
 		and get_flag("true_end_precondition_2")
-		and get_num("save_route_score") >= 18
+		and get_num("save_route_score") >= 24
 		and get_flag("flag_rule_terms_complete")
 		and get_flag("flag_terminal_broadcast_ready")
 		and not get_flag("flag_gave_up_roommate")
@@ -387,7 +392,7 @@ func can_true_end() -> bool:
 
 func can_bittersweet_exchange() -> bool:
 	return (
-		get_num("save_route_score") >= 12
+		get_num("save_route_score") >= 15
 		and get_flag("flag_terminal_broadcast_ready")
 		and (
 			get_state("liangye_end_state") == "absent_echo"

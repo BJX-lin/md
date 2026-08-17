@@ -91,6 +91,9 @@ zhouxu(flat)：两步的话，我回头能抓住你。
 * [if !visited:xuqing_hub] 等一下——先去办公室找许清 -> xuqing_hub
     @set truth +2
     @set route_empathy +1
+* [if !visited:oldqin_hub] 先去值班室找老秦 -> oldqin_hub
+    @set truth +2
+    @set route_investigate +1
 * 进校史馆 -> ch4_sc2
     @set route_investigate +1
 
