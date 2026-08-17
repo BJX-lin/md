@@ -88,7 +88,11 @@ zhouxu(flat)：两步的话，我回头能抓住你。
 @set truth +1
 @endif
 @wait 0.6
-@goto ch4_sc2
+* [if !visited:xuqing_hub] 等一下——先去办公室找许清 -> xuqing_hub
+    @set truth +2
+    @set route_empathy +1
+* 进校史馆 -> ch4_sc2
+    @set route_investigate +1
 
 == ch4_sc2
 @bg history_hall dusk
