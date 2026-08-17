@@ -4,7 +4,7 @@
 
 // ---------------------------------------------------------------- 配置（对应 config.gd）
 const NUM_RANGE = {
-  truth:[0,420], sanity:[0,100], memory_echo:[0,140], shenhe_focus:[0,60],
+  truth:[0,620], sanity:[0,100], memory_echo:[0,180], shenhe_focus:[0,70],
   trust_zhouxu:[-12,14], trust_liangye:[-12,18], trust_xuqing:[-10,6], trust_oldqin:[-6,12],
   route_obedience:[0,24], route_investigate:[0,24], route_empathy:[0,14], route_hostility:[0,14],
   taboo_count:[0,25], save_route_score:[0,40], end_cycle_score:[0,20], control_route_score:[0,20],
@@ -168,15 +168,15 @@ function settle(ch){
   } else if(ch===4){
     const t=n("truth");
     const core = F.flag_saw_fire_video && F.flag_saw_self_repeat && F.flag_rule_terms_complete;
-    st.truth_state = (t>=330&&core&&F.flag_true_linday_status_known) ? "complete"
-      : ((t>=240&&(F.flag_saw_fire_video||F.flag_roster_core_taken)) ? "high" : "partial");
+    st.truth_state = (t>=488&&core&&F.flag_true_linday_status_known) ? "complete"
+      : ((t>=357&&(F.flag_saw_fire_video||F.flag_roster_core_taken)) ? "high" : "partial");
     const m={anchor_alive:"present_anchor",rescued_half:"present_fragile_truth",fragile_alive:"present_unstable"};
     st.liangye_end_state = F.flag_liangye_final_loss ? "absent_echo" : (m[st.liangye_final_state_ch3]||"absent_echo");
     st.zhouxu_end_state = st.zhouxu_final_state_ch3==="confessor_protector"
       ? (n("trust_zhouxu")>=3?"enter_with_player":"follow_to_threshold")
       : (st.zhouxu_final_state_ch3==="coercer"?"pressure_player":"follow_to_threshold");
     const ready = (S.items.has("item_roster_core")||S.items.has("item_night_roster"))
-      && (S.items.has("item_admin_key")||F.flag_fakewall_opened) && n("truth")>=240;
+      && (S.items.has("item_admin_key")||F.flag_fakewall_opened) && n("truth")>=357;
     if(ready) F.flag_terminal_broadcast_ready=true;
     S.chapter=5;
   }

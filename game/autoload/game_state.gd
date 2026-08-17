@@ -224,7 +224,7 @@ func settle_chapter_1() -> void:
 
 	if get_num("trust_zhouxu") >= 2:
 		set_state("zhouxu_state", "guarding")
-	elif get_num("trust_zhouxu") <= -3:
+	elif get_num("trust_zhouxu") <= -5:
 		set_state("zhouxu_state", "hiding")
 	else:
 		set_state("zhouxu_state", "normal")
@@ -256,7 +256,7 @@ func settle_chapter_2() -> void:
 
 	if get_num("trust_zhouxu") >= 2:
 		set_state("zhouxu_state", "guarding")
-	elif get_num("trust_zhouxu") <= -3:
+	elif get_num("trust_zhouxu") <= -5:
 		set_state("zhouxu_state", "coercing")
 	else:
 		set_state("zhouxu_state", "hiding")
@@ -286,8 +286,8 @@ func settle_chapter_3() -> void:
 		set_state("liangye_final_state_ch3", "abandoned")
 		register_loss("梁野", "被放弃")
 	elif get_flag("flag_liangye_half_assimilated"):
-		set_state("liangye_final_state_ch3", "rescued_half" if get_num("trust_liangye") >= 2 else "missing")
-	elif get_flag("flag_liangye_returned") and get_num("trust_liangye") >= 5:
+		set_state("liangye_final_state_ch3", "rescued_half" if get_num("trust_liangye") >= 3 else "missing")
+	elif get_flag("flag_liangye_returned") and get_num("trust_liangye") >= 4:
 		set_state("liangye_final_state_ch3", "anchor_alive")
 	elif get_flag("flag_liangye_returned"):
 		set_state("liangye_final_state_ch3", "fragile_alive")
@@ -298,9 +298,9 @@ func settle_chapter_3() -> void:
 		set_state("liangye_final_state_ch3", "fragile_alive")
 
 	# 周叙
-	if get_num("trust_zhouxu") >= 3 and get_flag("flag_zhouxu_confessed_part"):
+	if get_num("trust_zhouxu") >= 4 and get_flag("flag_zhouxu_confessed_part"):
 		set_state("zhouxu_final_state_ch3", "confessor_protector")
-	elif get_num("trust_zhouxu") <= -3:
+	elif get_num("trust_zhouxu") <= -5:
 		set_state("zhouxu_final_state_ch3", "coercer")
 	else:
 		set_state("zhouxu_final_state_ch3", "split_guard")
@@ -310,7 +310,7 @@ func settle_chapter_3() -> void:
 		set_flag("true_end_precondition_1", true)
 	if get_flag("flag_night_roster_taken") or has_item("item_night_roster"):
 		set_flag("true_end_precondition_2", true)
-	if get_flag("flag_found_xuqing_log_fragment") and get_num("truth") >= 240:
+	if get_flag("flag_found_xuqing_log_fragment") and get_num("truth") >= 357:
 		set_flag("archive_route_bonus", true)
 	current_chapter = 4
 
@@ -319,9 +319,9 @@ func settle_chapter_4() -> void:
 	# 真相层级
 	var t := get_num("truth")
 	var core := get_flag("flag_saw_fire_video") and get_flag("flag_saw_self_repeat") and get_flag("flag_rule_terms_complete")
-	if t >= 330 and core and get_flag("flag_true_linday_status_known"):
+	if t >= 488 and core and get_flag("flag_true_linday_status_known"):
 		set_state("truth_state", "complete")
-	elif t >= 240 and (get_flag("flag_saw_fire_video") or get_flag("flag_roster_core_taken")):
+	elif t >= 357 and (get_flag("flag_saw_fire_video") or get_flag("flag_roster_core_taken")):
 		set_state("truth_state", "high")
 	else:
 		set_state("truth_state", "partial")
@@ -340,7 +340,7 @@ func settle_chapter_4() -> void:
 	# 周叙终章前状态
 	match get_state("zhouxu_final_state_ch3"):
 		"confessor_protector":
-			set_state("zhouxu_end_state", "enter_with_player" if get_num("trust_zhouxu") >= 3 else "follow_to_threshold")
+			set_state("zhouxu_end_state", "enter_with_player" if get_num("trust_zhouxu") >= 4 else "follow_to_threshold")
 		"coercer":
 			set_state("zhouxu_end_state", "pressure_player")
 		_:
@@ -349,7 +349,7 @@ func settle_chapter_4() -> void:
 	# 终章广播改写条件
 	var ready_broadcast := (has_item("item_roster_core") or has_item("item_night_roster")) \
 		and (has_item("item_admin_key") or get_flag("flag_fakewall_opened")) \
-		and get_num("truth") >= 240
+		and get_num("truth") >= 357
 	if ready_broadcast:
 		set_flag("flag_terminal_broadcast_ready", true)
 	current_chapter = 5
