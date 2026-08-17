@@ -337,27 +337,55 @@ shenhe(hollow)：你原来是那个在五年前的晚自习上，第一个低下
 @show shenhe hollow center
 @sfx sfx_broadcast_click
 调音台自己亮起。
-一张最终名单从机器里慢慢吐出来，纸还带着温热。
+所有的电平表指针同时归零，然后开始跳动——有信号进来了。
+@wait 0.6
+右侧那台老式打印机启动了。
+你没注意到那里有打印机——它藏在调音台下面的柜子里，现在自己滑了出来。
+@sfx sfx_write
+一张纸从机器里慢慢吐出来。
+针式打印，一行一行，"吱——吱——"。
+@wait 1.0
+纸还带着温热。你把它撕下来。
 @roster
 @set truth +4
+@wait 0.8
 shenhe(hollow)：最后一次。
 shenhe(hollow)：这次念完，就不用反复了。
-她先念别人的名字。
+me：为什么这次不一样？
+@wait 1.0
+shenhe(hollow)：因为名单只剩一页了。
+她指了指调音台下面。
+你看过去——柜子里是空的。刚才那台打印机吐完这一张，纸盒就空了。
+@set truth +2
+shenhe(hollow)：一百零九次，一次一页。
+shenhe(hollow)：纸用完了。
+@wait 1.2
+她开始念。
+先念别人的名字。
 @wait 0.6
 shenhe(hollow)：周叙。
 @if state:zhouxu_end_state==enter_with_player
+周叙站在你旁边。他吸了一口气。
 zhouxu(angry)：在。
+他停了一下，然后把后半句说完——声音很稳，稳得不像他。
 zhouxu(angry)：但这次我不替任何人补后半句。
 @set trust_zhouxu +1
 @set save_route_score +1
+@wait 0.6
+> 五年了。
+> 他终于把那句"到"，还给了它本来该属于的人。
+@set truth +1
 @elif state:zhouxu_end_state==follow_to_threshold
 门外传来周叙的声音，隔着铁门，闷闷的。
 zhouxu(sad)：在。
+@wait 0.6
+> 就一个字。
+> 但他没有跑。他站在门外，站到了最后。
 @else
 zhouxu(cold)：在。
 zhouxu(cold)：别拖，念你的名字。
 @endif
-@wait 0.4
+@wait 0.6
 shenhe(hollow)：梁野。
 @if state:liangye_end_state==present_anchor
 @goto final_ly_anchor
@@ -616,14 +644,46 @@ me：我要把这次点名，从头念一遍。
 @clearchars
 @show shenhe hollow center
 @fx heartbeat 1.4
+@wait 0.8
+调音台上的红灯全部亮起。
+然后开始一颗一颗熄灭。
+从左到右，一秒一颗。
+@wait 1.0
+你数着。
+> 十二颗。
+> 十一。
+> 十。
+每熄一颗，屋子就暗一分。
+@set truth +1
+@wait 0.8
+名单从打印机里源源不断地吐出来——纸盒明明是空的，但它还在吐。
+纸堆在地上，卷曲，边缘发黄发脆，像烧过。
+你低头看最上面那张。
 @wait 0.6
-调音台上的红灯全部亮起，然后开始一颗一颗熄灭。
-名单从机器里源源不断地吐出来，堆在地上，纸边卷曲，像烧过一样。
+上面只印着一行字，重复了几百遍：
+> 未到齐。未到齐。未到齐。未到齐。
+@fx names 1.0
+@set sanity -3
+@wait 1.0
 shenhe(hollow)：选吧。
 shenhe(hollow)：这一格，总要有一个名字。
+@wait 0.8
 @if truth>=20
-> 你现在明白了：规则从来不在乎是谁，只在乎那一格不能空着。
+> 你现在明白了。
+> 规则从来不在乎是谁。
+> 它只在乎那一格不能空着——就像点名册上不能有空行，就像毕业照上不能有缺口。
+> 一个系统运转了太久之后，会忘记自己最初是为了什么而运转。
+> 它只剩下"继续运转"这一个目的。
+@set truth +1
 @endif
+@wait 0.6
+你手里握着的东西——名单、录像带、钥匙、借书卡、打火机——每一样都很沉。
+> 你想起第一天下午，许清说的那句话。
+> "太尖的人，在这儿待不久。"
+> 她说错了。
+> 待不久的不是太尖的人。是不肯坐下的人。
+@set truth +1
+@wait 1.0
 * [lock flag_shenhe_name_full and item:item_roster_core] 把沈禾的名字，完整地写回名单 -> final_c_write
 * [lock flag_terminal_broadcast_ready] 自己坐上那把椅子 -> final_c_seat
 * [lock item:item_admin_key and flag_terminal_broadcast_ready] 接管主控，重新定规则 -> final_c_control
@@ -632,14 +692,59 @@ shenhe(hollow)：这一格，总要有一个名字。
 
 == final_c_write
 @bgm bgm_truth
-你把核心名单页铺在调音台上，从口袋里摸出笔。
-@sfx sfx_write
-在“沈禾（删除未完成）”那一行后面，你一笔一笔，把她的名字重新写了一遍。
-写完之后，你念了出来。
+你把核心名单页铺在调音台上，用手掌抹平。
+纸很脆，抹的时候折痕处又裂开一点。
+@wait 0.6
+你从口袋里摸笔。
+@if item:item_page109
+先摸到的是那块109页的残片。你把它放在名单旁边——背面那行铅笔字朝上。
+> 别替我答到。
+me：我不替。
+me：我把你的名字写回去，不是替你答，是让你自己能答。
+@set save_route_score +2
+@set truth +2
 @wait 0.8
+@endif
+你摸出笔。
+@if item:item_library_card
+是梁野的借书卡从口袋里一起带出来的——那张名字被描过很多遍的卡。
+你看了一眼，把它放回口袋。
+> 描名字是为了不让它消失。
+> 你现在要做的是同一件事。
+@set truth +1
+@endif
+@wait 0.8
+在"沈禾（删除未完成）"那一行后面，你落笔。
+@sfx sfx_write
+"沈"。
+写这个字的时候，笔尖有点涩，纸面吃墨很慢。
+@wait 0.6
+"禾"。
+第二个字写得比第一个顺。
+@wait 0.8
+你写完了，抬起笔。
+@wait 1.0
+纸上的墨没有干。它在渗——不是往纸里渗，是往外冒，字迹在变粗，变深。
+@fx names 0.8
+@set truth +1
+你把纸举起来，念了出来。
+@wait 0.6
 me：沈禾。
-@fx flash 0.8
+@fx flash 0.6
 @sfx sfx_sting
+@wait 0.8
+你停了一下。
+> 一遍不够。
+> 五年前那个晚上，周叙也念全了她的名字，门开了，但她没有出来。
+> 因为念名字的人不能只是喊。得是点名。
+@set truth +2
+@wait 0.8
+你把名单摆正，像老师拿着点名册那样。
+你清了清嗓子。
+@wait 0.6
+me：高二三班。
+me：点名。
+@wait 1.0
 me：沈、禾。
 @fx names 1.0
 @flag flag_name_written_back
@@ -647,12 +752,20 @@ me：沈、禾。
 @set save_route_score +3
 @set shenhe_focus +2
 @set truth +2
+@wait 1.2
 她坐在椅子上，很久没有动。
-然后你听见一个很轻的声音。轻得几乎不像人声。
+@wait 1.0
+屋子里所有的声音都停了。
+电流声停了。打印机停了。天花板上垂下来的断线不再摇晃。
+连你自己的心跳，都好像被按了暂停。
+@wait 1.2
+然后你听见一个很轻的声音。
+轻得几乎不像人声——更像是纸张翻过去的那一下。
+@wait 0.8
 shenhe(sad)：到。
 @fx whiteout 1.0
 @sfx sfx_bell
-@wait 0.8
+@wait 1.0
 @goto final_resolve
 
 == final_c_seat

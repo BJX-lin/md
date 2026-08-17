@@ -8,32 +8,84 @@
 @amb amb_rain
 @clearchars
 @autosave
-下午，雨又下起来了。校史馆在实验楼后面，是一栋两层的小灰楼，平时只在校庆开门。
-门口的公告栏贴着今年的高考喜报，边角被雨泡得翘起来。
-喜报下面压着一张更旧的纸——五年前的。
+第四天。下午，雨又下起来了。
+比前几天大。雨点砸在教学楼的铁皮雨棚上，"哗"的一片，说话得提高嗓门。
+@wait 0.6
+上午的课你几乎是撑过来的。
+第二节课下课，你去水房洗脸，看见镜子里自己的眼睛——眼白上有几道红丝，眼下青黑。
+> 你才来四天。
+@set truth +1
+@wait 0.8
+校史馆在实验楼后面。
+一栋两层的小灰楼，独立的，和别的楼隔着一片冬青。平时只在校庆和上级检查的时候开门。
+门口有块石碑，刻着"南栖中学校史馆"，落款是十二年前。
+@wait 0.6
+公告栏钉在门边，玻璃罩裂了一道缝，雨水渗进去，里面的纸都是波浪形的。
+最上面贴着今年的高考喜报，红底黄字，边角被泡得翘起来。
+你伸手把翘起的一角掀开。
 @sfx sfx_page
-> 五年前那张上面，第一行写着：“热烈祝贺我校本届高考再创佳绩，全体高三学生零缺席。”
-> 零缺席。
+底下压着一张更旧的。
+@wait 0.8
+纸已经黄透了，字迹被水泡得发晕，但还能认出来——是五年前的喜报。
+第一行写着：
+> 热烈祝贺我校本届高考再创佳绩，全体高三学生零缺席。
+@fx heartbeat 0.8
 @set truth +2
+"零缺席"。
+@wait 1.0
+> 高考喜报为什么要写"零缺席"？
+> 除非那一年，有人担心会缺席。
+> 除非那一年，学校急着告诉所有人：我们一个都没少。
+@set truth +2
+@wait 0.8
+你把那张纸再往下掀。
+下面还有一张，更旧。
+你正要看，一阵风把整叠纸吹得翻起来，玻璃罩"哐"地晃了一下。
+你缩回手。
+@wait 0.6
 @if state:liangye_end_state==absent_echo or death:梁野
 你一个人站在雨里。
+伞是从教室借的，骨架断了一根，雨从缺口灌进来，肩膀那一块全湿了。
+> 三天前，从旧楼回来的时候，你身边还有两个人。
+@set sanity -2
 @else
-@show liangye fear left
+@show liangye nervous left
 梁野撑着一把伞，伞骨断了两根，雨顺着断口往他肩上灌。
-liangye(fear)：进去了就出不来了吧。
+他没换位置，也没抱怨，就那么斜着站，把伞面大部分举在你这边。
+liangye(nervous)：进去了就出不来了吧。
 me：出得来。
-liangye(fear)：你上次也这么说。
+liangye(nervous)：你上次也这么说。
+@set memory_echo +1
+@wait 0.6
+me：我什么时候说过？
+他愣了一下。
+liangye(nervous)：……我不知道。
+liangye(nervous)：话到嘴边就出来了。
+@fx glitch 0.4
+@set truth +1
 @set memory_echo +1
 @endif
+@wait 0.6
 @if state:zhouxu_final_state_ch3==coercer
 @show zhouxu cold right
 zhouxu(cold)：快点。天黑之前必须出来。
+me：天黑以后怎么了？
 zhouxu(cold)：天黑以后，这栋楼跟旧楼是通的。
+me：物理上通？
+zhouxu(cold)：你自己进去看。
+@set truth +1
 @else
 @show zhouxu flat right
+周叙站在台阶上，已经把伞收了，任雨淋着。
+他在看那栋楼——不是看门，是仰头看二楼的窗。
 zhouxu(flat)：我先进。你跟在我后面两步。
-zhouxu(flat)：里面有什么，别乱碰。
+me：为什么是两步？
+zhouxu(flat)：一步太近，三步太远。
+zhouxu(flat)：两步的话，我回头能抓住你。
+@set trust_zhouxu +1
+@set truth +1
 @endif
+@wait 0.6
 @goto ch4_sc2
 
 == ch4_sc2
@@ -177,12 +229,27 @@ zhouxu(cold)：因为墙那边通旧楼。
 @bg history_hall dark
 @bgm bgm_horror
 就在你要推开内门时，背后传来许清的声音。
-@show xuqing cold center
+@show xuqing stare center
 @fx glitch 0.5
-她没穿鞋。脚踩在地砖上，没有一点水声，却留下了很浅的湿印。
+xuqing(stare)：站住。
+你转身。
+她站在展厅中间，离你大概十米。
+你不知道她是什么时候进来的——门口只有一条路，而你们进来之后一直背对着门。
+@wait 0.8
+她没穿鞋。
+脚踩在地砖上，没有一点声音。
+但地砖上留下了浅浅的湿印——一步，一步，一直延伸到她身后的黑暗里。
 @clue clue_xuqing_barefoot
+@set truth +1
+你顺着那串湿印往回看。
+> 湿印从展厅深处过来。
+> 而展厅深处是死角，那里没有门。
+@fx heartbeat 1.0
+@set sanity -2
 xuqing(cold)：开这扇门之前，我劝你们先想清楚。
-xuqing(cold)：看见了，不代表拿得走。记住了，也不代表还能活着忘掉。
+xuqing(cold)：看见了，不代表拿得走。
+xuqing(cold)：记住了，也不代表还能活着忘掉。
+@wait 0.6
 * “你到底是什么？” -> ch4_xq_a
     @set truth +2
 * “你五年前就已经死了，对吗？” -> ch4_xq_b
@@ -191,6 +258,45 @@ xuqing(cold)：看见了，不代表拿得走。记住了，也不代表还能�
     @set truth +2
 * [if item:item_log_fragment] “名单是你在维护？” -> ch4_xq_d
     @set truth +3
+* “您的脚不冷吗。” -> ch4_xq_feet
+    @set truth +3
+    @set trust_xuqing -1
+    @set memory_echo +1
+
+== ch4_xq_feet
+你没有问她是什么。
+你问了一个很小的问题。
+me：许老师。
+me：地砖很凉。您的脚不冷吗。
+@wait 1.2
+许清低头看了看自己的脚。
+她看了很久——久到你以为她不打算回答了。
+@wait 1.0
+xuqing(empty)：不冷。
+她说完这两个字，自己也愣了一下。
+xuqing(empty)：……我刚才想说"当然冷"。
+xuqing(empty)：但话到嘴边，我发现我不知道那是什么感觉了。
+@fx glitch 0.8
+@set sanity -3
+@set truth +3
+@set memory_echo +1
+@state xuqing_state suspected
+她把一只脚抬起来一点，脚底朝上。
+干净的。
+在一栋积了五年灰的楼里，走了这么远，脚底是干净的。
+@wait 0.8
+xuqing(empty)：我以前会穿鞋。
+xuqing(empty)：有一天早上我起来，找不到鞋。
+xuqing(empty)：我找了整整一天。后来就习惯了。
+@set truth +2
+me：那是哪一天？
+@wait 1.0
+xuqing(empty)：五月十七号。
+@fx heartbeat 1.4
+@clue clue_xuqing_dead
+@set truth +3
+@set sanity -2
+@goto ch4_xq_second
 
 == ch4_xq_a
 xuqing(flat)：老师。记录员。

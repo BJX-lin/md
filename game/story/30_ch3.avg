@@ -664,30 +664,73 @@ liangye(terrified)：别开。求你了。上次就是有人开了。
 @bg dorm dark
 @bgm bgm_horror
 @clearchars
-@wait 0.8
+@wait 1.0
 门外突然开始报名字。
+不是刚才那种试探的语气了——是很正式的、一条一条的报，中间有停顿，像在核对。
 @sfx sfx_write
+每报一个，就有一声笔尖划纸的声音。
+@wait 0.6
 unknown(flat)：周叙，在册。
+@sfx sfx_write
 unknown(flat)：李恒，在册。
-unknown(flat)：陈屿，在册。
+@sfx sfx_write
+@wait 0.8
+你在黑暗里睁大眼睛。
+> 它没有报第三个人。
+> 307住四个人。
+@fx heartbeat 1.0
+@set truth +1
+@wait 0.6
 @if death:梁野
 unknown(flat)：梁野，已听见。
+@sfx sfx_write
+> "已听见"。
+> 不是"在册"，不是"未到"。
+> 是"已听见"。
+@set sanity -3
+@set truth +2
 @elif flag_liangye_half_assimilated
 unknown(flat)：梁野，待定。
+@sfx sfx_write
+你听见对面床上梁野动了一下。
+不是翻身——是坐起来了。
+在黑暗里，他坐得笔直，面朝门口。
+@set sanity -3
+@set truth +2
 @else
 unknown(flat)：梁野，在册。
+@sfx sfx_write
+你听见梁野极轻地吸了一口气。
+> 他一直憋着。听见"在册"两个字才敢呼吸。
+@set truth +1
 @endif
-@wait 0.6
+@wait 1.0
+然后是一段很长的停顿。
+长到你以为它走了。
+@wait 1.4
 @fx heartbeat 1.2
 unknown(flat)：林昼——
+@wait 1.2
+它停在这里。
+你的名字念了一半。
+> 就像广播里的"沈——"。
+@fx glitch 0.6
+@set sanity -2
+@set truth +2
 @wait 1.0
-unknown(flat)：待定。
+然后它把后半个字补上了。
+unknown(flat)：——待定。
 @fx glitch 0.8
 @set sanity -3
 @set truth +2
-然后是笔尖划过纸的声音。
-它在改。它当着你的面，在名单上把你的状态改了。
 @sfx sfx_write
+笔尖划纸的声音。
+这一次写得比前面几个都久——不是三个字的时间，是七八个字的时间。
+@wait 0.8
+> 它在改。
+> 它当着你的面，在名单上把你的状态改了。
+> 而且改的内容比"待定"两个字要长。
+@set truth +2
 * 隔着门问“为什么我是待定” -> ch3_s7_ask
     @set taboo_count +1
     @set truth +3
@@ -698,6 +741,46 @@ unknown(flat)：待定。
     @set truth +4
     @set route_investigate +2
     @flag flag_night_roster_taken
+* 数它写了多少个字 -> ch3_s7_count_strokes
+    @set truth +3
+    @set memory_echo +2
+
+== ch3_s7_count_strokes
+你没有出声。
+你闭上眼睛，听那支笔。
+@wait 0.8
+> 中文字的笔画在纸上是有节奏的。横是"刷"，竖是"刷"，点是"嗒"。
+> 你从小练过两年字，你能听出来。
+@wait 1.0
+@sfx sfx_write
+你数：
+> 第一个字，八画。
+> 第二个字，九画。
+> 停顿。
+> 第三个字，两画。
+> 第四个字，五画。
+@fx heartbeat 1.0
+@set truth +2
+@wait 0.8
+> 八画、九画——"林昼"。
+> 两画、五画——
+你在脑子里过了一遍。
+> "可补"。
+@set sanity -4
+@set memory_echo +3
+@set truth +2
+@clue clue_night_rewrite
+@wait 1.0
+> 林昼（待定 / 可补）。
+> 和你在旧楼看见的那张名单，一模一样。
+> 但那张名单是五年前的格式。
+@wait 0.8
+笔停了。
+然后你听见纸被折起来的声音，很脆。
+@sfx sfx_page
+脚步声离开了。七步。
+@set truth +1
+@goto ch3_sc8
 
 == ch3_s7_ask
 me：为什么我是待定？
