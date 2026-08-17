@@ -17,6 +17,8 @@
 * [if !visited:ch3_side_roof] 上天台 -> ch3_side_roof
 * [if !visited:ch3_side_lock] 检查宿舍门锁 -> ch3_side_lock
 * 留意李恒 -> liheng_hub
+* 熬到后半夜再说 -> ch3_deep_hub
+    @set truth +1
 * 躺下，撑到天亮 -> ch3_night_end
 
 == ch3_side_water

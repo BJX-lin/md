@@ -405,6 +405,8 @@ zhouxu(cold)：别的都不重要。
 * [if !flag_saw_fire_video] 看录像 -> ch4_video
 * [if !flag_roster_core_taken] 看名单核心页 -> ch4_roster
 * [if !flag_rule_terms_complete] 翻日志总册 -> ch4_log
+* 再深挖一层 -> ch4_deep_hub
+    @set route_investigate +2
 * 够了，去拿主控 -> ch4_sc7
     @set route_hostility +1
 
