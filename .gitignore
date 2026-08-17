@@ -2,7 +2,7 @@
 game/.godot/
 game/.import/
 game/export.cfg
-game/export_presets.cfg
+# game/export_presets.cfg  (随包提供，方便直接导出)
 *.translation
 
 # 导出产物
