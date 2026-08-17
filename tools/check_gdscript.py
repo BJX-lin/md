@@ -14,8 +14,17 @@ import os
 import re
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-GAME = os.path.join(ROOT, "game")
+def _find_root():
+    """兼容两种布局：仓库(tools/ 与 game/ 平级) 与 发布包(_tools/ 与 project.godot 平级)"""
+    here = os.path.dirname(os.path.abspath(__file__))
+    for base in (os.path.dirname(here), here):
+        for cand in (os.path.join(base, "game"), base):
+            if os.path.isfile(os.path.join(cand, "project.godot")):
+                return cand
+    return os.path.join(os.path.dirname(here), "game")
+
+GAME = _find_root()
+ROOT = GAME
 
 
 def res_to_path(p):
