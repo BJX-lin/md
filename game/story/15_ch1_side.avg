@@ -11,6 +11,8 @@
 @if visited:ch1_free_hub
 > 你还有一点时间。
 @endif
+* [if !visited:ch1_day_hub] 留在教室，慢慢熟悉一下 -> ch1_day_hub
+    @set route_investigate +1
 * [if !visited:ch1_side_wash] 去盥洗室洗把脸 -> ch1_side_wash
 * [if !visited:ch1_side_board] 去操场后面的公告栏 -> ch1_side_board
     @set route_investigate +1

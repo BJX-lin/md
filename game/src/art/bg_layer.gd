@@ -108,6 +108,15 @@ const BG_MAP := {
 		"day": ["title_school", "campus_rain", "old_building_gate_rain"],
 		"dusk": ["title_school", "campus_rain", "old_building_gate_rain"],
 	},
+	"dorm_hall": {
+		"": ["dorm_hallway_night"], "night": ["dorm_hallway_night"], "dark": ["dorm_hallway_night"], "day": ["hallway_day"],
+	},
+	"washroom": {
+		"": ["dorm_hallway_night"], "night": ["dorm_hallway_night"], "dark": ["dorm_hallway_night"],
+	},
+	"canteen": {
+		"": ["classroom_day"], "day": ["classroom_day"], "dark": ["classroom_night"],
+	},
 	"mirror": {
 		"": ["dorm_307_night"], "dark": ["dorm_307_night"], "day": ["dorm_307_day"],
 	},

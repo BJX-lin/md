@@ -754,10 +754,13 @@ oldqin(flat)：只怕明天你就不想来了。
     @set truth +1
 * [if !visited:ch2_school_hub] 换个方向：去问活人 -> ch2_school_hub
     @set route_investigate +2
+* [if !visited:ch2_night_hub] 回宿舍，今晚早点休息 -> ch2_night_hub
+    @set route_investigate +1
 * 去旧楼 -> ch2_oldbuilding_pre
     @set route_hostility +1
 
 -- ================================================= 图书馆复访
+
 == ch2_library2
 @bg library day
 @bgm bgm_investigate
