@@ -33,9 +33,9 @@ const BG_MAP := {
 		"": ["classroom_day", "classroom_evening"],
 		"day": ["classroom_day", "classroom_evening"],
 		"dusk": ["classroom_evening", "classroom_day"],
-		"night": ["classroom_evening"],
-		"dark": ["classroom_evening"],
-		"blood": ["classroom_evening"],
+		"night": ["classroom_evening_alllook", "classroom_evening"],
+		"dark": ["classroom_evening_alllook", "classroom_evening"],
+		"blood": ["classroom_evening_missingseat", "classroom_evening"],
 	},
 	"hallway": {
 		"": ["hallway_day", "hallway_night"],
@@ -54,9 +54,12 @@ const BG_MAP := {
 	"dorm": {
 		"": ["dorm_307_day", "dorm_307_night"],
 		"day": ["dorm_307_day", "dorm_307_night"],
-		"night": ["dorm_307_night"],
-		"dark": ["dorm_307_night"],
-		"blood": ["dorm_307_night"],
+		"night": ["dorm_307_night_shadow", "dorm_307_night"],
+		"dark": ["dorm_307_night_shadow", "dorm_307_night"],
+		"shadow": ["dorm_307_night_shadow", "dorm_307_night"],
+		"names": ["dorm_307_night_namewall", "dorm_307_night"],
+		"wet": ["dorm_307_night_wetfloor", "dorm_307_night"],
+		"blood": ["dorm_307_night_wetfloor", "dorm_307_night"],
 	},
 	"dorm_door": {
 		"": ["dorm_corridor_night", "hallway_night"],
@@ -78,15 +81,20 @@ const BG_MAP := {
 		"": ["old_building_stairs", "old_building_corridor"],
 		"dark": ["old_building_stairs", "old_building_corridor"],
 		"night": ["old_building_stairs", "old_building_corridor"],
+		"red": ["old_building_corridor_red", "old_building_corridor"],
+		"blood": ["old_building_corridor_red", "old_building_corridor"],
 	},
 	"broadcast_door": {
-		"": ["broadcast_door"],
-		"dark": ["broadcast_door"], "night": ["broadcast_door"],
+		"": ["broadcast_door_lightline", "broadcast_door"],
+		"dark": ["broadcast_door_lightline", "broadcast_door"],
+		"night": ["broadcast_door_lightline", "broadcast_door"],
+		"open": ["broadcast_door_opencrack", "broadcast_door"],
 	},
 	"broadcast_room": {
-		"": ["broadcast_room"],
-		"dark": ["broadcast_room"],
+		"": ["broadcast_room_emptyseat", "broadcast_room"],
+		"dark": ["broadcast_room_emptyseat", "broadcast_room"],
 		"fire": ["broadcast_room_fireedge", "broadcast_room"],
+		"void": ["void_broadcast_edge", "broadcast_room"],
 		"blood": ["broadcast_room"],
 	},
 	"history_hall": {
@@ -97,9 +105,11 @@ const BG_MAP := {
 	"archive": {
 		"": ["archive_inner_door", "monitor_room"],
 		"dark": ["archive_inner_door", "monitor_room"],
+		"snow": ["monitor_room_snow", "monitor_room"],
 	},
 	"monitor_room": {
 		"": ["monitor_room"], "dark": ["monitor_room"],
+		"snow": ["monitor_room_snow", "monitor_room"],
 	},
 	"schoolyard": {
 		"": ["campus_rain", "old_building_gate_rain"],
@@ -109,13 +119,13 @@ const BG_MAP := {
 		"dusk": ["title_school", "campus_rain", "old_building_gate_rain"],
 	},
 	"dorm_hall": {
-		"": ["dorm_hallway_night"], "night": ["dorm_hallway_night"], "dark": ["dorm_hallway_night"], "day": ["hallway_day"],
+		"": ["dorm_corridor_night"], "night": ["dorm_corridor_night"], "dark": ["dorm_corridor_night"], "day": ["hallway_day"],
 	},
 	"washroom": {
-		"": ["dorm_hallway_night"], "night": ["dorm_hallway_night"], "dark": ["dorm_hallway_night"],
+		"": ["dorm_corridor_night"], "night": ["dorm_corridor_night"], "dark": ["dorm_corridor_night"],
 	},
 	"canteen": {
-		"": ["classroom_day"], "day": ["classroom_day"], "dark": ["classroom_night"],
+		"": ["classroom_day"], "day": ["classroom_day"], "dark": ["classroom_evening"],
 	},
 	"mirror": {
 		"": ["dorm_307_night"], "dark": ["dorm_307_night"], "day": ["dorm_307_day"],
