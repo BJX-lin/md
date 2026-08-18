@@ -50,11 +50,9 @@ const BG_MAP := {
 	"library": {
 		"": ["library_day"],
 		"day": ["library_day"],
-		"night": ["library_stacks_night", "library_dim"],
-		"dark": ["library_stacks_night", "library_dim"],
 		"dusk": ["library_dim", "library_day"],
-		"night": ["library_dim", "library_day"],
-		"dark": ["library_dim", "library_day"],
+		"night": ["library_stacks_night", "library_dim", "library_day"],
+		"dark": ["library_stacks_night", "library_dim", "library_day"],
 	},
 	"dorm": {
 		"": ["dorm_307_day", "dorm_307_night"],

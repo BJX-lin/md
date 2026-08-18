@@ -71,6 +71,34 @@ func save_persistent() -> void:
 	if f:
 		f.store_string(JSON.stringify(GameState.persistent, "\t"))
 
+# ---------------------------------------------------------------- 存档完整性
+## 存档签名。
+##
+## 目的不是「防止玩家改档」——单机游戏没必要跟玩家为敌，改了也只影响自己。
+## 真正要挡的是：改档后解锁本该靠通关拿到的真结局 / 全线索图鉴，
+## 然后拿着残缺的体验去评价作品，或散播「这游戏结局有 bug」。
+##
+## 因此策略是「检测并提示」而非「拒绝加载」：
+## 签名不符时照常读档，但标记 tampered，结局判定与图鉴解锁走保守分支。
+const SAVE_SALT := "AfterEveningStudy::2015-05-17::42"
+
+func _sign(payload: Dictionary) -> String:
+	var d := payload.duplicate(true)
+	d.erase("_sig")
+	# 键排序后再序列化，保证同一份数据签名稳定
+	var keys := d.keys()
+	keys.sort()
+	var ordered := {}
+	for k in keys:
+		ordered[k] = d[k]
+	var raw := JSON.stringify(ordered) + SAVE_SALT
+	return raw.sha256_text()
+
+func _verify(d: Dictionary) -> bool:
+	if not d.has("_sig"):
+		return false
+	return String(d["_sig"]) == _sign(d)
+
 # ---------------------------------------------------------------- 存档槽
 func slot_path(i: int) -> String:
 	return "%s/slot_%d.json" % [SAVE_DIR, i]
@@ -104,13 +132,17 @@ func save_slot(i: int) -> bool:
 	var f := FileAccess.open(slot_path(i), FileAccess.WRITE)
 	if f == null:
 		return false
-	f.store_string(JSON.stringify(build_payload(), "\t"))
+	var payload := build_payload()
+	payload["_sig"] = _sign(payload)
+	f.store_string(JSON.stringify(payload, "\t"))
 	return true
 
 func autosave() -> void:
 	var f := FileAccess.open(autosave_path(), FileAccess.WRITE)
 	if f:
-		f.store_string(JSON.stringify(build_payload(), "\t"))
+		var payload := build_payload()
+		payload["_sig"] = _sign(payload)
+		f.store_string(JSON.stringify(payload, "\t"))
 
 func read_slot(i: int) -> Dictionary:
 	var p := slot_path(i)
@@ -120,7 +152,10 @@ func read_slot(i: int) -> Dictionary:
 	if f == null:
 		return {}
 	var d = JSON.parse_string(f.get_as_text())
-	return d if d is Dictionary else {}
+	if d is Dictionary:
+		d["_tampered"] = not _verify(d)
+		return d
+	return {}
 
 func read_autosave() -> Dictionary:
 	if not FileAccess.file_exists(autosave_path()):
@@ -129,7 +164,10 @@ func read_autosave() -> Dictionary:
 	if f == null:
 		return {}
 	var d = JSON.parse_string(f.get_as_text())
-	return d if d is Dictionary else {}
+	if d is Dictionary:
+		d["_tampered"] = not _verify(d)
+		return d
+	return {}
 
 func delete_slot(i: int) -> void:
 	var p := slot_path(i)

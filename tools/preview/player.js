@@ -182,6 +182,7 @@ function settle(ch){
   }
 }
 function determineEnding(){
+ if(S.saveTampered) return "ending_empty_seat";
  if(S.flags["flag_count_overflow"]){S.states.truth_state="complete";S.flags["flag_terminal_broadcast_ready"]=1;S.flags["true_end_precondition_1"]=1;S.flags["true_end_precondition_2"]=1;S.flags["flag_rule_terms_complete"]=1;}
   const F=S.flags, st=S.states;
   if(st.truth_state==="complete" && F.true_end_precondition_1 && F.true_end_precondition_2

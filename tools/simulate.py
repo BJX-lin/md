@@ -266,6 +266,9 @@ class State:
             self.chapter = 5
 
     def determine_ending(self):
+        # 与 game_state.gd 保持一致：篡改档回落空席（模拟中恒为 False）
+        if getattr(self, "save_tampered", False):
+            return "ending_empty_seat"
         # 全员报数路线：三条支线全通才解锁，本身即构成真结局资格
         if self.flags.get("flag_count_overflow"):
             self.states["truth_state"] = "complete"

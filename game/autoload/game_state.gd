@@ -20,6 +20,7 @@ var history: Array = []              # 回想记录 [{who,text}]
 var current_chapter: int = 1
 ## 当前演出状态：读档后要用它把画面还原成存档那一刻的样子。
 ## 只存 @bg / @show 的结果，不存立绘节点本身。
+var save_tampered := false     # 读入的存档签名不符（见 SaveSystem._verify）
 var scene_bg: String = "black"
 var scene_variant: String = ""
 var scene_actors: Array = []        # [{who, emo, pos}, ...]
@@ -423,6 +424,10 @@ func can_manager() -> bool:
 	)
 
 func determine_ending() -> String:
+	# 改档解锁真结局会让玩家错过整段体验，因此篡改档一律回落到空席。
+	# 正常游玩不受任何影响。
+	if save_tampered:
+		return "ending_empty_seat"
 	if flags.get("flag_count_overflow", false):
 		states["truth_state"] = "complete"
 		flags["flag_terminal_broadcast_ready"] = true
@@ -495,6 +500,7 @@ func from_dict(d: Dictionary) -> void:
 	visited_nodes = (d.get("visited", {}) as Dictionary).duplicate(true)
 	current_chapter = int(d.get("chapter", 1))
 	current_node = String(d.get("node", ""))
+	save_tampered = bool(d.get("_tampered", false))
 	scene_bg = String(d.get("scene_bg", "black"))
 	scene_variant = String(d.get("scene_variant", ""))
 	scene_actors = (d.get("scene_actors", []) as Array).duplicate(true)

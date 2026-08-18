@@ -11,6 +11,7 @@
   7. 关键字拼写：func/var/const/signal 行的基本形态
   8. 自定义方法是否覆盖 Node/Object 原生方法（Godot 会当成错误）
   9. 是否误用了 GLSL/着色器专有函数（GDScript 中不存在）
+ 11. 字典字面量里出现重复键（Godot 直接报错）
  10. := 无法推断类型：三元两分支类型不一致 / 索引无类型集合 /
      使用返回 Variant 的全局数学函数（abs、max、clamp…应改用 absf、maxf…）
 """
@@ -306,6 +307,36 @@ def main():
                         f"{fn_name}f() / {fn_name}i()，或显式标注 "
                         f"var {name}: <类型> = ...")
                     break
+
+        # 11. 字典字面量里出现重复键
+        #     Godot 报 Key "x" was already used in this dictionary
+        #     嵌套字典按缩进层级分组统计，避免跨层误报。
+        depth_keys = {}
+        brace = 0
+        for ln, raw in enumerate(src.split("\n"), 1):
+            st = raw.strip()
+            if st.startswith(("#", "//")):
+                continue
+            opens = st.count("{")
+            closes = st.count("}")
+            m = re.match(r'^"([^"]+)"\s*:', st)
+            if m and brace > 0:
+                bucket = depth_keys.setdefault(brace, {})
+                k = m.group(1)
+                if k in bucket:
+                    errors.append(
+                        f"{rel}:{ln} 字典中重复的键 \"{k}\"，"
+                        f"首次出现在第 {bucket[k]} 行（Godot 会直接报错）")
+                else:
+                    bucket[k] = ln
+            # 进入更深层或退出当前层时，清掉更深层的记录
+            if opens > closes:
+                brace += opens - closes
+            elif closes > opens:
+                for d in list(depth_keys):
+                    if d >= brace:
+                        depth_keys.pop(d, None)
+                brace = max(0, brace - (closes - opens))
 
         # 7. func 行基本形态
         for ln, raw in enumerate(src.split("\n"), 1):
