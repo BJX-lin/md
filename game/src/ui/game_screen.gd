@@ -7,6 +7,7 @@ signal quit_to_title()
 const BGLayerS := preload("res://src/art/bg_layer.gd")
 const ActorSpriteS := preload("res://src/art/actor_sprite.gd")
 const LoadingOverlayS := preload("res://src/ui/loading_overlay.gd")
+const StatusGaugeS := preload("res://src/ui/status_gauge.gd")
 const EffectsLayerS := preload("res://src/art/effects_layer.gd")
 const SanityFXS := preload("res://src/art/sanity_fx.gd")
 const GoreOverlayS := preload("res://src/art/gore_overlay.gd")
@@ -202,22 +203,52 @@ func _refresh_time() -> void:
 		time_label.add_theme_color_override("font_color", Color(0.80, 0.77, 0.68))
 
 func _refresh_status() -> void:
-	for c in status_strip.get_children():
-		c.queue_free()
+	# 复用已建好的量表节点，只更新数值——原先每次全部 queue_free 再重建，
+	# 数值一变就重建 4 个 Label，白白产生垃圾。
+	if status_strip.get_child_count() != Cfg.NUM_VISIBLE.size():
+		for c in status_strip.get_children():
+			c.queue_free()
+		for key in Cfg.NUM_VISIBLE:
+			var g: StatusGauge = StatusGaugeS.new()
+			g.key = String(key)
+			g.label_text = String(Cfg.NUM_LABEL.get(key, key))
+			status_strip.add_child(g)
+	var i := 0
 	for key in Cfg.NUM_VISIBLE:
-		var lbl := Label.new()
-		var v := GameState.get_num(key)
-		lbl.text = "%s %d" % [Cfg.NUM_LABEL[key], v]
-		lbl.add_theme_font_size_override("font_size", 19)
-		var col := Color(0.72, 0.71, 0.68)
-		if key == "sanity":
-			col = Color(0.55, 0.78, 0.72) if v >= 60 else (Color(0.86, 0.72, 0.35) if v >= 30 else Color(0.86, 0.30, 0.26))
-		elif key == "truth":
-			col = Color(0.68, 0.75, 0.85)
-		elif key == "shenhe_focus" and v >= 8:
-			col = Color(0.86, 0.40, 0.36)
-		lbl.add_theme_color_override("font_color", col)
-		status_strip.add_child(lbl)
+		var node := status_strip.get_child(i) as StatusGauge
+		i += 1
+		if node == null:
+			continue
+		var rng: Array = Cfg.NUM_RANGE.get(key, [0, 100])
+		node.set_value(GameState.get_num(key), int(rng[1]))
+	_apply_state_theme()
+
+## 让整个界面随数值变化，而不只是顶栏数字：
+##   - 理智越低，文本框边框越红、正文越发灰、字距轻微不稳
+##   - 沈禾关注度高时，名字栏染上一层红
+##   - 真相到达阈值时，顶栏出现一条渐亮的提示线
+func _apply_state_theme() -> void:
+	var san := float(GameState.get_num("sanity"))
+	var san_max: float = float((Cfg.NUM_RANGE.get("sanity", [0, 100]) as Array)[1])
+	var sev := clampf((san_max * 0.8 - san) / (san_max * 0.8), 0.0, 1.0)
+
+	if is_instance_valid(box):
+		var sb := box.get_theme_stylebox("panel") as StyleBoxFlat
+		if sb != null:
+			# 边框由冷灰渐变为暗红
+			sb.border_color = Color(0.48, 0.44, 0.40, 0.55).lerp(
+				Color(0.72, 0.24, 0.22, 0.85), sev)
+			sb.set_border_width_all(1 + int(round(sev * 1.5)))
+	if is_instance_valid(text_label):
+		# 正文在低理智时略微褪色发灰
+		text_label.modulate = Color(1, 1, 1).lerp(Color(0.86, 0.82, 0.82), sev * 0.8)
+
+	var focus := float(GameState.get_num("shenhe_focus"))
+	var focus_max: float = float((Cfg.NUM_RANGE.get("shenhe_focus", [0, 60]) as Array)[1])
+	var fr := clampf(focus / focus_max, 0.0, 1.0)
+	if is_instance_valid(name_label):
+		name_label.add_theme_color_override("font_color",
+			Color(0.84, 0.78, 0.62).lerp(Color(0.92, 0.42, 0.38), fr * 0.75))
 
 func _build_text_box() -> void:
 	box = PanelContainer.new()

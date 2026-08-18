@@ -301,6 +301,7 @@ zhouxu(angry)：你要是三分钟不出来，我就进来拖你。
 调音台的每一个推子都推到了顶。
 所有的电平表指针都顶在最右边，但没有声音。
 天花板上垂下来几根线，线头是断的，断口发黑。
+@bg broadcast_room shenhe
 @show shenhe hollow center
 播音椅上坐着一个人。
 她背对着你。
@@ -1514,6 +1515,43 @@ xuqing(neutral)：人齐了。
 > 你今天早上特意去摸过。桌板背面是光的，什么都没有。
 @set truth +2
 @wait 1.0
+@if flag_zhouxu_answered_once
+第二天的早读，你特意盯着许清的嘴。
+@wait 1.0
+她念到周叙的时候，停了一下。
+@wait 1.2
+@fx heartbeat 1.4
+@set sanity -3
+@set truth +4
+@set memory_echo +3
+很短。短到全班没有一个人察觉。
+@wait 0.8
+但你看见了——因为你知道该看哪里。
+@wait 1.0
+> 三年来，那个停顿一直在第四十二个位置。
+> 现在它挪到了第七个。
+@wait 0.8
+@set truth +5
+周叙自己应了「到」。
+@wait 0.6
+应得很快，几乎抢在停顿之前。
+@wait 1.2
+> 他在自己给自己补位。
+@wait 1.0
+@set truth +4
+@set save_route_score +3
+下课的时候他经过你的座位，没有停，只说了一句。
+@wait 0.8
+zhouxu(tired)：还在。
+@wait 1.0
+> 两个字。
+> 意思是：今天还在。
+@wait 0.8
+@set memory_echo +2
+@set truth +3
+@clearchars
+@wait 1.0
+@endif
 @if flag_count_overflow
 一周以后，学校做了一件很奇怪的事。
 @wait 1.0

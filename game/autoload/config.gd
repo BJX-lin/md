@@ -10,6 +10,7 @@ const VERSION := "1.0.0"
 # 对应 f.md 《全局变量总表 · 1.1 数值变量表》
 const NUM_RANGE := {
 	"truth": [0, 980],
+	"evidence_count": [0, 8],
 	"sanity": [0, 100],
 	"memory_echo": [0, 300],
 	"shenhe_focus": [0, 95],
@@ -28,6 +29,7 @@ const NUM_RANGE := {
 }
 
 const NUM_DEFAULT := {
+	"evidence_count": 0,
 	"truth": 0,
 	"sanity": 70,
 	"memory_echo": 0,

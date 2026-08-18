@@ -4,7 +4,7 @@
 
 // ---------------------------------------------------------------- 配置（对应 config.gd）
 const NUM_RANGE = {
-  truth:[0,980], sanity:[0,100], memory_echo:[0,300], shenhe_focus:[0,95],
+  truth:[0,980],evidence_count:[0,8], sanity:[0,100], memory_echo:[0,300], shenhe_focus:[0,95],
   trust_zhouxu:[-12,14], trust_liangye:[-12,18], trust_xuqing:[-10,6], trust_oldqin:[-6,12],
   route_obedience:[0,24], route_investigate:[0,24], route_empathy:[0,14], route_hostility:[0,14],
   taboo_count:[0,25], save_route_score:[0,62], end_cycle_score:[0,20], control_route_score:[0,20],

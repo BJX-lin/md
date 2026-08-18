@@ -23,6 +23,7 @@
 门口有块石碑，刻着"南栖中学校史馆"，落款是十二年前。
 @wait 0.6
 公告栏钉在门边，玻璃罩裂了一道缝，雨水渗进去，里面的纸都是波浪形的。
+@bg prop notice
 最上面贴着今年的高考喜报，红底黄字，边角被泡得翘起来。
 你伸手把翘起的一角掀开。
 @sfx sfx_page
@@ -132,6 +133,7 @@ zhouxu(flat)：我姐以前教我的。她说这所学校，早晚有一天你�
 @clearchars
 @endif
 校史馆里没有开灯。雨水的光从高窗照进来，落在一排排玻璃展柜上。
+@bg photo_wall dusk
 展柜里是历届的毕业照。
 @wait 0.8
 你沿着照片墙往里走。1998、2003、2010、2016……
@@ -640,7 +642,7 @@ zhouxu(flat)：看了也改变不了那十一分钟。
 @goto ch4_after_material
 
 == ch4_roster
-@bg monitor_room dark
+@bg prop roster
 @bgm bgm_truth
 你抽出那叠名单。
 比你想的厚——大概有五六百页，用铁夹子夹着，边缘参差不齐。
@@ -704,7 +706,7 @@ zhouxu(flat)：看了也改变不了那十一分钟。
 @goto ch4_after_material
 
 == ch4_log
-@bg monitor_room dark
+@bg prop logbook
 @bgm bgm_truth
 日志总册很厚，封皮是硬的，边角磨得起了毛。
 里面按次编号，每一次都是一份格式一样的记录。

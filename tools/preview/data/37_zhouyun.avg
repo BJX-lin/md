@@ -51,6 +51,7 @@ zhouxu(tired)：我怕哪天我也忘了她。
 @bgm bgm_investigate
 @clearchars
 @advtime 10
+@bg prop ticket
 一张长途汽车票。硬纸，热敏打印，字迹已经淡了，但还能认。
 @sfx sfx_page
 @wait 0.8
