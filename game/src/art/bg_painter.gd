@@ -448,11 +448,11 @@ func _draw_broadcast_room(s: Vector2, p: Dictionary, lm: float) -> void:
 	for i in 14:
 		var fx := c.position.x + 22 + i * (c.size.x - 44) / 14.0
 		draw_rect(Rect2(fx, c.position.y + 16, 6, c.size.y - 40), Color(0.10, 0.10, 0.10))
-		var kv: float = 0.3 + 0.5 * abs(sin(_t * (0.7 + i * 0.11)))
+		var kv: float = 0.3 + 0.5 * absf(sin(_t * (0.7 + i * 0.11)))
 		draw_rect(Rect2(fx - 5, c.position.y + 16 + (c.size.y - 46) * (1.0 - kv), 16, 8), Color(0.55, 0.52, 0.48))
 	# VU 灯
 	for i in 10:
-		var on := float(i) / 10.0 < 0.35 + 0.4 * abs(sin(_t * 3.0))
+		var on: bool = float(i) / 10.0 < 0.35 + 0.4 * absf(sin(_t * 3.0))
 		draw_rect(Rect2(c.position.x + 20 + i * 22, c.position.y - 22, 16, 10), Color(0.9, 0.25, 0.18, 0.9) if on else Color(0.2, 0.1, 0.1, 0.7))
 	# 麦克风
 	draw_line(Vector2(s.x * 0.5, c.position.y), Vector2(s.x * 0.5, c.position.y - s.y * 0.16), Color(0.3, 0.3, 0.3), 3.0)

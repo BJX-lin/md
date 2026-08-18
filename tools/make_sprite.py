@@ -216,8 +216,19 @@ def process(path, canvas=CANVAS):
         transparent = sum(1 for v in a.resize((64, 64)).getdata() if v < 16)
         already = transparent > 64 * 64 * 0.2
     if already:
-        im = fit_canvas(im, canvas)
-        im.save(path)
+        # 已抠好的图必须完全不动：fit_canvas 会再次裁切+缩放，
+        # 反复执行会把人物越缩越小，最终 alpha 全空（曾毁掉 4 张图）。
+        if im.size == canvas:
+            print(f"  {os.path.relpath(path, ROOT)}  已是透明底且尺寸正确，跳过")
+            return True
+        im2 = fit_canvas(im, canvas)
+        a2 = im2.getchannel("A")
+        ratio2 = sum(1 for v in a2.getdata() if v > 128) / (canvas[0] * canvas[1]) * 100
+        if ratio2 < 3.0:
+            print(f"  {os.path.relpath(path, ROOT)}  !! 归位后人物占比 "
+                  f"{ratio2:.1f}%，判定为异常，保持原样不写回")
+            return False
+        im2.save(path)
         print(f"  {os.path.relpath(path, ROOT)}  已是透明底，仅重新归位")
         return True
     im = remove_white_bg(im)
@@ -226,10 +237,14 @@ def process(path, canvas=CANVAS):
     removed += ghosts
     im = soften_edges(im)
     im = fit_canvas(im, canvas)
-    im.save(path)
     a = im.getchannel("A")
     opaque = sum(1 for v in a.getdata() if v > 128)
     ratio = opaque / (canvas[0] * canvas[1]) * 100
+    if ratio < 3.0:
+        print(f"  {os.path.relpath(path, ROOT)}  !! 抠图后人物占比 "
+              f"{ratio:.1f}%，判定为失败，保持原文件不覆盖")
+        return False
+    im.save(path)
     print(f"  {os.path.relpath(path, ROOT)}")
     print(f"    {orig[0]}x{orig[1]} → {canvas[0]}x{canvas[1]}  "
           f"去除残影 {removed} 处  人物占比 {ratio:.1f}%")

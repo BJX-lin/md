@@ -484,7 +484,7 @@ func _process(delta: float) -> void:
 			_advance()
 	# 呼吸提示
 	if continue_hint.visible:
-		continue_hint.modulate.a = 0.4 + 0.6 * abs(sin(Time.get_ticks_msec() / 500.0))
+		continue_hint.modulate.a = 0.4 + 0.6 * absf(sin(Time.get_ticks_msec() / 500.0))
 	_layout_actors_if_needed()
 
 var _last_size := Vector2.ZERO

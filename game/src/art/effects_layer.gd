@@ -93,7 +93,7 @@ func _draw() -> void:
 			"flash":
 				draw_rect(Rect2(Vector2.ZERO, s), Color(1, 1, 1, (1.0 - f) * 0.75 * p))
 			"whiteout":
-				var a: float = (1.0 - abs(f - 0.35) / 0.65) * p
+				var a: float = (1.0 - absf(f - 0.35) / 0.65) * p
 				draw_rect(Rect2(Vector2.ZERO, s), Color(0.95, 0.95, 0.92, clampf(a, 0.0, 0.95)))
 			"redflash":
 				draw_rect(Rect2(Vector2.ZERO, s), Color(0.6, 0.05, 0.04, (1.0 - f) * 0.55 * p))

@@ -11,7 +11,8 @@
   7. 关键字拼写：func/var/const/signal 行的基本形态
   8. 自定义方法是否覆盖 Node/Object 原生方法（Godot 会当成错误）
   9. 是否误用了 GLSL/着色器专有函数（GDScript 中不存在）
- 10. := 三元表达式两分支类型不一致 / 分支返回 Variant，导致无法推断类型
+ 10. := 无法推断类型：三元两分支类型不一致 / 索引无类型集合 /
+     使用返回 Variant 的全局数学函数（abs、max、clamp…应改用 absf、maxf…）
 """
 import os
 import re
@@ -281,6 +282,30 @@ def main():
                     f"{rel}:{ln} var {name} := 三元表达式无法推断类型（{reason}）。"
                     f"请改为显式标注，如 var {name}: String = ...，"
                     f"或给集合加元素类型（Array[String]）")
+
+        # 10b. := 使用了返回 Variant 的全局数学函数（Godot 4 应改用 f/i 变体）
+        #      abs/max/min/clamp/sign/round/floor/ceil/snapped/wrap 的无后缀版本
+        #      返回 Variant，参与 := 推断时会报
+        #      Cannot infer the type of "x" variable...
+        VARIANT_MATH = ("abs", "max", "min", "clamp", "sign",
+                        "round", "floor", "ceil", "snapped", "wrap")
+        for ln, raw in enumerate(src.split("\n"), 1):
+            st = raw.strip()
+            if st.startswith(("#", "//")):
+                continue
+            m = re.match(r"var\s+([A-Za-z_0-9]+)\s*:=\s*(.+)$", st)
+            if not m:
+                continue
+            name, expr = m.group(1), m.group(2)
+            for fn_name in VARIANT_MATH:
+                if re.search(r"(?<![A-Za-z_.])" + fn_name + r"\s*\(", expr):
+                    col = raw.index("var ") + 5
+                    errors.append(
+                        f"{rel}:{ln}:{col} var {name} := 使用了返回 Variant 的 "
+                        f"{fn_name}()，无法推断类型。Godot 4 请改用 "
+                        f"{fn_name}f() / {fn_name}i()，或显式标注 "
+                        f"var {name}: <类型> = ...")
+                    break
 
         # 7. func 行基本形态
         for ln, raw in enumerate(src.split("\n"), 1):
