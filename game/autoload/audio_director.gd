@@ -5,6 +5,7 @@ extends Node
 ## 通道：music（BGM 循环）/ ambience（环境）/ sfx（音效，8 路复用）
 
 const SR := 22050
+const AUDIO_ROOT := "res://assets/audio"
 
 var _music: AudioStreamPlayer
 var _amb: AudioStreamPlayer
@@ -97,6 +98,13 @@ func play_blip(char_key: String) -> void:
 func _stream_for(id: String) -> AudioStream:
 	if _cache.has(id):
 		return _cache[id]
+	# 优先使用外置音频文件（res://assets/audio/<id>.wav|.ogg|.mp3）。
+	# 音频与代码解耦：换音只要按同名覆盖文件，不必改任何代码。
+	var ext := _external_stream(id)
+	if ext != null:
+		_cache[id] = ext
+		return ext
+	# 找不到文件才回退到内置程序化合成（保证永远有声音）
 	var data := _synth(id)
 	if data.is_empty():
 		return null
@@ -111,6 +119,30 @@ func _stream_for(id: String) -> AudioStream:
 		st.loop_end = data.size() / 2
 	_cache[id] = st
 	return st
+
+## 从 res://assets/audio/ 读取外置音频。
+## 支持 .ogg / .wav / .mp3，按此优先级查找。
+func _external_stream(id: String) -> AudioStream:
+	for ext in [".ogg", ".wav", ".mp3"]:
+		var p := "%s/%s%s" % [AUDIO_ROOT, id, ext]
+		if not ResourceLoader.exists(p):
+			continue
+		var st := load(p) as AudioStream
+		if st == null:
+			continue
+		# BGM 与环境音需要循环
+		if id.begins_with("bgm_") or id.begins_with("amb_"):
+			if st is AudioStreamWAV:
+				var w := st as AudioStreamWAV
+				w.loop_mode = AudioStreamWAV.LOOP_FORWARD
+				w.loop_begin = 0
+				w.loop_end = w.data.size() / 2
+			elif st is AudioStreamOggVorbis:
+				(st as AudioStreamOggVorbis).loop = true
+			elif st is AudioStreamMP3:
+				(st as AudioStreamMP3).loop = true
+		return st
+	return null
 
 func _pack(samples: PackedFloat32Array) -> PackedByteArray:
 	var out := PackedByteArray()

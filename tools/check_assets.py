@@ -127,5 +127,36 @@ def main():
     return 0
 
 
+
+    _check_audio(GAME)
+
+def _check_audio(game_root):
+    """校验剧本用到的音频 id 都有外置文件（缺失会回退到程序化合成）。"""
+    import re as _re
+    story = os.path.join(game_root, "story")
+    adir = os.path.join(game_root, "assets", "audio")
+    ids = set()
+    if os.path.isdir(story):
+        for f in os.listdir(story):
+            if not f.endswith(".avg"):
+                continue
+            for line in open(os.path.join(story, f), encoding="utf-8"):
+                for m in _re.finditer(r"@(?:bgm|amb|sfx)\s+(\w+)", line):
+                    ids.add(m.group(1))
+    have = set()
+    if os.path.isdir(adir):
+        have = {x.rsplit(".", 1)[0] for x in os.listdir(adir)}
+    miss = sorted(ids - have)
+    print()
+    print(f"音频  外置文件 {len(have)} 个，剧本用到 {len(ids)} 个 id")
+    if miss:
+        print(f"      缺少（将回退程序化合成）: {miss}")
+    else:
+        print("      全部命中外置文件，0 依赖代码合成")
+    return miss
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    _rc = main()
+    _check_audio(GAME)
+    sys.exit(_rc)

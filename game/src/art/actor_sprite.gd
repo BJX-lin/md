@@ -211,11 +211,13 @@ func _draw() -> void:
 	var th := float(_tex.get_height())
 	if tw <= 0.0 or th <= 0.0:
 		return
-	var scale := minf(s.x / tw, s.y / th)
+	# 半身构图：节点尺寸已由 _layout_actors 按「腰线对齐」算好，
+	# 这里直接铺满节点框，超出屏幕的下半身由父级裁掉，不要再做 letterbox。
+	var scale := s.x / tw
 	var dw := tw * scale
 	var dh := th * scale
 	var breathe := sin(_t * 1.1) * 1.5
-	var pos := Vector2((s.x - dw) * 0.5, s.y - dh + breathe)
+	var pos := Vector2(0.0, breathe)
 	var tint := Color(1, 1, 1, 1) if active else Color(0.55, 0.58, 0.62, 0.92)
 
 	if glitch > 0.02:

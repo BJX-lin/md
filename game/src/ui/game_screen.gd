@@ -211,7 +211,7 @@ func _build_text_box() -> void:
 	box.offset_top = -252
 	box.offset_bottom = -20
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.045, 0.045, 0.055, 0.90)
+	sb.bg_color = Color(0.045, 0.045, 0.055, 0.985)   # 半身构图：需完全遮住立绘下半身
 	sb.border_color = Color(0.48, 0.44, 0.40, 0.55)
 	sb.set_border_width_all(1)
 	sb.set_corner_radius_all(4)
@@ -329,30 +329,36 @@ func _layout_actors() -> void:
 		if not slots.has(pos):
 			fx_ratio = 0.5 + (i - (keys.size() - 1) * 0.5) * 0.26
 
-		# 立绘素材为 768x1280 竖图。可用高度 = 顶栏之下到文本框上沿之间。
-		# 文本框实际几何以 box 节点为准（_build_text_box 里是 offset_top=-252 / bottom=-20），
-		# 不要另写一份常数，否则改了样式两边就对不上。
+		# —— 半身构图 ——
+		# 立绘素材是 768x1280 全身竖图，但演出上只展示上半身：
+		# 把人物整体放大，让「腰部以上」占满可视区，腰以下自然沉进文本框被遮住。
+		# 这样脸部更大、表情更清楚，也符合常见 AVG 的视觉习惯。
 		var box_top: float = size.y - 272.0
 		if is_instance_valid(box) and box.size.y > 1.0:
 			box_top = box.position.y
 		var top_bar_h := 56.0
-		# 脚底要压到文本框内部一段，而不是停在上沿——
-		# 背景的地平线通常远低于文本框上沿，脚踩在上沿会显得人物悬浮在半空。
-		# 让下半身被文本框自然遮住，这是 AVG 的常规处理。
-		var foot_y: float = box_top + (size.y - box_top) * 0.62
-		# 人物要够大：以「可用竖直空间」为主，允许适度超出顶栏被裁掉一点头顶余白
-		var avail := foot_y - top_bar_h
-		var h: float = maxf(avail, size.y * 0.78)
+
+		# 素材里腰线大约在全身高度的 55% 处（头顶=0，脚底=1）。
+		# 让腰线落到文本框上沿稍下方，腰以下的部分就被文本框盖住。
+		const WAIST_RATIO := 0.55
+		var waist_y: float = box_top + 40.0
+		# 可视区 = 顶栏下沿 → 腰线，这段要装下人物的「头顶到腰」
+		var visible_h: float = waist_y - top_bar_h
+		# 由此反推整张立绘应有的高度
+		var h: float = visible_h / WAIST_RATIO
 		var w: float = h * (768.0 / 1280.0)
 		# 多人同屏时按槽位间距收窄，防止相邻立绘互相重叠
-		var max_w: float = size.x * (0.46 if keys.size() > 1 else 0.60)
+		var max_w: float = size.x * (0.52 if keys.size() > 1 else 0.68)
 		if w > max_w:
 			w = max_w
 			h = w * (1280.0 / 768.0)
 		a.size = Vector2(w, h)
-		# 横向夹紧，保证整张立绘留在屏幕内
-		var x: float = clampf(size.x * fx_ratio - w * 0.5, 0.0, maxf(0.0, size.x - w))
-		a.position = Vector2(x, foot_y - h)
+		# 纵向：让腰线对齐 waist_y（头顶可能超出顶栏一点，由 ActorSprite 内部裁掉）
+		var top_y: float = waist_y - h * WAIST_RATIO
+		# 横向夹紧，保证脸部不被切
+		var x: float = clampf(size.x * fx_ratio - w * 0.5, -w * 0.08,
+			maxf(0.0, size.x - w * 0.92))
+		a.position = Vector2(x, top_y)
 		i += 1
 
 func _on_effect(name: String, power: float) -> void:
