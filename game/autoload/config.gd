@@ -9,13 +9,13 @@ const VERSION := "1.0.0"
 # ---------------------------------------------------------------- 数值上下限
 # 对应 f.md 《全局变量总表 · 1.1 数值变量表》
 const NUM_RANGE := {
-	"truth": [0, 980],
+	"truth": [0, 1500],
 	"evidence_count": [0, 8],
 	"sanity": [0, 100],
-	"memory_echo": [0, 300],
-	"shenhe_focus": [0, 95],
-	"trust_zhouxu": [-14, 28],
-	"trust_liangye": [-12, 22],
+	"memory_echo": [0, 460],
+	"shenhe_focus": [0, 190],
+	"trust_zhouxu": [-14, 52],
+	"trust_liangye": [-12, 48],
 	"trust_xuqing": [-8, 5],
 	"trust_oldqin": [-5, 8],
 	"route_obedience": [0, 24],
@@ -23,7 +23,7 @@ const NUM_RANGE := {
 	"route_empathy": [0, 14],
 	"route_hostility": [0, 14],
 	"taboo_count": [0, 25],
-	"save_route_score": [0, 62],
+	"save_route_score": [0, 150],
 	"end_cycle_score": [0, 20],
 	"control_route_score": [0, 20],
 }
@@ -109,12 +109,12 @@ const CHARACTERS := {
 
 # ---------------------------------------------------------------- 阈值表（f.md 六）
 const TH_TRUTH := [
-	[142, "能确认异常不是错觉"],
-	[284, "能读懂基础规则文本"],
-	[442, "能理解待定 / 删除的危险差别"],
-	[564, "第三章末可稳定推进校史馆线"],
-	[659, "可主动质问补位 / 循环"],
-	[771, "真相层级可判为 complete 候选"],
+	[217, "能确认异常不是错觉"],
+	[435, "能读懂基础规则文本"],
+	[676, "能理解待定 / 删除的危险差别"],
+	[863, "第三章末可稳定推进校史馆线"],
+	[1008, "可主动质问补位 / 循环"],
+	[1180, "真相层级可判为 complete 候选"],
 ]
 
 const TH_SANITY := [

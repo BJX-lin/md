@@ -342,7 +342,7 @@ func settle_chapter_3() -> void:
 		set_flag("true_end_precondition_1", true)
 	if get_flag("flag_night_roster_taken") or has_item("item_night_roster"):
 		set_flag("true_end_precondition_2", true)
-	if get_flag("flag_found_xuqing_log_fragment") and get_num("truth") >= 564:
+	if get_flag("flag_found_xuqing_log_fragment") and get_num("truth") >= 863:
 		set_flag("archive_route_bonus", true)
 	current_chapter = 4
 
@@ -353,10 +353,10 @@ func settle_chapter_4() -> void:
 	var core := get_flag("flag_saw_fire_video") and get_flag("flag_saw_self_repeat") and get_flag("flag_rule_terms_complete")
 	# 替沈禾作过证的玩家，真相门槛下调：
 	# 亲身完成「作证」这一步，胜过多翻十页档案。
-	var th_complete := 700 if get_flag("flag_testimony_given") else 771
+	var th_complete := 1071 if get_flag("flag_testimony_given") else 1180
 	if t >= th_complete and core and get_flag("flag_true_linday_status_known"):
 		set_state("truth_state", "complete")
-	elif t >= 564 and (get_flag("flag_saw_fire_video") or get_flag("flag_roster_core_taken")):
+	elif t >= 863 and (get_flag("flag_saw_fire_video") or get_flag("flag_roster_core_taken")):
 		set_state("truth_state", "high")
 	else:
 		set_state("truth_state", "partial")
@@ -384,7 +384,7 @@ func settle_chapter_4() -> void:
 	# 终章广播改写条件
 	var ready_broadcast := (has_item("item_roster_core") or has_item("item_night_roster")) \
 		and (has_item("item_admin_key") or get_flag("flag_fakewall_opened")) \
-		and get_num("truth") >= 564
+		and get_num("truth") >= 863
 	if ready_broadcast:
 		set_flag("flag_terminal_broadcast_ready", true)
 	current_chapter = 5
@@ -398,7 +398,7 @@ func can_true_end() -> bool:
 		get_state("truth_state") == "complete"
 		and get_flag("true_end_precondition_1")
 		and get_flag("true_end_precondition_2")
-		and get_num("save_route_score") >= 24
+		and get_num("save_route_score") >= 58
 		and get_flag("flag_rule_terms_complete")
 		and get_flag("flag_terminal_broadcast_ready")
 		and not get_flag("flag_gave_up_roommate")
@@ -407,7 +407,7 @@ func can_true_end() -> bool:
 
 func can_bittersweet_exchange() -> bool:
 	return (
-		get_num("save_route_score") >= 15
+		get_num("save_route_score") >= 36
 		and get_flag("flag_terminal_broadcast_ready")
 		and (
 			get_state("liangye_end_state") == "absent_echo"

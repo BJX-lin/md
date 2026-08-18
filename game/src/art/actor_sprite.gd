@@ -251,7 +251,8 @@ func _draw() -> void:
 func _draw_silhouette(s: Vector2) -> void:
 	if s.x <= 1.0 or s.y <= 1.0:
 		return
-	var col: Color = Cfg.CHARS.get(who, {}).get("color", Color(0.55, 0.56, 0.62))
+	var entry: Dictionary = Cfg.CHARACTERS.get(who, {})
+	var col: Color = entry.get("color", Color(0.55, 0.56, 0.62))
 	var a := 0.82 if active else 0.42
 	var base := Color(col.r * 0.34, col.g * 0.36, col.b * 0.42, a)
 	var w := s.x

@@ -53,7 +53,7 @@
 @wait 1.0
 * 把水汽擦掉 -> ch2_night_water_a
     @set truth +4
-    @set sanity -3
+    @set sanity -1
 * 不擦，接着洗 -> ch2_night_water_b
     @set route_obedience +1
 
@@ -73,7 +73,7 @@
 你转过头，直接看。
 @wait 1.0
 @fx heartbeat 0.9
-@set sanity -2
+@set sanity -1
 @set truth +3
 三个。
 @wait 0.6
@@ -82,7 +82,7 @@
 四个。
 @wait 0.8
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +3
 @set memory_echo +2
 多出来的那个站在最右边，背对着镜子——所以镜子里只能看到他的后脑勺。
@@ -97,14 +97,14 @@
 然后那个后脑勺，慢慢转了过来。
 @fx heartbeat 1.4
 @sfx sfx_sting
-@set sanity -4
+@set sanity -1
 @wait 1.0
 不是转身。他的身体没有动。
 @wait 0.8
 只有头，在原地转了一百八十度。
 @wait 1.2
 @fx redflash 0.6
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set shenhe_focus +2
 你看清了那张脸。
@@ -140,7 +140,7 @@
 == ch2_night_water_b
 你没有擦镜子。
 @wait 1.0
-@set sanity +1
+@set sanity +2
 @set route_obedience +1
 低着头，把脸洗完，刷牙，漱口。
 @wait 0.8
@@ -158,7 +158,7 @@
 水房里没有人。
 @wait 0.6
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 @set truth +3
 但最右边那个水龙头开着，水流得很大。
 @wait 1.0
@@ -213,7 +213,7 @@
     @set route_investigate +2
 * 继续往走廊尽头走 -> ch2_night_hall_b
     @set truth +3
-    @set sanity -3
+    @set sanity -1
 
 == ch2_night_hall_a
 你用指甲在"林昼"那两个字上刮了刮。
@@ -223,7 +223,7 @@
 底下的塑封膜里，露出一小块印刷体的笔画。
 @wait 1.2
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 @set truth +4
 @set memory_echo +2
 你把记号笔的字全部刮掉。
@@ -243,7 +243,7 @@
 但他的名字从 307 的名单上被盖掉了，用你的名字。
 @wait 1.2
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +3
 你回到 307 门口，推门进去。
 @wait 0.6
@@ -267,6 +267,7 @@
 @goto ch2_night_hub
 
 == ch2_night_hall_b
+@bg hallway flicker
 你继续往前走。
 @wait 1.0
 走廊尽头拐弯，转过去是另一段走廊，通向楼梯间。
@@ -287,7 +288,7 @@
 @wait 1.0
 * 试着推一下门 -> ch2_night_hall_b2
     @set truth +5
-    @set sanity -4
+    @set sanity -1
 * 转身回去 -> ch2_night_hall_b3
     @set route_obedience +2
 
@@ -310,7 +311,7 @@
 灯亮了。
 @wait 1.2
 @fx heartbeat 0.9
-@set sanity -2
+@set sanity -1
 @set truth +3
 一间空宿舍，通着电，被人打扫着。
 @wait 0.8
@@ -324,7 +325,7 @@
 杯底有水。
 @wait 0.8
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set truth +4
 你翻开第二个、第三个、第四个。
 @wait 0.6
@@ -338,7 +339,7 @@
 @wait 1.2
 @fx glitch 0.9
 @sfx sfx_sting
-@set sanity -4
+@set sanity -1
 四张床板，全是温的。
 @wait 0.8
 你退出去，把门带上。
@@ -363,7 +364,7 @@
 你收回手，转身往回走。
 @wait 1.0
 @set route_obedience +2
-@set sanity +1
+@set sanity +2
 走了几步，你听见身后有开门声。
 @sfx sfx_door
 @wait 0.8
@@ -372,7 +373,7 @@
 脚步声跟了上来。不快，和你的节奏一样。
 @wait 0.6
 @fx heartbeat 1.0
-@set sanity -3
+@set sanity -1
 @set truth +3
 你走，它走。你停，它停。
 @wait 1.2
@@ -389,7 +390,7 @@
 你猛地回头。
 @wait 0.6
 @fx redflash 0.5
-@set sanity -2
+@set sanity -1
 走廊是空的。地上有水，是雨打进来的。
 @wait 1.0
 水上有脚印。
@@ -402,7 +403,7 @@
 @wait 0.6
 是干的。
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +3
 @wait 1.0
 > 你没有踩水。
@@ -483,7 +484,7 @@ dorm_keeper：……
 @wait 1.2
 dorm_keeper：我不知道。
 @fx heartbeat 0.9
-@set sanity -2
+@set sanity -1
 @set truth +4
 @wait 0.8
 dorm_keeper：我干这行八年，每周三下午打扫 325。
@@ -505,7 +506,7 @@ dorm_keeper：嗯。
 me：杯子里有水。
 @wait 1.4
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +4
 她没有说话。她把电视又调大了一点。
 @wait 1.0
@@ -550,7 +551,7 @@ me：叫三遍就可以答应？
 dorm_keeper：叫三遍的是人。
 @wait 0.6
 @set truth +3
-@set sanity -2
+@set sanity -1
 dorm_keeper：那东西不叫三遍。它叫一遍，等你答。你不答，它就走了。
 @wait 1.0
 me：如果答了呢？
@@ -560,7 +561,7 @@ me：如果答了呢？
 dorm_keeper：答了就得记住。
 dorm_keeper：记住了，忘的时候就疼。
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +3
 @wait 1.2
@@ -623,7 +624,7 @@ dorm_keeper：我说你做梦呢，回去睡吧。
 dorm_keeper：第二天早上，那间宿舍是三个人。
 @fx glitch 0.9
 @sfx sfx_sting
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 1.4
@@ -646,7 +647,7 @@ dorm_keeper：那间宿舍从开学就住三个人。
 me：那半夜来敲您窗户的那个呢？
 @wait 1.4
 @fx heartbeat 1.4
-@set sanity -3
+@set sanity -1
 @set truth +5
 她愣了一下。
 @wait 0.8
@@ -696,7 +697,7 @@ me：挺大。
 liangye(normal)：明天体育课肯定上不成，爽。
 @wait 0.8
 很正常的一句话。你忽然有点感激他。
-@set sanity +2
+@set sanity +5
 @set trust_liangye +1
 @wait 1.0
 zhouxu(neutral)：十点五十了。
@@ -710,7 +711,7 @@ liangye(normal)：知道知道。
 * 问他们查寝的事 -> ch2_night_307_b
     @set truth +3
 * 什么都不问，躺下 -> ch2_night_307_c
-    @set sanity +2
+    @set sanity +5
 
 == ch2_night_307_a
 me：周叙，李恒是不是原来住这屋？
@@ -744,7 +745,7 @@ zhouxu(serious)：我说他明明住了一年半。宿管说没有记录。
 zhouxu(serious)：我说我天天跟他一屋。宿管说，那你说说他睡哪张床。
 @wait 1.2
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 @set truth +4
 me：你说不出来？
 @wait 0.8
@@ -755,7 +756,7 @@ zhouxu(serious)：宿管让我看。靠门那张床上有梁野的东西。
 liangye(normal)：诶？我一直睡靠门啊。
 @wait 1.2
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +3
 zhouxu(serious)：你以前睡靠窗。
@@ -830,7 +831,7 @@ zhouxu(neutral)：一年半，每天晚上，三下停两下。一次都没变�
 @wait 0.8
 zhouxu(neutral)：人做不到这样。人会有一天敲快了，有一天敲重了。
 @wait 1.0
-@set sanity -3
+@set sanity -1
 @set truth +3
 房间里安静下来。
 @wait 0.6
@@ -851,7 +852,7 @@ liangye(nervous)：我不记得有这回事。
 @wait 1.0
 zhouxu(neutral)：我知道你不记得。
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +3
 @wait 1.2
@@ -861,7 +862,7 @@ zhouxu(neutral)：你举了一整节课。她的眼睛从你身上扫过去三�
 zhouxu(neutral)：下课我问她，她说：那个位置今天没人。
 @wait 1.4
 @fx heartbeat 1.4
-@set sanity -4
+@set sanity -1
 @set truth +5
 liangye(nervous)：……
 liangye(nervous)：别说了。
@@ -882,7 +883,7 @@ zhouxu(neutral)：所以我没跟你说。
 == ch2_night_307_c
 你什么都没问。
 @wait 1.0
-@set sanity +2
+@set sanity +5
 @set route_obedience +1
 洗漱，铺床，躺下。
 @wait 0.8
@@ -915,7 +916,7 @@ zhouxu(neutral)：所以我没跟你说。
 @wait 0.8
 @sfx sfx_write
 @fx heartbeat 0.8
-@set sanity -3
+@set sanity -1
 @set truth +4
 不是雨声。
 @wait 1.0
@@ -973,7 +974,7 @@ zhouxu(neutral)：所以我没跟你说。
 @wait 0.8
 但有些东西不需要你去查。
 @wait 1.0
-@set sanity +2
+@set sanity +5
 @set truth +1
 它们会等到你躺下、闭眼、放松的那一刻，自己找上来。
 @endif
@@ -1003,7 +1004,7 @@ zhouxu(neutral)：所以我没跟你说。
 @wait 0.8
 三下，停，两下。
 @wait 1.2
-@set sanity -3
+@set sanity -1
 @set truth +2
 应答。
 @wait 0.8
@@ -1012,7 +1013,7 @@ zhouxu(neutral)：所以我没跟你说。
 停住了。
 @wait 1.0
 @fx heartbeat 1.4
-@set sanity -2
+@set sanity -1
 你屏住呼吸。
 @wait 0.8
 > 三下，停，两下。
@@ -1021,7 +1022,7 @@ zhouxu(neutral)：所以我没跟你说。
 门外没有敲门声。
 @wait 0.8
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +4
 脚步停在门口，一动不动。
 @wait 1.0
@@ -1041,7 +1042,7 @@ zhouxu(neutral)：所以我没跟你说。
 应答。
 @wait 1.0
 @fx heartbeat 1.2
-@set sanity -4
+@set sanity -1
 @set truth +5
 307 被跳过了。
 @wait 1.2

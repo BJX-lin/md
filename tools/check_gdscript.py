@@ -12,6 +12,7 @@
   8. 自定义方法是否覆盖 Node/Object 原生方法（Godot 会当成错误）
   9. 是否误用了 GLSL/着色器专有函数（GDScript 中不存在）
  11. 字典字面量里出现重复键（Godot 直接报错）
+ 12. 访问 autoload 上不存在的常量（运行时才会暴露）
  10. := 无法推断类型：三元两分支类型不一致 / 索引无类型集合 /
      使用返回 Variant 的全局数学函数（abs、max、clamp…应改用 absf、maxf…）
 """
@@ -172,6 +173,25 @@ def main():
         src = open(path, encoding="utf-8").read()
         all_signals |= set(re.findall(r"^signal\s+([a-zA-Z_0-9]+)", src, re.M))
         all_funcs[path] = set(re.findall(r"^\s*(?:static\s+)?func\s+([a-zA-Z_0-9]+)", src, re.M))
+
+    # 收集各 autoload 脚本里定义的常量与顶层变量，
+    # 用于检测「访问不存在的成员」这类只能在运行时才暴露的错误。
+    AUTOLOAD_MEMBERS = {}
+    _auto_files = {
+        "Cfg": "autoload/config.gd",
+        "GameState": "autoload/game_state.gd",
+        "StoryEngine": "autoload/story_engine.gd",
+        "AudioDirector": "autoload/audio_director.gd",
+        "SaveSystem": "autoload/save_system.gd",
+        "ArtCache": "autoload/art_cache.gd",
+    }
+    for _name, _rel in _auto_files.items():
+        _p = os.path.join(GAME, _rel)
+        if not os.path.isfile(_p):
+            continue
+        _src = open(_p, encoding="utf-8").read()
+        AUTOLOAD_MEMBERS[_name] = set(
+            re.findall(r"^const\s+([A-Z][A-Z_0-9]*)", _src, re.M))
 
     total_lines = 0
     for path in gd_files:
@@ -337,6 +357,23 @@ def main():
                     if d >= brace:
                         depth_keys.pop(d, None)
                 brace = max(0, brace - (closes - opens))
+
+        # 12. 访问 autoload 上不存在的常量 / 属性
+        #     Godot 报 Invalid access to property or key 'X'
+        #     on a base object of type 'Node (xxx.gd)'
+        for ln, raw in enumerate(src.split("\n"), 1):
+            st = raw.strip()
+            if st.startswith(("#", "//")):
+                continue
+            for m in re.finditer(r"(?<![\w.])(" + "|".join(AUTOLOAD_MEMBERS.keys())
+                                 + r")\.([A-Z][A-Z_0-9]{2,})(?![\w(])", st):
+                singleton, member = m.group(1), m.group(2)
+                known = AUTOLOAD_MEMBERS.get(singleton, set())
+                if known and member not in known:
+                    near = [k for k in known if k.startswith(member[:3])]
+                    hint = f"，是否想写 {near[0]}？" if near else ""
+                    errors.append(
+                        f"{rel}:{ln} {singleton} 上不存在常量 {member}{hint}")
 
         # 7. func 行基本形态
         for ln, raw in enumerate(src.split("\n"), 1):

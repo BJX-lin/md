@@ -86,7 +86,7 @@ zhouxu(dark)：因为第三次不是我答的。
 me：谁答的？
 zhouxu(dark)：上一个坐你那个位置的人。
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 @set truth +3
 zhouxu(dark)：他答完之后，我们班就少了一个。不是他——是别人。
 zhouxu(dark)：一个我到现在都想不起来名字的人。
@@ -125,7 +125,7 @@ zhouxu(sad)：不知道。
 me：什么叫不知道？
 zhouxu(sad)：字面意思。
 @fx heartbeat 0.9
-@set sanity -2
+@set sanity -1
 zhouxu(sad)：那年高考完，她说要去省城。我爸妈送她上的车。
 zhouxu(sad)：车站的监控我们后来调过，她确实上了车。
 zhouxu(sad)：省城那边的接站点，她没下车。
@@ -139,7 +139,7 @@ zhouxu(sad)：她没下。
 zhouxu(sad)：司机说，从始发站到终点站，车上一直是四十一个人。
 zhouxu(sad)：卖出去四十二张票。
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +3
 @clue clue_missing_one
@@ -171,7 +171,7 @@ zhouxu(tired)：我加过其中一个的微信，去年过年给他发消息，�
 @wait 1.0
 zhouxu(tired)：他回我："哪个三班？"
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 @set truth +3
 @set memory_echo +2
 @wait 0.8
@@ -237,7 +237,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
     @set truth +4
     @set route_investigate +2
 * 太累了，放回去 -> ch3_deep_note_b
-    @set sanity +2
+    @set sanity +5
 
 == ch3_deep_note_a
 你盯着第六条。
@@ -254,14 +254,14 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 你抬起头。
 公共桌对面的墙上，钉着一面小镜子——洗漱用的，巴掌大，边缘生锈。
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 你在黑暗里看着它。它反着窗外一点点光，像一只半睁的眼睛。
 @wait 1.0
 > 查寝已经结束了。
 * 照 -> ch3_deep_mirror
     @set taboo_count +2
     @set truth +5
-    @set sanity -4
+    @set sanity -1
     @set shenhe_focus +3
 * 不照 -> ch3_deep_note_b
     @set route_obedience +2
@@ -286,7 +286,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @wait 0.8
 你没有眨。
 @fx glitch 0.9
-@set sanity -3
+@set sanity -1
 @set memory_echo +3
 你屏住呼吸，睁大眼睛，一动不动。
 @wait 1.4
@@ -368,7 +368,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
     @set truth +5
     @set route_investigate +2
 * 关机睡觉 -> ch3_deep_phone_c
-    @set sanity +3
+    @set sanity +8
 
 == ch3_deep_phone_a
 你输入"沈禾"两个字。
@@ -388,7 +388,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 你退出去，点开微信。
 消息能收能发。信号是好的。
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 @set truth +3
 @wait 0.6
 你回到浏览器，重新搜"沈禾"。
@@ -401,7 +401,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @wait 0.8
 > 网络连接超时。
 @fx glitch 0.8
-@set sanity -2
+@set sanity -1
 @set memory_echo +2
 @set shenhe_focus +2
 @set truth +2
@@ -435,7 +435,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @wait 1.2
 @set truth +3
 @set memory_echo +2
-@set sanity -2
+@set sanity -1
 @wait 0.8
 > "她不记得班里有谁不见了，但她就是不想回去。"
 > 和周叙说的一模一样。
@@ -456,7 +456,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @wait 0.8
 > 有些事今天晚上想不明白，明天也想不明白。
 > 但今天晚上如果不睡，明天就什么都做不了。
-@set sanity +2
+@set sanity +5
 @goto ch3_deep_hub
 
 -- ================================================= 从窗户往外看
@@ -479,11 +479,11 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @wait 1.2
 背对着宿舍楼，面朝教学楼的方向。一动不动。
 距离太远，看不清是谁，只能看出穿的是深色衣服。
-@set sanity -2
+@set sanity -1
 @set truth +2
 * 一直看着 -> ch3_deep_window_a
     @set truth +4
-    @set sanity -3
+    @set sanity -1
     @set memory_echo +2
 * 数一下它站了多久 -> ch3_deep_window_b
     @set truth +3
@@ -509,7 +509,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @wait 1.2
 > 影子的方向不对。
 @fx glitch 0.9
-@set sanity -3
+@set sanity -1
 @set truth +3
 路灯在它的**左边**。
 影子应该投向右边。
@@ -522,7 +522,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 影子不见了。
 人还在。
 @fx heartbeat 1.4
-@set sanity -2
+@set sanity -1
 @set truth +2
 你慢慢退下窗台，回到床上，把被子拉过头顶。
 @wait 0.8
@@ -554,7 +554,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 不是转身——是整个人在原地转了一百八十度，脚没有动。
 像有人把一张纸片翻了个面。
 @fx glitch 1.0
-@set sanity -4
+@set sanity -1
 @set truth +3
 @set memory_echo +2
 @wait 1.0
@@ -567,7 +567,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 > 你手机还亮着。
 > 屏幕的光，从窗户透出去，正好照在你脸上。
 @fx heartbeat 1.6
-@set sanity -2
+@set sanity -1
 你把手机按灭了。
 @set truth +2
 @goto ch3_deep_hub
@@ -608,7 +608,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @fx heartbeat 1.2
 > 二十五。
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +3
 @set memory_echo +3
 第二十五道。
@@ -643,7 +643,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 > 那就说明这栋楼里，有人和你在做同一件事。
 > 而且那个人，比你更清楚这个数字要数到几。
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 @set truth +2
 @flag flag_bed_marks
 @goto ch3_deep_hub
@@ -663,7 +663,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @wait 1.0
 第二十五道更明显了。
 @fx glitch 0.6
-@set sanity -2
+@set sanity -1
 @set truth +3
 @set memory_echo +2
 > 你想把它去掉，结果把它加深了。
@@ -697,7 +697,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 窗外有鸟叫。宿舍楼下有早起的人在打水，铁桶碰到水泥地的声音。
 @wait 1.0
 这些声音很正常。正常得让人想哭。
-@set sanity +4
+@set sanity +10
 @wait 0.8
 @if flag_bed_marks
 你伸手到床板下面，摸那排刻痕。
@@ -705,7 +705,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @sfx sfx_write
 > 二十六道。
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set truth +3
 @set memory_echo +3
 @if flag_mirror_contact

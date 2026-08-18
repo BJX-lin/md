@@ -238,10 +238,10 @@ class State:
         elif ch == 4:
             t = self.n("truth")
             core = self.flags.get("flag_saw_fire_video") and self.flags.get("flag_saw_self_repeat") and self.flags.get("flag_rule_terms_complete")
-            th_complete = 700 if self.flags.get("flag_testimony_given") else 771
+            th_complete = 1071 if self.flags.get("flag_testimony_given") else 1180
             if t >= th_complete and core and self.flags.get("flag_true_linday_status_known"):
                 self.states["truth_state"] = "complete"
-            elif t >= 564 and (self.flags.get("flag_saw_fire_video") or self.flags.get("flag_roster_core_taken")):
+            elif t >= 863 and (self.flags.get("flag_saw_fire_video") or self.flags.get("flag_roster_core_taken")):
                 self.states["truth_state"] = "high"
             else:
                 self.states["truth_state"] = "partial"
@@ -261,7 +261,7 @@ class State:
                 self.states["zhouxu_end_state"] = "follow_to_threshold"
             ready = (("item_roster_core" in self.items or "item_night_roster" in self.items)
                      and ("item_admin_key" in self.items or self.flags.get("flag_fakewall_opened"))
-                     and self.n("truth") >= 564)
+                     and self.n("truth") >= 863)
             if ready:
                 self.flags["flag_terminal_broadcast_ready"] = True
             self.chapter = 5
@@ -280,13 +280,13 @@ class State:
         if (self.states.get("truth_state") == "complete"
                 and self.flags.get("true_end_precondition_1")
                 and self.flags.get("true_end_precondition_2")
-                and self.n("save_route_score") >= 24
+                and self.n("save_route_score") >= 58
                 and self.flags.get("flag_rule_terms_complete")
                 and self.flags.get("flag_terminal_broadcast_ready")
                 and not self.flags.get("flag_gave_up_roommate")
                 and self.states.get("liangye_end_state") in ("present_anchor", "present_fragile_truth")):
             return "ending_true_release"
-        if (self.n("save_route_score") >= 15 and self.flags.get("flag_terminal_broadcast_ready")
+        if (self.n("save_route_score") >= 36 and self.flags.get("flag_terminal_broadcast_ready")
                 and (self.states.get("liangye_end_state") == "absent_echo"
                      or not self.flags.get("flag_rule_terms_complete")
                      or self.flags.get("flag_player_self_substitute"))):

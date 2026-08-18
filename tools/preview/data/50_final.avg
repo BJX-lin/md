@@ -4,7 +4,7 @@
 == final_start
 @chapter 5 点名
 @time 4 20:40
-@set sanity +8
+@set sanity +20
 @bg oldbuilding_out rain
 @bgm bgm_final
 @amb amb_rain
@@ -410,7 +410,7 @@ shenhe(hollow)：这是你们定的规矩。不是我的。
 五官都在，位置也对。眉毛的形状，鼻梁的弧度，下巴那颗很小的痣。
 @fx eyes 1.0
 和你每天早上在盥洗室镜子里看见的，是同一张。
-@set sanity -2
+@set sanity -1
 @set memory_echo +4
 @flag flag_true_linday_status_known
 @clue clue_self_repeat
@@ -594,7 +594,7 @@ liangye(hollow)：这个名字，现在不一定全是我的。
 * 让他说完 -> final_ly_f1
     @set truth +3
 * 打断他 -> final_ly_f2
-    @set sanity +2
+    @set sanity +5
 * 问他记起了什么 -> final_ly_f3
     @set truth +4
     @set sanity -1
@@ -696,7 +696,7 @@ shenhe(hollow)：林昼。
 * “到。” -> final_a_yes
     @set sanity -1
 * 不答 -> final_a_silent
-    @set sanity +1
+    @set sanity +2
 * [lock flag_true_linday_status_known] “这个名字不完整。” -> final_a_incomplete
     @set truth +3
     @set save_route_score +1
@@ -729,7 +729,7 @@ me：所以问题是——
 me：为什么两百公里外的一辆长途车上，也会少一个人。
 @wait 1.4
 @fx glitch 0.9
-@set sanity -3
+@set sanity -1
 @set truth +3
 她很久没有说话。
 @wait 1.0
@@ -756,7 +756,7 @@ me：就当自己数错了。
 @wait 1.0
 shenhe(hollow)：所以少的那个，就永远少下去了。
 @fx glitch 1.0
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set save_route_score +3
 @clue clue_missing_one
@@ -966,7 +966,7 @@ shenhe(hollow)：是**作证**。
 shenhe(hollow)：选吧。
 shenhe(hollow)：这一格，总要有一个名字。
 @wait 0.8
-@if truth>=653
+@if truth>=999
 > 你现在明白了。
 > 规则从来不在乎是谁。
 > 它只在乎那一格不能空着——就像点名册上不能有空行，就像毕业照上不能有缺口。
@@ -1022,7 +1022,7 @@ me：不是我答。
 me：是所有人报数。
 @wait 1.2
 @fx glitch 0.9
-@set sanity -3
+@set sanity -1
 @set truth +5
 shenhe(hollow)：……不行。
 shenhe(hollow)：报数要有总数。总数对不上，就会有人被抹掉。
@@ -1055,7 +1055,7 @@ me：那这个"总数"就不是四十二了。
 me：它得重新算。
 @wait 1.4
 @fx glitch 1.0
-@set sanity -2
+@set sanity -1
 @set truth +5
 @wait 0.8
 调音台上所有的电平表，同时打到了最右边。
@@ -1159,7 +1159,7 @@ me：不要停。
 广播室的墙开始震。名单纸从打印机里吐出来，但这次上面是空白的。
 @wait 1.2
 @sfx sfx_low_boom
-@set sanity -3
+@set sanity -1
 @set truth +5
 > 二百一十。
 > 三百六十。
@@ -1492,7 +1492,7 @@ me：到。
 
 -- ================================================= 五结局收束
 == ending_true_release
-@bg broadcast_room dark
+@bg broadcast_room white
 @bgm bgm_ending_true
 @stopamb
 @clearchars
@@ -1634,7 +1634,7 @@ xuqing(neutral)：人齐了。
 她念到周叙的时候，停了一下。
 @wait 1.2
 @fx heartbeat 1.4
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +3
 很短。短到全班没有一个人察觉。
@@ -1716,6 +1716,54 @@ zhouxu(tired)：还在。
 @set truth +4
 @clearchars
 @wait 1.0
+@endif
+@if flag_declined_for_shenhe
+一个月后的某个早读，许清又念到了那个位置。
+@wait 1.0
+这一次你没有犹豫。
+@wait 0.6
+me：到。
+@wait 1.2
+@fx heartbeat 0.9
+@set truth +3
+@set memory_echo +3
+全班回头看你。有人笑了一声，以为你答错了名字。
+@wait 0.8
+许清没有纠正。她在名册上画了一个勾。
+@wait 1.0
+@set save_route_score +3
+> 那天在教室里，你放过了一个机会。
+@wait 0.6
+> 但机会这种东西，只要人还在，就还会再来一次。
+@wait 1.2
+@set truth +3
+@clearchars
+@wait 0.8
+@endif
+@if flag_desk_marks
+你最后一次数了桌子侧板上的「正」字。
+@wait 1.0
+> 一百零八。
+@wait 0.8
+> 第一天你数到的就是这个数。四天里它一次都没有涨。
+@wait 1.2
+@fx heartbeat 1.0
+@set truth +4
+@set memory_echo +3
+> 刻它的人在等第一百零九次结束。
+@wait 0.8
+> 现在结束了。
+@wait 1.0
+你摸出圆规，在最后那三画后面，补上了第四画。
+@sfx sfx_write
+@wait 1.2
+@set truth +3
+@set save_route_score +2
+> 一百零九。
+@wait 0.6
+> 这一次是有人活着数完的。
+@wait 1.0
+@set memory_echo +2
 @endif
 @if flag_zhouyun_proof
 放学后，周叙在校门口等你。

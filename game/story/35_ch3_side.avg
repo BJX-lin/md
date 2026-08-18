@@ -147,7 +147,7 @@ unknown(flat)：查寝。
 * 数一数整个校园还有几盏灯 -> ch3_roof_count
     @set truth +3
 * 在天台边缘坐一会儿 -> ch3_roof_sit
-    @set sanity +4
+    @set sanity +10
 * 找找有没有人来过的痕迹 -> ch3_roof_trace
     @set truth +2
     @set route_investigate +1
@@ -238,7 +238,7 @@ unknown(flat)：查寝。
 抬手，它抬手。张嘴，它张嘴。一点延迟都没有。
 > 一整天里，这是唯一一件正常的事。
 > 而你居然要靠这个来安慰自己。
-@set sanity +2
+@set sanity +5
 @wait 0.8
 你想起妈妈送你来的那天。
 她只送到校门口就走了，说要赶最后一班车。
@@ -348,7 +348,7 @@ unknown(flat)：查寝。
 你躺下，把被子拉到下巴。
 天亮之前，你一共听见十一次脚步声经过门口。第七次的时候，脚步停了很久。
 @set sanity -1
-@if truth>=653
+@if truth>=999
 > 你现在能听出来了：那不是一个人在走。是同一个人，走了十一遍。
 @set truth +1
 @endif

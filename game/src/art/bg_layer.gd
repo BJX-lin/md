@@ -29,10 +29,14 @@ const BG_MAP := {
 	"office": {
 		"": ["office_day"], "day": ["office_day"], "dusk": ["office_day"],
 		"night": ["office_night", "office_day"], "dark": ["office_night", "office_day"],
+		"dawn": ["office_dawn", "office_night"],
 	},
 	"classroom": {
 		"": ["classroom_day", "classroom_evening"],
 		"day": ["classroom_day", "classroom_evening"],
+		"morning": ["classroom_morning", "classroom_day"],
+		"dawn": ["classroom_empty_dawn", "classroom_morning"],
+		"empty": ["classroom_empty_dawn", "classroom_evening_missingseat"],
 		"dusk": ["classroom_evening", "classroom_day"],
 		"night": ["classroom_evening_alllook", "classroom_evening"],
 		"reflection": ["classroom_window_reflection", "classroom_evening"],
@@ -44,6 +48,7 @@ const BG_MAP := {
 		"": ["hallway_day", "hallway_night"],
 		"day": ["hallway_day", "hallway_night"],
 		"dusk": ["hallway_dusk", "hallway_night", "hallway_day"],
+		"flicker": ["hallway_night_flicker", "hallway_night"],
 		"night": ["hallway_night"],
 		"dark": ["hallway_night"],
 	},
@@ -101,6 +106,16 @@ const BG_MAP := {
 		"": ["desk_carving_shen"], "dark": ["desk_carving_shen"],
 		"carving": ["desk_carving_shen"],
 	},
+	"stairwell": {
+		"": ["stairwell_night"], "night": ["stairwell_night"], "dark": ["stairwell_night"],
+	},
+	"infirmary": {
+		"": ["infirmary_day"], "day": ["infirmary_day"], "dusk": ["infirmary_day"],
+	},
+	"schoolgate": {
+		"": ["schoolgate_dusk"], "dusk": ["schoolgate_dusk"],
+		"day": ["schoolgate_dusk"], "night": ["schoolgate_dusk"],
+	},
 	"rooftop": {
 		"": ["rooftop_night"], "night": ["rooftop_night"], "dark": ["rooftop_night"],
 	},
@@ -123,6 +138,7 @@ const BG_MAP := {
 		"dark": ["old_building_stairs", "old_building_corridor"],
 		"night": ["old_building_stairs", "old_building_corridor"],
 		"red": ["old_building_corridor_red", "old_building_corridor"],
+		"water": ["old_building_corridor_water", "old_building_corridor"],
 		"blood": ["old_building_corridor_red", "old_building_corridor"],
 	},
 	"broadcast_door": {
@@ -138,6 +154,7 @@ const BG_MAP := {
 		"dark": ["broadcast_room_emptyseat", "broadcast_room"],
 		"fire": ["broadcast_room_fireedge", "broadcast_room"],
 		"void": ["void_broadcast_edge", "broadcast_room"],
+		"white": ["broadcast_room_white", "void_broadcast_edge"],
 		"blood": ["broadcast_room"],
 	},
 	"history_hall": {

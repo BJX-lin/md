@@ -41,7 +41,7 @@ zhouxu(tired)：我怕哪天我也忘了她。
 * [if !visited:zhouyun_photo] 几张照片 -> zhouyun_photo
     @set truth +1
 * [if !visited:zhouyun_phone] 那部旧手机 -> zhouyun_phone
-    @set sanity -2
+    @set sanity -1
 * 还给他 -> zhouyun_end
     @set trust_zhouxu +1
 
@@ -102,7 +102,7 @@ zhouxu(tired)：……
 zhouxu(tired)：这四个字我后来想了五年。
 zhouxu(tired)：她要是真在原地等了呢。
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 @set truth +3
 @set memory_echo +2
 @set trust_zhouxu +2
@@ -139,7 +139,7 @@ zhouxu(tired)：她要是真在原地等了呢。
 > 中途三个站的监控里，她没有下车。
 > 终点站的监控里，她也没有下车。
 @fx glitch 0.7
-@set sanity -2
+@set sanity -1
 @set truth +4
 @wait 1.0
 me：周叙。
@@ -155,7 +155,7 @@ zhouxu(tired)：保洁说车上没人。
 @wait 0.6
 zhouxu(tired)：但她说，最后一排靠窗那个位置，坐垫是热的。
 @fx heartbeat 1.4
-@set sanity -3
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 1.2
@@ -192,10 +192,10 @@ zhouxu(tired)：但她说，最后一排靠窗那个位置，坐垫是热的。
 * 从头看这几页日记 -> zhouyun_note_a
     @set truth +5
     @set memory_echo +2
-    @set sanity -2
+    @set sanity -1
 * 直接翻到最后一页 -> zhouyun_note_b
     @set truth +4
-    @set sanity -3
+    @set sanity -1
 
 == zhouyun_note_a
 你从第一篇看起。
@@ -217,7 +217,7 @@ zhouxu(tired)：但她说，最后一排靠窗那个位置，坐垫是热的。
 @wait 0.8
 @note 6月27日\n昨晚做梦，梦见有人点名。\n念到我名字，我答了"到"。\n然后就醒了。\n醒了以后一直睡不着，总觉得答错了什么。
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 1.4
@@ -238,7 +238,7 @@ zhouxu(tired)：但她说，最后一排靠窗那个位置，坐垫是热的。
 @wait 0.8
 @note 6月28日 09:40\n车上人不对。\n上车前数过，四十一个。刚才又数了一遍，四十二个。\n多出来那个坐在我旁边。我不敢转头。
 @fx heartbeat 1.4
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 1.4
@@ -250,7 +250,7 @@ zhouxu(tired)：但她说，最后一排靠窗那个位置，坐垫是热的。
 > 42 号旁边是 41 号。
 @wait 1.2
 @fx glitch 0.9
-@set sanity -2
+@set sanity -1
 @set truth +3
 > 也就是说，她坐在最后一排靠窗，而"多出来的那个"坐在她里侧。
 > 保洁后来说：最后一排靠窗那个位置，坐垫是热的。
@@ -300,7 +300,7 @@ zhouxu(tired)：直到你转学来那天，许老师在讲台上说了一句"人
     @set memory_echo +2
 * 看第二张的背面 -> zhouyun_photo_b
     @set truth +4
-    @set sanity -2
+    @set sanity -1
 
 == zhouyun_photo_a
 你把第三张凑到窗前，借光数人头。
@@ -328,7 +328,7 @@ zhouxu(tired)：我数过不下一百遍。
 zhouxu(tired)：一直少一个。
 zhouxu(tired)：但我对着名册一个一个点，四十六个人的脸我都能在照片上找到。
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +3
 @wait 1.2
@@ -343,7 +343,7 @@ zhouxu(tired)：但数总数的时候，永远是四十五。
 @wait 1.2
 > 四十六。
 @fx heartbeat 1.2
-@set sanity -2
+@set sanity -1
 @set truth +3
 @wait 0.6
 > 你把手指拿开，重新扫一眼。
@@ -382,7 +382,7 @@ zhouxu(tired)：这张照片我看过一百遍。
 zhouxu(tired)：背面从来没有字。
 @fx glitch 0.9
 @sfx sfx_sting
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 1.2
@@ -417,7 +417,7 @@ zhouxu(tired)：老式圆孔的。
 @wait 0.6
 * 试着按开机键 -> zhouyun_phone_a
     @set truth +5
-    @set sanity -4
+    @set sanity -1
     @set shenhe_focus +2
 * 拆开后盖看看 -> zhouyun_phone_b
     @set truth +4
@@ -434,7 +434,7 @@ zhouxu(tired)：老式圆孔的。
 @sfx sfx_click
 屏幕亮了。
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @wait 0.8
 惨绿色的背光，像老式计算器。
 @wait 0.6
@@ -446,7 +446,7 @@ zhouxu(terrified)：这手机五年没电了。我试过无数次。
 信号格：无服务。
 电量：满格。
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +4
 @wait 1.2
 时间显示：
@@ -460,10 +460,10 @@ zhouxu(terrified)：这手机五年没电了。我试过无数次。
 @wait 0.8
 * 翻短信 -> zhouyun_phone_sms
     @set truth +5
-    @set sanity -3
+    @set sanity -1
 * 立刻关机 -> zhouyun_phone_off
     @set route_obedience +2
-    @set sanity +2
+    @set sanity +5
 
 == zhouyun_phone_sms
 你按方向键，进到短信箱。
@@ -476,7 +476,7 @@ zhouxu(terrified)：这手机五年没电了。我试过无数次。
 @wait 1.0
 @note 收件人：弟弟\n发送时间：06月28日 09:38\n\n车上多了一个人。\n我不敢回头。\n如果我没到，你别来找我。\n别自己一个人来。
 @fx heartbeat 1.4
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 1.4
@@ -504,7 +504,7 @@ zhouxu(terrified)：我手机里没有。我翻了五年，一条都没有。
 @wait 0.8
 收件箱变成了 4 条。
 @fx heartbeat 1.6
-@set sanity -4
+@set sanity -1
 @set truth +3
 @wait 1.0
 新的那条，发件人显示是一串空白。
@@ -515,7 +515,7 @@ zhouxu(terrified)：我手机里没有。我翻了五年，一条都没有。
 @note 　到了吗
 @fx redflash 0.8
 @sfx sfx_sting
-@set sanity -3
+@set sanity -1
 @set shenhe_focus +3
 @set memory_echo +3
 @set truth +3
@@ -548,7 +548,7 @@ me：不知道。
 屏幕暗下去的那一瞬间，你好像看见有个新消息的图标闪了一下。
 @wait 0.8
 但你没有确认。
-@set sanity +2
+@set sanity +5
 @set truth +1
 @wait 0.6
 @show zhouxu tired right
@@ -608,7 +608,7 @@ zhouxu(tired)：谢谢。
 @wait 1.0
 @note 　她　让　我　坐　这　儿　的
 @fx glitch 0.9
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 1.4

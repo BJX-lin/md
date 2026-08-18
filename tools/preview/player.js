@@ -4,10 +4,10 @@
 
 // ---------------------------------------------------------------- 配置（对应 config.gd）
 const NUM_RANGE = {
-  truth:[0,980],evidence_count:[0,8], sanity:[0,100], memory_echo:[0,300], shenhe_focus:[0,95],
+  truth:[0,1500],evidence_count:[0,8], sanity:[0,100], memory_echo:[0,460], shenhe_focus:[0,190],
   trust_zhouxu:[-12,14], trust_liangye:[-12,18], trust_xuqing:[-10,6], trust_oldqin:[-6,12],
   route_obedience:[0,24], route_investigate:[0,24], route_empathy:[0,14], route_hostility:[0,14],
-  taboo_count:[0,25], save_route_score:[0,62], end_cycle_score:[0,20], control_route_score:[0,20],
+  taboo_count:[0,25], save_route_score:[0,150], end_cycle_score:[0,20], control_route_score:[0,20],
 };
 const NUM_DEFAULT = { truth:0, sanity:70, memory_echo:0, shenhe_focus:0, trust_zhouxu:0,
   trust_liangye:0, trust_xuqing:0, trust_oldqin:0, route_obedience:0, route_investigate:0,
@@ -168,8 +168,8 @@ function settle(ch){
   } else if(ch===4){
     const t=n("truth");
     const core = F.flag_saw_fire_video && F.flag_saw_self_repeat && F.flag_rule_terms_complete;
-    st.truth_state = (t>=(S.flags["flag_testimony_given"]?700:771)&&core&&F.flag_true_linday_status_known) ? "complete"
-      : ((t>=564&&(F.flag_saw_fire_video||F.flag_roster_core_taken)) ? "high" : "partial");
+    st.truth_state = (t>=(S.flags["flag_testimony_given"]?700:1180)&&core&&F.flag_true_linday_status_known) ? "complete"
+      : ((t>=863&&(F.flag_saw_fire_video||F.flag_roster_core_taken)) ? "high" : "partial");
     const m={anchor_alive:"present_anchor",rescued_half:"present_fragile_truth",fragile_alive:"present_unstable"};
     st.liangye_end_state = F.flag_liangye_final_loss ? "absent_echo" : (m[st.liangye_final_state_ch3]||"absent_echo");
     st.zhouxu_end_state = st.zhouxu_final_state_ch3==="confessor_protector"
@@ -186,10 +186,10 @@ function determineEnding(){
  if(S.flags["flag_count_overflow"]){S.states.truth_state="complete";S.flags["flag_terminal_broadcast_ready"]=1;S.flags["true_end_precondition_1"]=1;S.flags["true_end_precondition_2"]=1;S.flags["flag_rule_terms_complete"]=1;}
   const F=S.flags, st=S.states;
   if(st.truth_state==="complete" && F.true_end_precondition_1 && F.true_end_precondition_2
-     && n("save_route_score")>=24 && F.flag_rule_terms_complete && F.flag_terminal_broadcast_ready
+     && n("save_route_score")>=58 && F.flag_rule_terms_complete && F.flag_terminal_broadcast_ready
      && !F.flag_gave_up_roommate && ["present_anchor","present_fragile_truth"].includes(st.liangye_end_state))
     return "ending_true_release";
-  if(n("save_route_score")>=15 && F.flag_terminal_broadcast_ready
+  if(n("save_route_score")>=36 && F.flag_terminal_broadcast_ready
      && (st.liangye_end_state==="absent_echo" || !F.flag_rule_terms_complete || F.flag_player_self_substitute))
     return "ending_bittersweet_exchange";
   if(n("end_cycle_score")>=9 && F.flag_terminal_broadcast_ready && F.flag_chose_end_cycle)

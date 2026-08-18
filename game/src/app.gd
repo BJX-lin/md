@@ -3,6 +3,7 @@ extends Node
 
 const ThemeBuilder := preload("res://src/ui/theme_builder.gd")
 const TitleScreen := preload("res://src/ui/title_screen.gd")
+const SplashScreen := preload("res://src/ui/splash_screen.gd")
 const GameScreen := preload("res://src/ui/game_screen.gd")
 const EndingScreen := preload("res://src/ui/ending_screen.gd")
 
@@ -17,7 +18,11 @@ func _ready() -> void:
 	root_ui.theme = theme
 	root_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root_ui)
-	goto_title()
+	# 开场：引擎标识 + 作品信息，可点击跳过。
+	# 播完（或跳过）再进标题；任何异常都直接兜底进标题，不会卡在开场。
+	var sp := SplashScreen.new()
+	sp.finished.connect(goto_title)
+	_switch(sp)
 
 func _switch(node: Control) -> void:
 	if current and is_instance_valid(current):

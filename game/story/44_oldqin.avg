@@ -76,7 +76,7 @@ me：您为什么把标签涂了？
 oldqin(normal)：因为不涂，第二天钥匙就回来了。
 @wait 1.4
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +4
 @wait 1.0
 me：……回来不是好事吗？
@@ -95,7 +95,7 @@ me：明白什么？
 oldqin(normal)：它不是在还我钥匙。
 @wait 0.8
 @fx heartbeat 1.2
-@set sanity -2
+@set sanity -1
 @set truth +4
 oldqin(normal)：它是在补一个位。
 @wait 1.4
@@ -157,7 +157,7 @@ oldqin(normal)：删除，就是没了。名字被划掉，所有人的记忆里
 @wait 1.0
 oldqin(normal)：包括你爹妈。
 @wait 0.6
-@set sanity -2
+@set sanity -1
 @set truth +3
 me：那待定呢？
 @wait 1.4
@@ -188,7 +188,7 @@ oldqin(normal)：拖着拖着，有两个去处。
     @set truth +5
 * 「我现在是哪种状态。」 -> oldqin_q_terms_b
     @set truth +4
-    @set sanity -4
+    @set sanity -1
 
 == oldqin_q_terms_a
 me：哪两个？
@@ -219,7 +219,7 @@ oldqin(normal)：反正补上来以后，那个名字就归他了。
 oldqin(normal)：然后你就成了多余的那个。
 @wait 1.4
 @fx glitch 0.9
-@set sanity -3
+@set sanity -1
 @set truth +5
 oldqin(normal)：多余的东西，会被删掉。
 @wait 1.0
@@ -239,7 +239,7 @@ oldqin(normal)：……
 oldqin(normal)：也是待定过的。
 @wait 0.8
 @fx heartbeat 1.4
-@set sanity -4
+@set sanity -1
 @set truth +5
 oldqin(normal)：每一个补位的，都是上一轮被顶掉的。
 @wait 1.2
@@ -285,7 +285,7 @@ oldqin(normal)：这是今年新生和转学生的表。门卫室要留一份，
 照片那一格是空白的。
 @wait 1.4
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set truth +4
 me：为什么没有照片？
 @wait 1.0
@@ -295,7 +295,7 @@ oldqin(normal)：你自己看看别人的。
 @wait 1.2
 一百多行，每一行都有照片。只有你这一行是空的。
 @wait 0.8
-@set sanity -2
+@set sanity -1
 @set truth +3
 me：可能是漏印了。
 @wait 1.0
@@ -304,7 +304,7 @@ oldqin(normal)：那你去教务处看原件。
 oldqin(normal)：我看过了。原件上也是空的。
 @wait 1.4
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 oldqin(normal)：报到那天照的相，机器响了，闪光灯闪了，照片没出来。
@@ -323,7 +323,7 @@ me：所以我是待定。
 oldqin(normal)：你从进这个门开始，就是待定。
 @wait 0.8
 @fx heartbeat 1.4
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 oldqin(normal)：不是你做错了什么。
@@ -338,7 +338,7 @@ oldqin(normal)：是这个位置本来就有人。你是被塞进来的那个。
 > 你是补位。
 @wait 0.8
 @fx redflash 0.6
-@set sanity -3
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 1.2
@@ -395,7 +395,7 @@ oldqin(normal)：有了。
 @note 学号 0041　林昼\n入校记录：4 条\n出校记录：0 条
 @wait 1.4
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set truth +5
 @wait 0.8
 入校四次。出校零次。
@@ -421,7 +421,7 @@ oldqin(normal)：机器响了吗？
 但你回忆的时候，发现自己想不起来任何一次"嘀"完之后的画面。
 @wait 1.2
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +3
 你记得走向闸机，记得刷卡，记得听到响声。
@@ -439,7 +439,7 @@ oldqin(normal)：我查过全校的记录。
 oldqin(normal)：这五年，一共有一百零九个学号，入校记录有，出校记录是零。
 @wait 1.2
 @fx heartbeat 1.4
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 0.8
@@ -456,7 +456,7 @@ me：那这一百零九个人，现在在哪儿？
 oldqin(normal)：在学校里。
 @wait 0.8
 @fx redflash 0.5
-@set sanity -3
+@set sanity -1
 @set truth +4
 oldqin(normal)：从来没出去过。
 @wait 1.0
@@ -535,7 +535,7 @@ oldqin(normal)：第一天，进去四百一十二个，出来四百一十二个
 oldqin(normal)：第二天，进去四百一十二个。
 @wait 1.4
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set truth +4
 oldqin(normal)：出来四百一十一个。
 @wait 1.0
@@ -554,7 +554,7 @@ oldqin(normal)：我说那你们查考场登记。
 oldqin(normal)：查了。登记上是四百一十一个考生。
 @wait 1.4
 @fx glitch 0.9
-@set sanity -3
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 oldqin(normal)：进去的时候我数了四百一十二个。
@@ -590,7 +590,7 @@ oldqin(normal)：勾是我还记得脸的。
 oldqin(normal)：叉是我只记得名字了。
 @wait 1.4
 @fx heartbeat 1.4
-@set sanity -3
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @set save_route_score +3
@@ -614,7 +614,7 @@ oldqin(normal)：一个是那个每天数座位表的男生。
 oldqin(normal)：还有一个是你。
 @wait 1.2
 @fx heartbeat 1.6
-@set sanity -2
+@set sanity -1
 @set truth +5
 @set save_route_score +3
 @set memory_echo +2
@@ -674,7 +674,7 @@ oldqin(normal)：我试过。走到门口，人就转身往回走了。
 oldqin(normal)：不是害怕。是身体自己转的。
 @wait 1.4
 @fx heartbeat 1.0
-@set sanity -2
+@set sanity -1
 @set truth +4
 oldqin(normal)：待定的人才进得去。
 @wait 0.8
@@ -697,7 +697,7 @@ oldqin(normal)：你要是真进去了，看见有人坐在椅子上。
 oldqin(normal)：别喊她的名字。
 @wait 1.4
 @fx heartbeat 1.2
-@set sanity -2
+@set sanity -1
 @set truth +4
 @set shenhe_focus +3
 me：为什么？
@@ -744,7 +744,7 @@ oldqin(normal)：替你答的次数够了，那个位置就归他了。
 他看的是黑着的那三块。
 @wait 0.8
 @fx heartbeat 0.9
-@set sanity -2
+@set sanity -1
 @set truth +3
 @set memory_echo +2
 > 他每天晚上都这么看。

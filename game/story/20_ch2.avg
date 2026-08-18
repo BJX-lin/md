@@ -4,7 +4,7 @@
 == ch2_start
 @chapter 2 旧楼
 @time 2 07:10
-@set sanity +12
+@set sanity +30
 @bg classroom day
 @bgm bgm_day_class
 @amb amb_classroom_day
@@ -823,6 +823,7 @@ oldqin(flat)：只怕明天你就不想来了。
 你把两本书都塞进书包。
 书包立刻沉了一倍，拉链拉不上，你只好抱在怀里。
 @wait 0.8
+@bg stairwell night
 走到楼梯口的时候，你觉得手上的分量不对。
 你低头看。
 @fx glitch 0.8
@@ -1078,7 +1079,7 @@ zhouxu(cold)：进去以后，谁都别数楼梯，别应声，别单独离队�
 @sfx sfx_step
 你开始上楼。
 一级，两级，三级……
-@if truth>=392
+@if truth>=600
 > 老秦说过：别数楼梯。
 > 你及时停住了，把注意力放在扶手上。
 > 扶手是铁的，锈得厉害，但中间有一段被磨得发亮——那是常年有人扶着走出来的。
@@ -1290,7 +1291,7 @@ voice：外面是谁？
     @set route_obedience +1
     @set truth +1
 * 不回答 -> ch2_door_c
-    @set sanity +1
+    @set sanity +2
     @set truth +1
 * [if flag_shenhe_name_full] “沈禾，是你吗？” -> ch2_door_d
     @set shenhe_focus +4
@@ -1830,7 +1831,7 @@ me：梁野！
 @if state:liangye_state==missing_marked
 > 梁野没有回来。他的借书卡在你口袋里。
 @endif
-@if truth>=488
+@if truth>=747
 > 术语你已经能读懂了：在册、待定、删除未完成。
 > 三个词里，最危险的不是“删除”，是“待定”。
 @endif

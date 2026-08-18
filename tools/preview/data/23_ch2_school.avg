@@ -95,7 +95,7 @@ classmate：别问了。
 me：我还没说。
 classmate：你要问人数。
 @wait 1.0
-@set sanity -2
+@set sanity -1
 @set truth +2
 me：你怎么知道。
 classmate：因为前面几个都问过。
@@ -113,7 +113,7 @@ classmate：问完之后就没了。
 
 -- ================================================= 教务处
 == ch2_school_office
-@bg office day
+@bg infirmary day
 @bgm bgm_investigate
 @clearchars
 @advtime 20
@@ -181,7 +181,7 @@ me：能删掉吗？
 弹出一个提示框。
 @note 该记录存在关联档案，无法删除。
 @fx glitch 0.8
-@set sanity -2
+@set sanity -1
 @set truth +4
 @wait 1.0
 unknown(normal)：……那就不管它了。
@@ -231,7 +231,7 @@ unknown(normal)：巧了呗。三中离这儿近。
 @wait 1.4
 @fx glitch 0.7
 > 未找到相关结果。
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +2
 @wait 1.0
@@ -277,7 +277,7 @@ unknown(normal)：这个是……
 unknown(normal)：奇怪。
 unknown(normal)：这个号有使用记录，但登记日期比你入学早。
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +3
 @wait 1.0
@@ -359,7 +359,7 @@ unknown(normal)：说是家长觉得没必要，孩子过阵子就好了。
 unknown(normal)：也确实好了。
 unknown(normal)：过阵子他们就不来了。
 @fx glitch 0.6
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +2
 @wait 1.0
@@ -405,7 +405,7 @@ unknown(normal)：那个可以看。
 @wait 0.8
 @note 高二3　烟雾吸入　轻度　1人\n处理：现场处置后转院\n备注：另有1人未送出\n\n（这一行被划掉了，但还能看清）
 @fx heartbeat 1.4
-@set sanity -3
+@set sanity -1
 @set truth +5
 @clue clue_fire_truth
 @wait 1.2
@@ -431,7 +431,7 @@ unknown(normal)：这就是我一直没想明白的地方。
 unknown(normal)：门开着，火不大，就一米多的范围。
 unknown(normal)：那个孩子就坐在椅子上。
 @fx heartbeat 1.2
-@set sanity -4
+@set sanity -1
 @set truth +4
 @set memory_echo +2
 @wait 1.0
@@ -471,7 +471,7 @@ unknown(normal)：她坐在那儿，手放在桌上，好像在等什么人。
 别的照片都是彩色的。
 这一张是黑白的。
 @set truth +3
-@set sanity -2
+@set sanity -1
 @wait 0.8
 * 问路过的老师为什么是黑白的 -> ch2_school_photo_a
     @set truth +4
@@ -509,7 +509,7 @@ unknown(normal)：五年前早就数码了。
 他自己也盯着那张照片看起来。
 unknown(normal)：奇怪。
 unknown(normal)：那这照片怎么是黑白的。
-@set sanity -2
+@set sanity -1
 @set truth +4
 @set memory_echo +2
 @wait 0.8
@@ -553,7 +553,7 @@ unknown(normal)：可能是后期做的效果吧。现在小孩喜欢搞这些�
 你把脸贴到塑封上，眯起眼睛。
 @wait 0.8
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set memory_echo +3
 @set truth +3
 那把椅子上放着一件校服外套。

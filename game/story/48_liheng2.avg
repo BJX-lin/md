@@ -157,7 +157,7 @@ liheng(flat)：不记得。
 liheng(flat)：我只记得，我第一天坐下去的时候，桌子是凉的。
 @wait 1.2
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +4
 @set memory_echo +3
 > 桌子是凉的。
@@ -192,7 +192,7 @@ liheng(flat)：你去查，就会被它注意到。
 liheng(flat)：被注意到，就会加速。
 @wait 0.8
 @fx heartbeat 0.9
-@set sanity -2
+@set sanity -1
 @set truth +3
 me：你怎么知道会加速？
 @wait 1.4
@@ -208,7 +208,7 @@ me：然后呢？
 liheng(flat)：三天。
 @wait 0.8
 @fx glitch 0.8
-@set sanity -3
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 liheng(flat)：从她开始查，到她被删掉，三天。
@@ -264,7 +264,7 @@ me：为什么是空的？
 liheng(flat)：因为今天早读，许老师念到你的名字的时候。
 @wait 0.8
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set truth +5
 liheng(flat)：你没有应。
 @wait 1.2
@@ -278,7 +278,7 @@ liheng(flat)：你没有应。
 她没有念第二遍。
 @wait 0.6
 @fx glitch 0.9
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 me：她为什么不念第二遍。
@@ -288,7 +288,7 @@ liheng(flat)：她念了。
 liheng(flat)：你没听见，是因为那时候你已经不在名单上了。
 @wait 0.8
 @fx heartbeat 1.6
-@set sanity -3
+@set sanity -1
 @set truth +5
 @wait 1.2
 liheng(flat)：从今天早上起，你是待定。
@@ -357,7 +357,7 @@ liheng(flat)：第三件事是——
 liheng(flat)：别信我说的前两件。
 @wait 1.2
 @fx glitch 0.8
-@set sanity -2
+@set sanity -1
 @set truth +4
 me：什么意思？
 @wait 1.0
@@ -375,7 +375,7 @@ liheng(flat)：每一轮都有人告诉下一轮的人"必须应到"。
 liheng(flat)：一百多个人都应了。
 @wait 1.4
 @fx heartbeat 1.4
-@set sanity -4
+@set sanity -1
 @set truth +5
 liheng(flat)：一百多个人，现在都不在了。
 @wait 1.2
@@ -419,7 +419,7 @@ liheng(flat)：替人答到，不是帮忙。
 liheng(flat)：是换位置。
 @wait 0.8
 @fx glitch 0.7
-@set sanity -3
+@set sanity -1
 @set truth +5
 liheng(flat)：我答了你的名字，你就在册，我就变成多余的。
 @wait 1.2
@@ -439,7 +439,7 @@ liheng(flat)：对。
 liheng(flat)：他不是在警告你别去救他。
 @wait 1.4
 @fx heartbeat 1.4
-@set sanity -3
+@set sanity -1
 @set truth +5
 liheng(flat)：他是在求你别害他。
 @wait 1.2
@@ -480,7 +480,7 @@ liheng(flat)：前面那几个，问完就走了。
 liheng(flat)：有两个，我答应了。
 @wait 1.4
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set truth +4
 me：你答应过？
 @wait 0.8
@@ -525,7 +525,7 @@ me：怎么救的？
 liheng(flat)：她自己答到了。
 @wait 1.4
 @fx heartbeat 1.4
-@set sanity -3
+@set sanity -1
 @set truth +5
 @set shenhe_focus +3
 @wait 0.8
@@ -544,7 +544,7 @@ me：许老师呢？
 liheng(flat)：你见过她穿鞋吗。
 @wait 1.2
 @fx glitch 0.9
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 0.8
@@ -560,7 +560,7 @@ liheng(flat)：有人失去照片，有人失去出校记录，有人失去名�
 liheng(flat)：她失去的是脚。
 @wait 1.4
 @fx heartbeat 1.6
-@set sanity -3
+@set sanity -1
 @set truth +5
 @wait 0.8
 me：什么意思？她的脚还在。
@@ -571,7 +571,7 @@ liheng(flat)：但你有没有听见过她的脚步声？
 @wait 1.4
 @fx redflash 0.6
 @sfx sfx_sting
-@set sanity -4
+@set sanity -1
 @set truth +5
 @set memory_echo +3
 @wait 1.0
@@ -671,7 +671,7 @@ liheng(flat)：这就够了。
 习惯性地摸了一下桌面。
 @wait 1.4
 @fx heartbeat 1.2
-@set sanity -3
+@set sanity -1
 @set truth +4
 是凉的。
 @wait 1.0

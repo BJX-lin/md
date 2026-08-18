@@ -474,7 +474,7 @@ radio：沈——
 * 替她答“到” -> ch1_s5_answer
     @set taboo_count +2
     @set shenhe_focus +4
-    @set sanity -2
+    @set sanity -1
     @flag flag_first_night_response
 * 说“那个名字不完整” -> ch1_s5_incomplete
     @set truth +3
@@ -831,7 +831,7 @@ unknown(flat)：林昼。
 * 答“到” -> ch1_s6_yes_answer
     @set taboo_count +3
     @set shenhe_focus +5
-    @set sanity -2
+    @set sanity -1
     @flag flag_first_night_response
 * 反问“你是谁” -> ch1_s6_who
     @set truth +2
@@ -1013,10 +1013,10 @@ liangye(sad)：我只是……忘了那天该谁值日。
 > 你答过"到"。
 > 这件事已经被记下了。有些事情记下来，就不能划掉，只能替换。
 @endif
-@if truth>=327
+@if truth>=500
 > 你已经确定：这不是错觉。
 > 这所学校在按一套你还看不懂的规则运转，而所有人都默认你应该懂。
-@elif truth>=164
+@elif truth>=251
 > 你还不确定发生了什么。但你知道，最后一排靠窗那个位置，原本是有人的。
 @else
 > 你告诉自己这只是新环境的不适应。明天就会好。
