@@ -89,7 +89,7 @@ zhouxu(flat)：两步的话，我回头能抓住你。
 @set truth +1
 @endif
 @wait 0.6
-@goto ch4_prep_hub
+@goto ch4_day_start
 
 == ch4_prep_hub
 @bg schoolyard rain

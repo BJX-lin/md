@@ -168,7 +168,7 @@ function settle(ch){
   } else if(ch===4){
     const t=n("truth");
     const core = F.flag_saw_fire_video && F.flag_saw_self_repeat && F.flag_rule_terms_complete;
-    st.truth_state = (t>=771&&core&&F.flag_true_linday_status_known) ? "complete"
+    st.truth_state = (t>=(S.flags["flag_testimony_given"]?700:771)&&core&&F.flag_true_linday_status_known) ? "complete"
       : ((t>=564&&(F.flag_saw_fire_video||F.flag_roster_core_taken)) ? "high" : "partial");
     const m={anchor_alive:"present_anchor",rescued_half:"present_fragile_truth",fragile_alive:"present_unstable"};
     st.liangye_end_state = F.flag_liangye_final_loss ? "absent_echo" : (m[st.liangye_final_state_ch3]||"absent_echo");

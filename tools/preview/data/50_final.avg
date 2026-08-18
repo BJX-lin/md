@@ -889,6 +889,60 @@ me：我要把这次点名，从头念一遍。
 @show shenhe hollow center
 @fx heartbeat 1.4
 @wait 0.8
+@if flag_answered_for_shenhe
+她忽然开口了。
+@wait 1.0
+shenhe(hollow)：今天早上。
+@wait 0.6
+shenhe(hollow)：有人念了我的名字。
+@wait 1.4
+@fx heartbeat 1.2
+@set truth +4
+@set shenhe_focus +3
+me：是许老师念的。
+@wait 0.8
+shenhe(hollow)：我知道是她念的。她念了五年。
+@wait 1.0
+shenhe(hollow)：我说的是——有人应了。
+@wait 1.2
+@set truth +5
+@set memory_echo +3
+@set save_route_score +4
+她抬起头。这是你进这间屋子以来，她第一次抬头。
+@wait 1.0
+shenhe(hollow)：五年了。
+@wait 0.6
+shenhe(hollow)：第一次有人替我答到。
+@wait 1.4
+@set shenhe_focus +4
+@set save_route_score +3
+me：我知道那意味着什么。
+@wait 0.8
+shenhe(hollow)：你不知道。
+@wait 1.0
+shenhe(hollow)：你以为你欠了一轮。
+@wait 0.6
+shenhe(hollow)：不是。
+@wait 1.2
+@fx heartbeat 1.4
+@set truth +6
+@set memory_echo +3
+shenhe(hollow)：替一个「删除未完成」的人答到，不是补位。
+@wait 0.8
+shenhe(hollow)：是**作证**。
+@wait 1.4
+@set truth +6
+@set save_route_score +5
+@flag flag_testimony_given
+> 作证：证明这个名字对应过一个真实存在的人。
+@wait 1.0
+> 系统可以删掉记录，但删不掉「有人为她作过证」这件事——
+> 因为作证的人还活着，还记得。
+@wait 0.8
+@set truth +5
+@set memory_echo +3
+@wait 1.0
+@endif
 调音台上的红灯全部亮起。
 然后开始一颗一颗熄灭。
 从左到右，一秒一颗。

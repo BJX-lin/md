@@ -59,6 +59,7 @@ const ITEMS := {
 	"item_dorm_rules": {"name": "住宿生守则", "desc": "宿管给的旧打印件。前十条是正常校规，最后三条字体不同，是后来加上去的。"},
 	"item_qin_list": {"name": "老秦的名单", "desc": "逐年手抄的学生名单，勾＝还记得脸，叉＝只记得名字。今年那页只剩三个勾，其中一个是你——「趁我还记得」。"},
 	"item_backdoor_key": {"name": "东楼后门钥匙", "desc": "老秦一直没挂上钥匙板的真钥匙，怕它被换成假的。「待定的人才进得去。它防在册的人，不防待定的。」"},
+	"item_class_note": {"name": "数学书上的一行字", "desc": "「高二（3）班 四十一人／三月十七日 上午第三节 数学／他们都在」。在这个地方待久了，每个人最后都会开始记账。"},
 	"item_missing_poster": {"name": "寻人启事", "desc": "从食堂墙上揭下来的。背面有铅笔字：「别贴了 她没走 她在楼里 每年都有人贴 每年都被撕」"},
 	"item_bus_ticket": {"name": "周芸的车票", "desc": "座位号 42。背面是周叙写的：「如果到站没人接，就在原地等。别自己走。」"},
 	"item_seat41_stub": {"name": "41 号票根", "desc": "藏在周芸手机电池底下。背面擦掉的压痕写着：「她让我坐这儿的。」"},
@@ -348,7 +349,10 @@ func settle_chapter_4() -> void:
 	# 真相层级
 	var t := get_num("truth")
 	var core := get_flag("flag_saw_fire_video") and get_flag("flag_saw_self_repeat") and get_flag("flag_rule_terms_complete")
-	if t >= 771 and core and get_flag("flag_true_linday_status_known"):
+	# 替沈禾作过证的玩家，真相门槛下调：
+	# 亲身完成「作证」这一步，胜过多翻十页档案。
+	var th_complete := 700 if get_flag("flag_testimony_given") else 771
+	if t >= th_complete and core and get_flag("flag_true_linday_status_known"):
 		set_state("truth_state", "complete")
 	elif t >= 564 and (get_flag("flag_saw_fire_video") or get_flag("flag_roster_core_taken")):
 		set_state("truth_state", "high")

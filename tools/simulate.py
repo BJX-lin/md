@@ -238,7 +238,8 @@ class State:
         elif ch == 4:
             t = self.n("truth")
             core = self.flags.get("flag_saw_fire_video") and self.flags.get("flag_saw_self_repeat") and self.flags.get("flag_rule_terms_complete")
-            if t >= 771 and core and self.flags.get("flag_true_linday_status_known"):
+            th_complete = 700 if self.flags.get("flag_testimony_given") else 771
+            if t >= th_complete and core and self.flags.get("flag_true_linday_status_known"):
                 self.states["truth_state"] = "complete"
             elif t >= 564 and (self.flags.get("flag_saw_fire_video") or self.flags.get("flag_roster_core_taken")):
                 self.states["truth_state"] = "high"
