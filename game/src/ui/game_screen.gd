@@ -6,6 +6,7 @@ signal quit_to_title()
 
 const BGLayerS := preload("res://src/art/bg_layer.gd")
 const ActorSpriteS := preload("res://src/art/actor_sprite.gd")
+const LoadingOverlayS := preload("res://src/ui/loading_overlay.gd")
 const EffectsLayerS := preload("res://src/art/effects_layer.gd")
 const SanityFXS := preload("res://src/art/sanity_fx.gd")
 const GoreOverlayS := preload("res://src/art/gore_overlay.gd")
@@ -532,8 +533,7 @@ func _on_choices(list: Array) -> void:
 		b.add_theme_font_size_override("font_size", 27)
 		b.pressed.connect(func():
 			AudioDirector.play_sfx("sfx_click", 0.8)
-			_clear_choices()
-			StoryEngine.pick_choice(ch)
+			_confirm_choice(b, ch)
 		)
 		choice_box.add_child(b)
 		b.modulate.a = 0.0
@@ -541,6 +541,114 @@ func _on_choices(list: Array) -> void:
 		tw.tween_interval(0.05 * idx)
 		tw.tween_property(b, "modulate:a", 1.0, 0.22)
 		idx += 1
+
+## 选择反馈：先把选中项高亮、其余淡出，飘出这次选择造成的影响，
+## 再决定是直接推进还是走过场加载。
+func _confirm_choice(btn: Button, ch: Dictionary) -> void:
+	_blocked = true
+	for c in choice_box.get_children():
+		var other := c as Button
+		if other == null:
+			continue
+		other.disabled = true
+		if other != btn:
+			var tw_o := create_tween()
+			tw_o.tween_property(other, "modulate:a", 0.18, 0.16)
+
+	# 选中项：描边高亮 + 轻微放大
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.20, 0.19, 0.16, 0.95)
+	sb.border_color = Color(0.86, 0.78, 0.56)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(3)
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("disabled", sb)
+	btn.add_theme_color_override("font_disabled_color", Color(0.94, 0.90, 0.80))
+	btn.pivot_offset = btn.size * 0.5
+	var tw := create_tween()
+	tw.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(btn, "scale", Vector2(1.035, 1.035), 0.12)
+	tw.tween_property(btn, "scale", Vector2.ONE, 0.10)
+
+	_flash_choice_effects(ch)
+
+	var major := _is_major_choice(ch)
+	await get_tree().create_timer(0.42 if major else 0.26).timeout
+	_clear_choices()
+	_blocked = false
+
+	if major:
+		_run_transition(func(): StoryEngine.pick_choice(ch))
+	else:
+		StoryEngine.pick_choice(ch)
+
+## 把选项造成的数值 / 线索变化，以小字飘在文本框上方
+func _flash_choice_effects(ch: Dictionary) -> void:
+	var msgs: Array[String] = []
+	for e in ch.get("effects", []):
+		var ef: Dictionary = e
+		var cmd := String(ef.get("cmd", ""))
+		var args: Array = ef.get("args", [])
+		if cmd == "set" and args.size() >= 2:
+			var key := String(args[0])
+			if not Cfg.NUM_VISIBLE.has(key):
+				continue
+			var label := String(Cfg.NUM_LABEL.get(key, key))
+			msgs.append("%s %s" % [label, String(args[1])])
+		elif cmd == "clue":
+			msgs.append("获得线索")
+		elif cmd == "item":
+			msgs.append("获得道具")
+	if msgs.is_empty():
+		return
+	var lbl := Label.new()
+	lbl.text = "　".join(msgs)
+	lbl.add_theme_font_size_override("font_size", 19)
+	lbl.add_theme_color_override("font_color", Color(0.86, 0.80, 0.60))
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	lbl.position = Vector2(size.x * 0.5 - 200, size.y - 300)
+	lbl.custom_minimum_size.x = 400
+	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ui_root.add_child(lbl)
+	var tw := create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(lbl, "position:y", lbl.position.y - 34.0, 0.9)
+	tw.tween_property(lbl, "modulate:a", 0.0, 0.9).set_delay(0.35)
+	tw.chain().tween_callback(lbl.queue_free)
+
+## 重大选择判定：带 flag / 道具 / 结局分支，或数值改动较大
+func _is_major_choice(ch: Dictionary) -> bool:
+	var weight := 0
+	for e in ch.get("effects", []):
+		var ef: Dictionary = e
+		var cmd := String(ef.get("cmd", ""))
+		if cmd == "flag" or cmd == "item":
+			weight += 3
+		elif cmd == "clue":
+			weight += 2
+		elif cmd == "set":
+			var args: Array = ef.get("args", [])
+			if args.size() >= 2:
+				var v := String(args[1]).lstrip("+-=")
+				if v.is_valid_int() and int(v) >= 3:
+					weight += 2
+	return weight >= 4
+
+## 过场：显示进度条 + 后台预取 + 释放已过场资源，完成后执行 next
+func _run_transition(next: Callable) -> void:
+	var ov := LoadingOverlayS.new()
+	add_child(ov)
+	var keep: Array[String] = []
+	if is_instance_valid(bg):
+		var cur := bg.current_texture_path()
+		if cur != "":
+			keep.append(cur)
+	ov.begin(GameState.current_chapter, keep)
+	ov.finished.connect(func():
+		if next.is_valid():
+			next.call()
+	)
 
 func _clear_choices() -> void:
 	for c in choice_box.get_children():

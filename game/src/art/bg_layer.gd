@@ -1,6 +1,7 @@
 extends Control
 class_name BGLayer
-## 背景层：优先使用 PNG 背景图，缺图自动回退到代码绘制（bg_painter.gd），不会开天窗。
+## 背景层：全部场景组合均已配齐 PNG 专属贴图（check_bg_coverage 校验 0 回退）。
+## 找不到贴图时只铺一层纯色底，不再挂任何代码绘制层。
 ##
 ## 资源命名规范（对应《场景图片需求表》的 file_name 列）：
 ##   res://assets/bg/<file_name>.png
@@ -10,7 +11,6 @@ class_name BGLayer
 ## 由 BG_MAP 映射到资源表的文件名，并支持按变体逐级回退。
 
 const BG_ROOT := "res://assets/bg"
-const BGPainterS := preload("res://src/art/bg_painter.gd")
 
 var scene_id := "black"
 var variant := ""
@@ -19,9 +19,9 @@ var blood_amount := 0.0
 var wet := 0.0
 
 var _tex: Texture2D = null
-var _painter: BGPainter = null
 var _t := 0.0
 var _cur_key := ""
+var _cur_tex_path := ""
 
 ## scene_id + variant → 候选文件名（按优先级，前面找不到就试后面）
 ## 与《场景图片需求表》二、三节完全对应
@@ -160,16 +160,13 @@ func set_scene(id: String, v: String = "") -> void:
 		return
 	_cur_key = key
 	_tex = _find_texture(id, v)
-	if _tex == null:
-		if _painter == null:
-			_painter = BGPainterS.new()
-			add_child(_painter)
-			move_child(_painter, 0)
-		_painter.visible = true
-		_painter.set_scene(id, v)
-	elif _painter != null:
-		_painter.visible = false
+	# 全部场景组合均已有专属贴图（check_bg_coverage 校验 0 回退），
+	# 找不到贴图时只留纯色底，不再挂代码绘制层。
 	queue_redraw()
+
+## 当前正在显示的贴图路径（供过场加载时标记为「保留，勿释放」）
+func current_texture_path() -> String:
+	return _cur_tex_path
 
 func _find_texture(id: String, v: String) -> Texture2D:
 	if id == "black" or id == "white":
@@ -190,15 +187,17 @@ func _find_texture(id: String, v: String) -> Texture2D:
 	for name in candidates:
 		var p := "%s/%s.png" % [BG_ROOT, String(name)]
 		if ResourceLoader.exists(p):
-			return load(p) as Texture2D
+			_cur_tex_path = p
+			return ArtCache.get_tex(p)
 	return null
 
 func _process(delta: float) -> void:
+	# 性能：静止画面不需要每帧重绘。只有存在动态元素
+	# （灯管闪烁 / 雨丝 / 血迹动画）时才推进时间轴并请求重绘。
+	var animated := flicker > 0.001 or wet > 0.01 or variant == "rain" or blood_amount > 0.001
+	if not animated:
+		return
 	_t += delta
-	if _painter != null and _painter.visible:
-		_painter.flicker = flicker
-		_painter.blood_amount = blood_amount
-		_painter.wet = wet
 	if _tex != null:
 		queue_redraw()
 
@@ -212,6 +211,9 @@ func _draw() -> void:
 		else:
 			s = get_viewport_rect().size
 	if _tex == null:
+		# black / white 等纯色场景，或极端缺图情况：铺纯色，避免空白
+		draw_rect(Rect2(Vector2.ZERO, s),
+			Color(0.93, 0.93, 0.95) if scene_id == "white" else Color(0.02, 0.02, 0.03), true)
 		return
 	var tw := float(_tex.get_width())
 	var th := float(_tex.get_height())

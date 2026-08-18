@@ -122,7 +122,7 @@ def main():
         for x in s_todo:
             print(f"    {x['rel']}")
     print("\n缺图不会导致报错：立绘按 EMO_FALLBACK 降级，背景按 BG_MAP 回退，")
-    print("最终都能回落到代码绘制（bg_painter / actor_painter）。")
+    print("主要角色立绘与全部场景已配齐；路人角色回落到内联剪影。")
     print("用 --todo 看完整待办，--prompt N 取下 N 张的生图提示词。")
     return 0
 

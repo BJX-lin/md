@@ -111,7 +111,7 @@ def main():
     print(f"  专属图 {stat['exact']}   回退图 {stat['fallback']}   "
           f"代码绘制 {stat['code']}   纯色 {stat['solid']}")
     if stat["code"]:
-        print("\n  说明：代码绘制不是错误，bg_painter.gd 会画出可用的场景，")
+        print("\n  说明：全部场景组合均有专属贴图，")
         print("  只是不如 AI 图精细。补齐对应贴图后会自动切换。")
     print("  无任何场景会开天窗。")
     return 0

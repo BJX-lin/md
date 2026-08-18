@@ -11,10 +11,9 @@ class_name ActorSprite
 ##   2. 剧情指定的姿态 + 表情回退链
 ##   3. 其它姿态 + 表情回退链
 ##   4. 该角色任意一张图
-##   5. 全都没有 → 回退 actor_painter 代码绘制（不会开天窗）
+##   5. 全都没有（仅路人角色）→ _draw_silhouette() 内联剪影，不会开天窗
 
 const SPRITE_ROOT := "res://assets/sprites"
-const ActorPainterS := preload("res://src/art/actor_painter.gd")
 
 var who := "linzhou"
 var emo := "normal"
@@ -24,7 +23,6 @@ var wounded := 0.0
 var pose := ""          # 留空=按状态自动选姿态
 
 var _tex: Texture2D = null
-var _fallback: ActorPainter = null
 var _t := 0.0
 var _cur_key := ""
 
@@ -115,16 +113,8 @@ func _refresh() -> void:
 		return
 	_cur_key = key
 	_tex = _find_texture(who, emo)
-	if _tex == null:
-		if _fallback == null:
-			_fallback = ActorPainterS.new()
-			_fallback.set_anchors_preset(Control.PRESET_FULL_RECT)
-			add_child(_fallback)
-		_fallback.visible = true
-		_fallback.who = who
-		_fallback.emo = emo
-	elif _fallback != null:
-		_fallback.visible = false
+	# 主要角色全部有专属立绘；路人（unknown / classmate 等）没有立绘时，
+	# 由 _draw() 直接画一个轻量剪影，不再实例化独立的 painter 节点。
 	queue_redraw()
 
 ## 按剧情状态自动挑姿态（剧本没显式指定时）
@@ -178,7 +168,7 @@ func _find_texture(char_id: String, emotion: String) -> Texture2D:
 	for e in chain:
 		var p := "%s/%s/%s_%s_%s.png" % [SPRITE_ROOT, dir, dir, want, String(e)]
 		if ResourceLoader.exists(p):
-			return load(p) as Texture2D
+			return ArtCache.get_tex(p)
 	# 3. 其它姿态 + 表情回退链
 	var all_poses: Array = POSES.get(dir, ["pose01", "pose02", "pose03", "pose04"])
 	for e in chain:
@@ -194,19 +184,27 @@ func _find_texture(char_id: String, emotion: String) -> Texture2D:
 				return load(p3) as Texture2D
 	return null
 
+var _redraw_acc := 0.0
+
 func _process(delta: float) -> void:
 	_t += delta
-	if _fallback != null and _fallback.visible:
-		_fallback.active = active
-		_fallback.glitch = glitch
-		_fallback.wounded = wounded
-	if _tex != null:
+	if _tex == null and not active:
+		return
+	# 性能：呼吸浮动幅度只有 1.5px，没必要 60fps 重绘；
+	# 常态限到 ~20fps，只有故障闪烁 / 流血动画时才全速。
+	if glitch > 0.02 or wounded > 0.0:
+		queue_redraw()
+		return
+	_redraw_acc += delta
+	if _redraw_acc >= 0.05:
+		_redraw_acc = 0.0
 		queue_redraw()
 
 func _draw() -> void:
-	if _tex == null:
-		return
 	var s := size
+	if _tex == null:
+		_draw_silhouette(s)
+		return
 	if s.x <= 1.0 or s.y <= 1.0:
 		return
 	var tw := float(_tex.get_width())
@@ -244,3 +242,29 @@ func _draw() -> void:
 			if lv == 2:
 				draw_rect(Rect2(px - 2, py, 4, rng.randf_range(10, 46) * amount),
 					Color(blood.r * 0.6, 0.05, 0.05, 0.6 * amount))
+
+
+## 路人角色（unknown / classmate / dorm_keeper 等）没有专属立绘时的轻量剪影。
+## 只用几个 draw 调用，不实例化额外节点，也不做逐像素运算。
+func _draw_silhouette(s: Vector2) -> void:
+	if s.x <= 1.0 or s.y <= 1.0:
+		return
+	var col: Color = Cfg.CHARS.get(who, {}).get("color", Color(0.55, 0.56, 0.62))
+	var a := 0.82 if active else 0.42
+	var base := Color(col.r * 0.34, col.g * 0.36, col.b * 0.42, a)
+	var w := s.x
+	var h := s.y
+	# 头
+	var head_r := w * 0.17
+	draw_circle(Vector2(w * 0.5, h * 0.12), head_r, base)
+	# 肩到脚的梯形躯干
+	var pts := PackedVector2Array([
+		Vector2(w * 0.30, h * 0.24),
+		Vector2(w * 0.70, h * 0.24),
+		Vector2(w * 0.78, h * 1.00),
+		Vector2(w * 0.22, h * 1.00),
+	])
+	draw_colored_polygon(pts, base)
+	# 领口高光，避免整体像一块色板
+	draw_rect(Rect2(w * 0.44, h * 0.24, w * 0.12, h * 0.05),
+		Color(base.r * 1.5, base.g * 1.5, base.b * 1.6, a * 0.7), true)
