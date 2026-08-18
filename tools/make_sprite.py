@@ -196,12 +196,33 @@ def fit_canvas(im, canvas=CANVAS, margin_bottom=8):
     return out
 
 
+def solidify_alpha(im, solid_thr=190, edge_lo=12):
+    """把「本该实心」的像素 alpha 拉回 255。
+
+    FASTOCTREE 量化会把 alpha 一起纳入调色板，导致人物躯干的 255
+    被近似成 87~246 —— 表现为整个立绘半透明，像幽灵/全息投影。
+    这里只保留真正的边缘羽化（介于 edge_lo..solid_thr 之间的过渡带），
+    其余一律归为全不透明或全透明。
+    """
+    im = im.convert("RGBA")
+    a = im.getchannel("A")
+    # >=solid_thr 视为主体，强制 255；<=edge_lo 视为背景，强制 0；中间保留做抗锯齿
+    lut = [0 if v <= edge_lo else (255 if v >= solid_thr else v) for v in range(256)]
+    im.putalpha(a.point(lut))
+    return im
+
+
 def compress(path, colors=200):
     """RGBA 量化压缩（保留 alpha）。
-    Pillow 对 RGBA 只支持 FASTOCTREE / libimagequant。"""
+    Pillow 对 RGBA 只支持 FASTOCTREE / libimagequant。
+    量化会破坏 alpha，故量化后必须重新贴回原始 alpha 通道。"""
     im = Image.open(path).convert("RGBA")
     before = os.path.getsize(path)
-    q = im.quantize(colors=colors, method=Image.FASTOCTREE)
+    im = solidify_alpha(im)
+    alpha = im.getchannel("A")          # 量化前先留底
+    q = im.quantize(colors=colors, method=Image.FASTOCTREE).convert("RGBA")
+    q.putalpha(alpha)                   # 用未被量化污染的 alpha 覆盖回去
+    q = solidify_alpha(q)
     q.save(path, optimize=True)
     return before, os.path.getsize(path)
 
