@@ -12,6 +12,8 @@
 @if visited:ch3_night_hub
 > 你还可以再做一件事。但每多待一分钟，走廊上的声音就更近一点。
 @endif
+* [if !visited:ch3_dorm_hub] 不出去，就待在屋里 -> ch3_dorm_hub
+    @set route_empathy +1
 * [if !visited:ch3_side_water] 去水房接水（顺便看看走廊） -> ch3_side_water
     @set route_investigate +1
 * [if !visited:ch3_side_roof] 上天台 -> ch3_side_roof

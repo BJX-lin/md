@@ -1516,6 +1516,65 @@ me：疼吗。
 shenhe(smile)：不疼。
 shenhe(smile)：就是，终于可以走了。
 @wait 0.8
+@if flag_carved_name
+@wait 1.0
+shenhe(smile)：对了。
+@wait 0.6
+shenhe(smile)：307，靠门那张床，床头墙上。
+@wait 1.2
+@fx heartbeat 0.9
+@set truth +3
+@set memory_echo +3
+me：你怎么知道。
+@wait 0.8
+shenhe(smile)：那面墙上的字，我都摸过。
+@wait 1.0
+shenhe(smile)：三十七个。上礼拜是三十七个。
+@wait 0.6
+shenhe(smile)：昨天变成三十八个了。
+@wait 1.4
+@set truth +4
+@set save_route_score +4
+你没有说话。
+@wait 0.8
+shenhe(smile)：刻得挺深的。
+@wait 0.6
+shenhe(smile)：谢谢。
+@wait 1.2
+@set memory_echo +3
+> 五年了，她第一次在这所学校里，看见有人主动把她的名字往墙上刻，
+> 而不是往下擦。
+@wait 1.0
+@set truth +3
+@endif
+@if flag_three_pact
+@wait 1.0
+shenhe(smile)：你们三个昨晚说的话，我听见了。
+@wait 0.8
+me：……你在？
+@wait 0.6
+shenhe(smile)：广播线通到每一间宿舍。
+@wait 1.0
+shenhe(smile)：坏了五年，但线还在。
+@wait 1.2
+@set truth +4
+@set memory_echo +2
+shenhe(smile)：想当老师那个。
+@wait 0.6
+shenhe(smile)：让他去考。
+@wait 1.0
+@set save_route_score +3
+shenhe(smile)：一个班一天点一次名，一年两百天——
+shenhe(smile)：这话说得对。
+@wait 1.2
+@set truth +3
+@set memory_echo +3
+> 一个因为点名而困了五年的人，
+> 在最后一刻替另一个人的志愿背了一次书。
+@wait 1.0
+@set save_route_score +3
+@endif
+@wait 0.8
 @fx names 0.6
 她走到门口，回头看了一眼那把空椅子。
 shenhe(smile)：那把椅子，以后别让人坐了。
@@ -2114,6 +2173,38 @@ shenhe(hollow)：多坐几年，你就知道了。
 然后在旁边，浮出两个更浅的字。
 你认不出那是什么字。
 @set memory_echo +2
+@if flag_self_sms
+@wait 1.2
+你口袋里的手机震了一下。
+@sfx sfx_click
+@wait 0.8
+是一条短信。发件人是你自己的号码。
+@wait 1.0
+@fx names 0.8
+@set memory_echo +3
+@note 我叫林昼。转学生。高二三班最后一排靠窗。\n如果你读到这条不记得自己是谁，就照着上面念一遍。
+@wait 1.6
+@fx heartbeat 1.4
+@set truth +4
+你把这句话念了一遍。
+@wait 1.0
+> 念完之后，什么都没有发生。
+@wait 0.8
+> 名字还是那两个字，你还是认不出来。
+@wait 1.2
+@set memory_echo +3
+> 但你知道了一件事：三天前的你，预料到了今天。
+@wait 1.0
+@set truth +4
+> 他没能救你。
+> 他只是隔着三天，拍了拍你的肩。
+@wait 1.2
+@set memory_echo +3
+你把手机放回口袋。
+@wait 0.8
+> 下一次它再震的时候，你已经不会去看了。
+@wait 1.0
+@endif
 @wait 0.8
 最后一排靠窗的位置空出来了。
 第二天早自习，许清点名点到最后一个，停顿了一下，然后合上册子。
