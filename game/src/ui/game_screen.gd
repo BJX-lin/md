@@ -53,6 +53,22 @@ func _ready() -> void:
 func begin(node_id: String) -> void:
 	StoryEngine.start(node_id)
 
+## 读档后立刻把画面还原成存档那一刻：背景 + 台上的立绘。
+## 不这样做的话，存档点所在节点通常没有 @bg 指令，
+## 背景会一直空着，直到玩家推进到下一条 @bg 才出现。
+func restore_scene() -> void:
+	if is_instance_valid(bg):
+		bg.set_scene(GameState.scene_bg, GameState.scene_variant)
+		bg.blood_amount = 0.8 if GameState.scene_variant == "blood" else 0.0
+		bg.wet = 1.0 if GameState.scene_variant == "rain" else 0.0
+	for k in actors.keys():
+		actors[k]["node"].queue_free()
+	actors.clear()
+	for a in GameState.scene_actors:
+		var d: Dictionary = a
+		_on_actor("show", String(d.get("who", "")),
+			String(d.get("emo", "normal")), String(d.get("pos", "center")))
+
 # ---------------------------------------------------------------- 构建界面
 func _build() -> void:
 	world = Control.new()
@@ -330,28 +346,29 @@ func _layout_actors() -> void:
 			fx_ratio = 0.5 + (i - (keys.size() - 1) * 0.5) * 0.26
 
 		# —— 半身构图 ——
-		# 立绘素材是 768x1280 全身竖图，但演出上只展示上半身：
-		# 把人物整体放大，让「腰部以上」占满可视区，腰以下自然沉进文本框被遮住。
+		# 立绘素材是 768x768 半身图（已裁掉永远看不见的下半身）：
+		# 让人物占满可视区，图的底边沉进文本框被遮住。
 		# 这样脸部更大、表情更清楚，也符合常见 AVG 的视觉习惯。
 		var box_top: float = size.y - 272.0
 		if is_instance_valid(box) and box.size.y > 1.0:
 			box_top = box.position.y
 		var top_bar_h := 56.0
 
-		# 素材里腰线大约在全身高度的 55% 处（头顶=0，脚底=1）。
-		# 让腰线落到文本框上沿稍下方，腰以下的部分就被文本框盖住。
-		const WAIST_RATIO := 0.55
+		# 立绘素材已由 tools/crop_sprites.py 裁成半身（到大腿中部为止），
+		# 因此图的底边就相当于「腰线偏下」，直接对齐到文本框内即可。
+		# 裁切让每张立绘的显存占用降低 40%。
+		const WAIST_RATIO := 0.88
 		var waist_y: float = box_top + 40.0
 		# 可视区 = 顶栏下沿 → 腰线，这段要装下人物的「头顶到腰」
 		var visible_h: float = waist_y - top_bar_h
 		# 由此反推整张立绘应有的高度
 		var h: float = visible_h / WAIST_RATIO
-		var w: float = h * (768.0 / 1280.0)
+		var w: float = h * (768.0 / 768.0)
 		# 多人同屏时按槽位间距收窄，防止相邻立绘互相重叠
 		var max_w: float = size.x * (0.52 if keys.size() > 1 else 0.68)
 		if w > max_w:
 			w = max_w
-			h = w * (1280.0 / 768.0)
+			h = w * (768.0 / 768.0)
 		a.size = Vector2(w, h)
 		# 纵向：让腰线对齐 waist_y（头顶可能超出顶栏一点，由 ActorSprite 内部裁掉）
 		var top_y: float = waist_y - h * WAIST_RATIO
@@ -730,6 +747,7 @@ func _open_saves() -> void:
 		_refresh_status()
 		var n := String(d.get("node", "prologue"))
 		StoryEngine.start(n if StoryEngine.has_story_node(n) else "prologue")
+		restore_scene()
 	)
 	_push_panel(p)
 

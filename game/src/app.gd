@@ -62,6 +62,9 @@ func _load_payload(d: Dictionary) -> void:
 	_switch(g)
 	var node := String(d.get("node", "prologue"))
 	g.begin(node if StoryEngine.has_story_node(node) else "prologue")
+	# 读档进入时把背景与立绘还原成存档那一刻，
+	# 否则要等推进到下一条 @bg 才有画面。
+	g.restore_scene()
 
 func _on_story_finished(ending_id: String) -> void:
 	var e := EndingScreen.new()

@@ -334,6 +334,9 @@ func _exec_cmd(ins: Dictionary) -> bool:
 	var rest := String(ins.get("rest", ""))
 	match cmd:
 		"bg":
+			# 记录当前场景，读档时用它还原画面（否则要等到下一条 @bg 才有背景）
+			GameState.scene_bg = _arg(args, 0)
+			GameState.scene_variant = _arg(args, 1)
 			scene_requested.emit("bg", _arg(args, 0), _arg(args, 1))
 		"bgm":
 			AudioDirector.play_bgm(_arg(args, 0))
@@ -348,10 +351,13 @@ func _exec_cmd(ins: Dictionary) -> bool:
 		"fx":
 			effect_requested.emit(_arg(args, 0), float(_arg(args, 1, "1.0")))
 		"show":
+			_record_actor("show", _arg(args, 0), _arg(args, 1, "normal"), _arg(args, 2, "center"))
 			actor_requested.emit("show", _arg(args, 0), _arg(args, 1, "normal"), _arg(args, 2, "center"))
 		"hide":
+			_record_actor("hide", _arg(args, 0), "", "")
 			actor_requested.emit("hide", _arg(args, 0), "", "")
 		"clearchars":
+			_record_actor("clear", "", "", "")
 			actor_requested.emit("clear", "", "", "")
 		"set":
 			_apply_set(_arg(args, 0), _arg(args, 1))
@@ -587,6 +593,24 @@ func _lock_hint(lock: String) -> String:
 			if Cfg.NUM_LABEL.has(k):
 				return "需要 %s %s" % [Cfg.NUM_LABEL[k], s.substr(i)]
 	return "条件未满足"
+
+## 维护 GameState.scene_actors，使存档能还原「当时台上有谁」
+func _record_actor(kind: String, who: String, emo: String, pos: String) -> void:
+	match kind:
+		"show":
+			for a in GameState.scene_actors:
+				if String((a as Dictionary).get("who", "")) == who:
+					(a as Dictionary)["emo"] = emo
+					(a as Dictionary)["pos"] = pos
+					return
+			GameState.scene_actors.append({"who": who, "emo": emo, "pos": pos})
+		"hide":
+			for i in range(GameState.scene_actors.size() - 1, -1, -1):
+				var d: Dictionary = GameState.scene_actors[i]
+				if String(d.get("who", "")) == who:
+					GameState.scene_actors.remove_at(i)
+		"clear":
+			GameState.scene_actors.clear()
 
 # ---------------------------------------------------------------- 存档接口
 func snapshot() -> Dictionary:

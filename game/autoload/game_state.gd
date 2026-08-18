@@ -18,6 +18,11 @@ var clues: Array[String] = []
 var visited_nodes: Dictionary = {}
 var history: Array = []              # 回想记录 [{who,text}]
 var current_chapter: int = 1
+## 当前演出状态：读档后要用它把画面还原成存档那一刻的样子。
+## 只存 @bg / @show 的结果，不存立绘节点本身。
+var scene_bg: String = "black"
+var scene_variant: String = ""
+var scene_actors: Array = []        # [{who, emo, pos}, ...]
 var current_node: String = ""
 ## 剧情内时间：第几天 + 当天分钟数（0~1439）
 var story_day: int = 1
@@ -118,6 +123,9 @@ func reset_run() -> void:
 	choice_log = []
 	deaths = []
 	current_chapter = 1
+	scene_bg = "black"
+	scene_variant = ""
+	scene_actors.clear()
 	current_node = ""
 	story_day = 1
 	story_minute = 14 * 60 + 40
@@ -463,6 +471,9 @@ func to_dict() -> Dictionary:
 		"deaths": deaths.duplicate(),
 		"choice_log": choice_log.duplicate(true),
 		"history": history.slice(maxi(0, history.size() - 200)),
+		"scene_bg": scene_bg,
+		"scene_variant": scene_variant,
+		"scene_actors": scene_actors.duplicate(true),
 		"self_sub": player_chose_self_substitute,
 		"fire_seq": player_triggered_fire_sequence,
 	}
@@ -484,6 +495,9 @@ func from_dict(d: Dictionary) -> void:
 	visited_nodes = (d.get("visited", {}) as Dictionary).duplicate(true)
 	current_chapter = int(d.get("chapter", 1))
 	current_node = String(d.get("node", ""))
+	scene_bg = String(d.get("scene_bg", "black"))
+	scene_variant = String(d.get("scene_variant", ""))
+	scene_actors = (d.get("scene_actors", []) as Array).duplicate(true)
 	play_seconds = float(d.get("time", 0.0))
 	story_day = int(d.get("story_day", 1))
 	story_minute = int(d.get("story_minute", 14 * 60 + 40))

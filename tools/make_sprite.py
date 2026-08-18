@@ -239,6 +239,11 @@ def process(path, canvas=CANVAS):
     if already:
         # 已抠好的图必须完全不动：fit_canvas 会再次裁切+缩放，
         # 反复执行会把人物越缩越小，最终 alpha 全空（曾毁掉 4 张图）。
+        # 半身图（crop_sprites.py 裁过，高宽比接近 1:1）同样跳过，
+        # 否则会被重新拉回 768x1280 全身画布，白白吃掉 40% 显存。
+        if im.size[0] > 0 and im.size[1] / im.size[0] < 1.35:
+            print(f"  {os.path.relpath(path, ROOT)}  已是半身图，跳过")
+            return True
         if im.size == canvas:
             print(f"  {os.path.relpath(path, ROOT)}  已是透明底且尺寸正确，跳过")
             return True
