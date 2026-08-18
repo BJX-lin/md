@@ -762,7 +762,7 @@ oldqin(flat)：只怕明天你就不想来了。
 -- ================================================= 图书馆复访
 
 == ch2_library2
-@bg library day
+@bg library night
 @bgm bgm_investigate
 @amb amb_library
 @clearchars
@@ -1141,6 +1141,7 @@ zhouxu(cold)：进去以后，谁都别数楼梯，别应声，别单独离队�
 @wait 0.8
 第六间的桌椅全部堆到了墙角，堆成一座小山，用绳子捆着。
 教室中间空出一大片地方。
+@bg oldbuilding_class dark
 地上用粉笔画着一个圈。
 @fx heartbeat 1.2
 圈很大，直径大概两米，画得很仔细，线条是连续的，没有断口。
