@@ -145,6 +145,7 @@ classmate_girl：我怎么会知道。
 @bgm bgm_unease
 @clearchars
 @advtime 6
+@bg prop duty
 教室后墙贴着一张值日表，A3 打印的，塑封过。
 @wait 0.8
 七列，对应周一到周日。每列下面写着当天值日的四个人。
@@ -361,6 +362,7 @@ classmate_boy：你别问我啊，我就管擦黑板。
 你走过去看。
 @sfx sfx_page
 @wait 0.6
+@bg prop poster
 是一张寻人启事。
 @wait 1.0
 @set truth +2

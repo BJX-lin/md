@@ -94,6 +94,10 @@ const BG_MAP := {
 		"library_card": ["prop_library_card"],
 		"register": ["prop_broadcast_register"],
 		"roster": ["prop_roster_core"],
+		"poster": ["prop_missing_poster"],
+		"duty": ["prop_duty_roster"],
+		"logbook": ["prop_logbook"],
+		"notice": ["prop_notice_board"],
 	},
 	"desk": {
 		"": ["desk_carving_shen"], "dark": ["desk_carving_shen"],

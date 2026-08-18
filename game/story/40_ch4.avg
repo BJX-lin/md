@@ -23,6 +23,7 @@
 门口有块石碑，刻着"南栖中学校史馆"，落款是十二年前。
 @wait 0.6
 公告栏钉在门边，玻璃罩裂了一道缝，雨水渗进去，里面的纸都是波浪形的。
+@bg prop notice
 最上面贴着今年的高考喜报，红底黄字，边角被泡得翘起来。
 你伸手把翘起的一角掀开。
 @sfx sfx_page
@@ -705,7 +706,7 @@ zhouxu(flat)：看了也改变不了那十一分钟。
 @goto ch4_after_material
 
 == ch4_log
-@bg monitor_room dark
+@bg prop logbook
 @bgm bgm_truth
 日志总册很厚，封皮是硬的，边角磨得起了毛。
 里面按次编号，每一次都是一份格式一样的记录。
