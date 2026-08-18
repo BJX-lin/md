@@ -185,6 +185,7 @@
 @clearchars
 @advtime 20
 你走到墙边的铁架前。
+@bg prop videotape
 架子有五层，全是录像带。老式的那种，塑料壳，每一盒侧面贴着白标签。
 @wait 0.6
 你数了一下：大概两百多盒。

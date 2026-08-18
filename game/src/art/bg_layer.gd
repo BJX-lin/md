@@ -85,6 +85,16 @@ const BG_MAP := {
 		"night": ["oldbuilding_out_night", "old_building_gate_rain"],
 		"day": ["oldbuilding_out_night", "old_building_gate_rain"],
 	},
+	"prop": {
+		"": ["prop_pencil_case"],
+		"pencil_case": ["prop_pencil_case"],
+		"videotape": ["prop_videotapes"],
+		"ticket": ["prop_bus_ticket"],
+		"torn_page": ["prop_torn_page"],
+		"library_card": ["prop_library_card"],
+		"register": ["prop_broadcast_register"],
+		"roster": ["prop_roster_core"],
+	},
 	"desk": {
 		"": ["desk_carving_shen"], "dark": ["desk_carving_shen"],
 		"carving": ["desk_carving_shen"],

@@ -48,7 +48,7 @@ KNOWN_BG = {
     "dorm_door", "oldbuilding_out", "oldbuilding_stair", "broadcast_door",
     "broadcast_room", "duty_room", "schoolyard", "history_hall", "archive",
     "canteen", "dorm_hall", "washroom",
-    "desk", "rooftop", "oldbuilding_class", "photo_wall", "keyboard",
+    "prop", "desk", "rooftop", "oldbuilding_class", "photo_wall", "keyboard",
     "monitor_room", "mirror",
 }
 ENDINGS = {
