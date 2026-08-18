@@ -66,6 +66,8 @@ func _build() -> void:
 	actor_root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	actor_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	world.add_child(actor_root)
+	# 旋屏 / 窗口缩放后必须重新排布立绘，否则位置和尺寸还是旧屏幕的
+	resized.connect(_layout_actors)
 
 	fx = EffectsLayerS.new()
 	fx.shake_offset.connect(func(o):
@@ -325,13 +327,31 @@ func _layout_actors() -> void:
 		var fx_ratio: float = float(slots.get(pos, 0.5))
 		if not slots.has(pos):
 			fx_ratio = 0.5 + (i - (keys.size() - 1) * 0.5) * 0.26
-		# 立绘素材为 768x1280 竖图，按高度铺满可视区（文本框上沿之上）
-		var box_top := size.y - 252.0 - 20.0
-		var h := clampf(box_top - 62.0, size.y * 0.55, size.y * 0.94)
-		var w := h * (768.0 / 1280.0)
+
+		# 立绘素材为 768x1280 竖图。可用高度 = 顶栏之下到文本框上沿之间。
+		# 文本框实际几何以 box 节点为准（_build_text_box 里是 offset_top=-252 / bottom=-20），
+		# 不要另写一份常数，否则改了样式两边就对不上。
+		var box_top: float = size.y - 272.0
+		if is_instance_valid(box) and box.size.y > 1.0:
+			box_top = box.position.y
+		var top_bar_h := 56.0
+		# 脚底要压到文本框内部一段，而不是停在上沿——
+		# 背景的地平线通常远低于文本框上沿，脚踩在上沿会显得人物悬浮在半空。
+		# 让下半身被文本框自然遮住，这是 AVG 的常规处理。
+		var foot_y: float = box_top + (size.y - box_top) * 0.62
+		# 人物要够大：以「可用竖直空间」为主，允许适度超出顶栏被裁掉一点头顶余白
+		var avail := foot_y - top_bar_h
+		var h: float = maxf(avail, size.y * 0.78)
+		var w: float = h * (768.0 / 1280.0)
+		# 多人同屏时按槽位间距收窄，防止相邻立绘互相重叠
+		var max_w: float = size.x * (0.46 if keys.size() > 1 else 0.60)
+		if w > max_w:
+			w = max_w
+			h = w * (1280.0 / 768.0)
 		a.size = Vector2(w, h)
-		# 脚底压在文本框上沿略下方，避免悬空
-		a.position = Vector2(size.x * fx_ratio - w * 0.5, box_top + 26.0 - h)
+		# 横向夹紧，保证整张立绘留在屏幕内
+		var x: float = clampf(size.x * fx_ratio - w * 0.5, 0.0, maxf(0.0, size.x - w))
+		a.position = Vector2(x, foot_y - h)
 		i += 1
 
 func _on_effect(name: String, power: float) -> void:

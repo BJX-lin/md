@@ -132,10 +132,22 @@ const BG_MAP := {
 	},
 }
 
+func _init() -> void:
+	# 必须在 _init 就铺满：set_scene() 可能在入树前被调用，
+	# 若那时 size 仍是 (0,0)，_draw() 会直接 return，表现为整屏全黑。
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	anchor_right = 1.0
+	anchor_bottom = 1.0
+	offset_right = 0.0
+	offset_bottom = 0.0
+
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	set_process(true)
+	# 尺寸变化（旋屏 / 窗口缩放）后必须重绘，否则沿用旧的 cover 计算
+	resized.connect(queue_redraw)
+	queue_redraw()
 
 func set_scene(id: String, v: String = "") -> void:
 	scene_id = id
@@ -189,6 +201,13 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var s := size
+	# 入树早期 size 可能还是 0，此时先用父节点/视口尺寸兜底，避免整屏全黑
+	if s.x <= 1.0 or s.y <= 1.0:
+		var p := get_parent_control()
+		if p != null and p.size.x > 1.0:
+			s = p.size
+		else:
+			s = get_viewport_rect().size
 	if _tex == null:
 		return
 	var tw := float(_tex.get_width())

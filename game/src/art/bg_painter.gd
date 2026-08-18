@@ -11,10 +11,20 @@ var flicker := 0.0        # 由 EffectsLayer 驱动的灯光闪烁
 var blood_amount := 0.0   # 血污程度 0..1
 var wet := 0.0            # 雨/水渍
 
+func _init() -> void:
+	# 同 bg_layer：入树前就铺满，避免 size 为 0 时画不出东西
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	anchor_right = 1.0
+	anchor_bottom = 1.0
+	offset_right = 0.0
+	offset_bottom = 0.0
+
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	set_process(true)
+	resized.connect(queue_redraw)
+	queue_redraw()
 
 func set_scene(id: String, v: String = "") -> void:
 	scene_id = id
