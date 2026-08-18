@@ -14,7 +14,7 @@ var subtitle_label: Label
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	var bg: BGLayer = BGLayerS.new()
-	bg.set_scene("oldbuilding_out", "rain")
+	bg.set_scene("schoolyard", "dusk")
 	add_child(bg)
 
 	var shade := ColorRect.new()
