@@ -49,11 +49,13 @@ const CHAPTER_BG := {
 ## 每章登场的角色（用于预取其立绘目录下的所有差分）
 const CHAPTER_CHARS := {
 	0: ["linday"],
-	1: ["liangye", "xuqing", "zhouxu"],
-	2: ["liangye", "liheng", "oldqin", "shenhe", "xuqing", "zhouxu"],
-	3: ["liangye", "liheng", "oldqin", "shenhe", "zhouxu"],
+	1: ["canteen_aunt", "classmate_boy", "classmate_girl", "liangye", "unknown", "xuqing",
+		"zhouxu"],
+	2: ["classmate", "dorm_keeper", "liangye", "liheng", "oldqin", "shenhe",
+		"unknown", "xuqing", "zhouxu"],
+	3: ["liangye", "liheng", "oldqin", "shenhe", "unknown", "zhouxu"],
 	4: ["liangye", "liheng", "oldqin", "shenhe", "xuqing", "zhouxu"],
-	5: ["liangye", "shenhe", "xuqing", "zhouxu"],
+	5: ["liangye", "shenhe", "unknown", "xuqing", "zhouxu"],
 }
 
 var _cache := {}          # path -> Texture2D

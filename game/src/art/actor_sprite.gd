@@ -11,7 +11,7 @@ class_name ActorSprite
 ##   2. 剧情指定的姿态 + 表情回退链
 ##   3. 其它姿态 + 表情回退链
 ##   4. 该角色任意一张图
-##   5. 全都没有（仅路人角色）→ _draw_silhouette() 内联剪影，不会开天窗
+##   5. 全部角色（含路人黑影）均已配齐立绘，不存在无图情况
 
 const SPRITE_ROOT := "res://assets/sprites"
 
@@ -46,12 +46,12 @@ const POSES := {
 ## 表情回退链（覆盖剧本用到的全部表情 + 资源表定义的表情）
 const EMO_FALLBACK := {
 	# —— 通用基底
-	"normal": ["normal", "neutral", "calm"],
-	"neutral": ["neutral", "normal", "calm"],
-	"calm": ["calm", "neutral", "normal"],
+	"normal": ["normal", "neutral", "calm", "flat"],
+	"neutral": ["neutral", "normal", "calm", "flat"],
+	"calm": ["calm", "neutral", "normal", "flat"],
 	# —— 周叙系
 	"flat": ["flat", "neutral", "normal", "calm"],
-	"cold": ["cold", "dark", "stare", "frown", "neutral", "normal"],
+	"cold": ["cold", "dark", "stare", "frown", "neutral", "normal", "flat"],
 	"frown": ["frown", "displeased", "serious", "neutral", "normal"],
 	"serious": ["serious", "frown", "neutral", "normal"],
 	"urgent": ["urgent", "serious", "frown", "neutral", "normal"],
@@ -73,9 +73,9 @@ const EMO_FALLBACK := {
 	# —— 许清系
 	"stare": ["stare", "cold", "empty", "neutral", "normal"],
 	"displeased": ["displeased", "frown", "angry", "neutral", "normal"],
-	"faintsmile": ["faintsmile", "faint_smile", "smile", "smirk", "neutral"],
+	"faintsmile": ["faintsmile", "faint_smile", "smile", "smirk", "neutral", "normal", "flat"],
 	"faint_smile": ["faintsmile", "faint_smile", "smile", "smirk", "neutral"],
-	"smile": ["smile", "faintsmile", "faint_smile", "relief", "soft", "neutral", "normal", "calm"],
+	"smile": ["smile", "faintsmile", "faint_smile", "relief", "soft", "neutral", "normal", "calm", "flat"],
 	"smirk": ["smirk", "faintsmile", "faint_smile", "smile", "neutral"],
 	"empty": ["empty", "hollow", "blank", "void", "neutral"],
 	"unstable": ["unstable", "empty", "hollow", "neutral"],
@@ -203,7 +203,7 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	var s := size
 	if _tex == null:
-		_draw_silhouette(s)
+		# 全部角色（含路人）均已配齐立绘，找不到贴图时不再绘制任何东西。
 		return
 	if s.x <= 1.0 or s.y <= 1.0:
 		return
@@ -244,30 +244,3 @@ func _draw() -> void:
 			if lv == 2:
 				draw_rect(Rect2(px - 2, py, 4, rng.randf_range(10, 46) * amount),
 					Color(blood.r * 0.6, 0.05, 0.05, 0.6 * amount))
-
-
-## 路人角色（unknown / classmate / dorm_keeper 等）没有专属立绘时的轻量剪影。
-## 只用几个 draw 调用，不实例化额外节点，也不做逐像素运算。
-func _draw_silhouette(s: Vector2) -> void:
-	if s.x <= 1.0 or s.y <= 1.0:
-		return
-	var entry: Dictionary = Cfg.CHARACTERS.get(who, {})
-	var col: Color = entry.get("color", Color(0.55, 0.56, 0.62))
-	var a := 0.82 if active else 0.42
-	var base := Color(col.r * 0.34, col.g * 0.36, col.b * 0.42, a)
-	var w := s.x
-	var h := s.y
-	# 头
-	var head_r := w * 0.17
-	draw_circle(Vector2(w * 0.5, h * 0.12), head_r, base)
-	# 肩到脚的梯形躯干
-	var pts := PackedVector2Array([
-		Vector2(w * 0.30, h * 0.24),
-		Vector2(w * 0.70, h * 0.24),
-		Vector2(w * 0.78, h * 1.00),
-		Vector2(w * 0.22, h * 1.00),
-	])
-	draw_colored_polygon(pts, base)
-	# 领口高光，避免整体像一块色板
-	draw_rect(Rect2(w * 0.44, h * 0.24, w * 0.12, h * 0.05),
-		Color(base.r * 1.5, base.g * 1.5, base.b * 1.6, a * 0.7), true)
