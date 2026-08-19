@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""处理新生成的立绘：白底抠透明 + 中心裁 768x768 + 白边清理。
+"""处理新生成的立绘：白底抠透明 + 内容感知裁切 768x768 + 白边清理。
 
 输入：generate_image 输出的 PNG（纯白背景角色半身像）
-输出：可直接使用的 RGBA 立绘（与现有 assets/sprites 规格一致）
-用法：python3 tools/process_sprite.py <输入文件> <输出文件>
+输出：可直接使用的 RGBA PNG 立绘（assets/sprites 规格）
+用法：python3 tools/process_sprite.py <输入文件> <输出文件.png>
 """
 import sys
 from collections import deque
@@ -115,7 +115,7 @@ def process(src: str, dst: str) -> None:
                       if px[x, y][3] > ALPHA_TH)
     total = (SIZE // 4) * (SIZE // 4)
     ratio = alpha_count / total
-    img.save(dst, optimize=True)
+    img.save(dst, "PNG", optimize=True)
     print(f"{dst}: 内容占比 {ratio*100:.0f}%")
 
 

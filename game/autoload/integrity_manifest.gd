@@ -5,7 +5,7 @@ extends Node
 
 const MANIFEST := {
 	"autoload/config.gd": "334db0f1574be57e747063826f116ee57ff0df849b4306628b74436cd5669b39",
-	"autoload/game_state.gd": "49a15812aefae74c7645469b03c9ce57923e47439010c8944c97a9bc05347c17",
+	"autoload/game_state.gd": "d3a6c9e4de3ac8741d5a88fb8de485d74d8694c2ef9834acca4405f2b553375e",
 	"autoload/save_system.gd": "975f4fdfd5b04356bd922eebe4b5b6e928b199f5299493d1ac978d38ea41b059",
 	"autoload/story_engine.gd": "875a77dea51991da69cd03440bd1fd22e7974e796c22732f1f90eb9811ca302a",
 }

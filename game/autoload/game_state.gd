@@ -420,11 +420,6 @@ func settle_chapter_4() -> void:
 	current_chapter = 5
 
 # Endings
-var player_chose_self_substitute := false
-var player_triggered_fire_sequence := false
-
-# Endings
-# Endings
 func _true_end_weight() -> int:
 	var w := 0
 	if get_flag("flag_name_written_back"):
@@ -472,7 +467,7 @@ func can_bittersweet_exchange() -> bool:
 		and (
 			get_state("liangye_end_state") == "absent_echo"
 			or not get_flag("flag_rule_terms_complete")
-			or player_chose_self_substitute
+			or get_flag("flag_player_self_substitute")
 		)
 	)
 
@@ -480,7 +475,7 @@ func can_destroyer() -> bool:
 	return (
 		get_num("end_cycle_score") >= 7
 		and get_flag("flag_terminal_broadcast_ready")
-		and player_triggered_fire_sequence
+		and get_flag("flag_chose_end_cycle")
 	)
 
 func can_manager() -> bool:
@@ -546,8 +541,6 @@ func to_dict() -> Dictionary:
 		"scene_bg": scene_bg,
 		"scene_variant": scene_variant,
 		"scene_actors": scene_actors.duplicate(true),
-		"self_sub": player_chose_self_substitute,
-		"fire_seq": player_triggered_fire_sequence,
 	}
 
 func from_dict(d: Dictionary) -> void:
@@ -580,5 +573,3 @@ func from_dict(d: Dictionary) -> void:
 		deaths.append(String(x))
 	choice_log = (d.get("choice_log", []) as Array).duplicate(true)
 	history = (d.get("history", []) as Array).duplicate(true)
-	player_chose_self_substitute = bool(d.get("self_sub", false))
-	player_triggered_fire_sequence = bool(d.get("fire_seq", false))

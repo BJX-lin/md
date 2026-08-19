@@ -140,18 +140,18 @@ func _find_texture(char_id: String, emotion: String) -> Texture2D:
 		if ResourceLoader.exists(p):
 			return ArtCache.get_tex(p)
 
-	var all_poses: Array = POSES.get(dir, ["pose01", "pose02", "pose03", "pose04"])
+	var all_poses: Array = POSES.get(dir, ["pose01"])
 	for e in chain:
 		for pz in all_poses:
 			var p2 := "%s/%s/%s_%s_%s.png" % [SPRITE_ROOT, dir, dir, String(pz), String(e)]
 			if ResourceLoader.exists(p2):
-				return load(p2) as Texture2D
+				return ArtCache.get_tex(p2)
 
 	for pz in all_poses:
 		for e in ["neutral", "normal", "calm"]:
 			var p3 := "%s/%s/%s_%s_%s.png" % [SPRITE_ROOT, dir, dir, String(pz), e]
 			if ResourceLoader.exists(p3):
-				return load(p3) as Texture2D
+				return ArtCache.get_tex(p3)
 	return null
 
 var _redraw_acc := 0.0
