@@ -17,3 +17,4 @@ build/
 Thumbs.db
 __pycache__/
 *.pyc
+game/tools/.sprite_work/
