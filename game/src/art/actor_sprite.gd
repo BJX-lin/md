@@ -34,12 +34,19 @@ const CHAR_DIR := {
 }
 
 const POSES := {
-	"zhouxu": ["pose01", "pose02"],
-	"liangye": ["pose01", "pose02", "pose03", "pose04"],
-	"xuqing": ["pose01", "pose02", "pose03"],
-	"shenhe": ["pose01", "pose02", "pose03", "pose04"],
-	"oldqin": ["pose01", "pose02"],
-	"linday": ["pose01", "pose02", "pose03"],
+	"zhouxu": ["pose01"],
+	"liangye": ["pose01"],
+	"xuqing": ["pose01"],
+	"shenhe": ["pose01"],
+	"oldqin": ["pose01"],
+	"linday": ["pose01"],
+	"liheng": ["pose01"],
+	"dorm_keeper": ["pose01"],
+	"canteen_aunt": ["pose01"],
+	"classmate": ["pose01"],
+	"classmate_girl": ["pose01"],
+	"classmate_boy": ["pose01"],
+	"unknown": ["pose01"],
 }
 
 # Story
@@ -120,42 +127,7 @@ func _refresh() -> void:
 func _auto_pose() -> String:
 	if pose != "":
 		return pose
-	match who:
-		"liangye":
-			var half := GameState.get_state("liangye_state") == "half_assimilated"
-			if half or GameState.get_flag("flag_liangye_half_assimilated"):
-				return "pose04"
-			if emo in ["blank", "hollow", "empty"]:
-				return "pose03"
-			if emo in ["nervous", "scared", "terrified", "fear", "panic", "relief", "fragile"]:
-				return "pose02"
-			return "pose01"
-		"zhouxu":
-			if emo in ["dark", "tired", "urgent"] or GameState.get_num("trust_zhouxu") <= -2:
-				return "pose02"
-			return "pose01"
-		"xuqing":
-			if GameState.get_state("xuqing_state") in ["revealed", "destabilized", "observer"]:
-				return "pose03"
-			if emo in ["empty", "unstable"]:
-				return "pose03"
-			if emo in ["stare", "faintsmile", "faint_smile"] and GameState.current_chapter >= 3:
-				return "pose02"
-			return "pose01"
-		"shenhe":
-			if emo == "release":
-				return "pose04"
-			if GameState.current_chapter >= 5:
-				return "pose03"
-			if emo in ["sad", "tired", "hurt"]:
-				return "pose02"
-			return "pose01"
-		"linzhou", "me":
-			if emo == "empty":
-				return "pose03"
-			if emo in ["shocked", "determined"]:
-				return "pose02"
-			return "pose01"
+	# v1.1.4 立绘重做后全部角色统一单姿势
 	return "pose01"
 
 func _find_texture(char_id: String, emotion: String) -> Texture2D:
