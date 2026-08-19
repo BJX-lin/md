@@ -63,7 +63,8 @@ const BG_MAP := {
 	"library": {
 		"": ["library_day"],
 		"day": ["library_day"],
-		"dusk": ["library_dim", "library_day"],
+		"dusk": ["library_counter", "library_dim", "library_day"],
+		"counter": ["library_counter", "library_day"],
 		"night": ["library_stacks_dark", "library_stacks_night", "library_dim", "library_day"],
 		"dark": ["library_stacks_dark", "library_stacks_night", "library_dim", "library_day"],
 		"stacks": ["library_stacks_dark", "library_stacks_night", "library_dim"],
@@ -135,6 +136,7 @@ const BG_MAP := {
 	"rooftop": {
 		"": ["rooftop_night"], "night": ["rooftop_night"], "dark": ["rooftop_night"],
 		"door": ["rooftop_door_night", "rooftop_night"],
+		"overlook": ["rooftop_overlook", "rooftop_night"],
 	},
 	"oldbuilding_class": {
 		"": ["old_building_classroom"], "dark": ["old_building_classroom"],
@@ -195,7 +197,8 @@ const BG_MAP := {
 	"schoolyard": {
 		"": ["campus_rain", "old_building_gate_rain"],
 		"rain": ["campus_rain", "old_building_gate_rain"],
-		"night": ["schoolyard_night", "campus_rain", "old_building_gate_rain"],
+		"night": ["schoolyard_night_path", "schoolyard_night", "campus_rain", "old_building_gate_rain"],
+		"path": ["schoolyard_night_path", "schoolyard_night"],
 		"aerial": ["schoolyard_aerial", "campus_rain"],
 		"day": ["title_school", "campus_rain", "old_building_gate_rain"],
 		"keyvisual": ["keyvisual_school_rain", "title_school"],

@@ -68,10 +68,16 @@ func setup(code: String, hint: String) -> void:
 	win.add_child(_display)
 	v.add_child(win)
 
-	# 键盘
+	# 键盘（可选贴图 assets/ui/keypad_button.png，缺失时回落主题样式）
 	var grid := VBoxContainer.new()
 	grid.add_theme_constant_override("separation", 10)
 	v.add_child(grid)
+	var key_norm := UITex.style_box("keypad_button", Color(1, 1, 1, 0.95), 10)
+	var key_hover: StyleBox = null
+	var key_press: StyleBox = null
+	if key_norm != null:
+		key_hover = UITex.style_box("keypad_button", Color(1.35, 1.1, 0.95, 1.0), 10)
+		key_press = UITex.style_box("keypad_button", Color(1.6, 0.7, 0.5, 1.0), 10)
 	for row in KEY_ROWS:
 		var hrow := HBoxContainer.new()
 		hrow.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -83,6 +89,11 @@ func setup(code: String, hint: String) -> void:
 			b.focus_mode = Control.FOCUS_NONE
 			b.custom_minimum_size = Vector2(120, 64)
 			b.add_theme_font_size_override("font_size", 28)
+			if key_norm != null:
+				b.add_theme_stylebox_override("normal", key_norm)
+				b.add_theme_stylebox_override("hover", key_hover)
+				b.add_theme_stylebox_override("pressed", key_press)
+				b.add_theme_stylebox_override("disabled", key_norm)
 			b.pressed.connect(_on_key.bind(String(k)))
 			hrow.add_child(b)
 

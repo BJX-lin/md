@@ -11,6 +11,7 @@ const NameEntryS := preload("res://src/ui/name_entry.gd")
 
 var _t := 0.0
 var subtitle_label: Label
+var emblem: TextureRect
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -25,20 +26,15 @@ func _ready() -> void:
 	add_child(shade)
 
 	# 标题主视觉：光柱下的空椅子（对应《空席》）。
-	# 两栏布局下靠右半屏放置，正好落在菜单背后当氛围底，
-	# 不会和左侧标题文字抢视线。缺图则完全跳过。
-	var emblem := UITex.make_layer("title_emblem", 0.32,
+	# 动态锚定到菜单栏中心，随窗口比例自适应（修复宽屏手机上椅子偏位）。
+	# 缺图则完全跳过。
+	emblem = UITex.make_layer("title_emblem", 0.32,
 		TextureRect.STRETCH_KEEP_ASPECT_CENTERED)
 	if emblem != null:
-		emblem.anchor_left = 0.42
-		emblem.anchor_right = 1.0
-		emblem.anchor_top = 0.0
-		emblem.anchor_bottom = 1.0
-		emblem.offset_left = 0
-		emblem.offset_right = 0
-		emblem.offset_top = 0
-		emblem.offset_bottom = 0
+		emblem.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(emblem)
+		_layout_emblem()
+		resized.connect(_layout_emblem)
 
 	# —— 新版布局：左标题 / 右菜单的两栏式，整体可滚动
 	#
@@ -194,6 +190,32 @@ func _confirm_new() -> void:
 	no.pressed.connect(func(): root.queue_free())
 	h.add_child(no)
 	add_child(root)
+
+## 把椅子主视觉动态对齐到菜单栏中心。
+## 菜单右栏：page 边距 56 + 按钮宽 420 → 中心 = W - 56 - 210。
+## 椅子图（768x1024）在高度受限时按高缩放，锚点按显示宽度反推，
+## 保证任何窗口比例（尤其 20:9 宽屏手机）下椅子都正对菜单。
+func _layout_emblem() -> void:
+	if emblem == null:
+		return
+	var w := size.x
+	var h := size.y
+	if w <= 1.0 or h <= 1.0:
+		return
+	var menu_cx := w - 56.0 - 210.0
+	var disp_w := 768.0 * h / 1024.0
+	# 宽限制场景（极窄窗口）按可用宽度处理，避免图超出屏幕
+	disp_w = minf(disp_w, w - 112.0)
+	var half := disp_w * 0.5
+	emblem.anchor_left = clampf((menu_cx - half) / w, 0.0, 1.0)
+	emblem.anchor_right = clampf((menu_cx + half) / w, 0.0, 1.0)
+	emblem.anchor_top = 0.0
+	emblem.anchor_bottom = 1.0
+	emblem.offset_left = 0
+	emblem.offset_right = 0
+	emblem.offset_top = 0
+	emblem.offset_bottom = 0
+
 
 func _process(delta: float) -> void:
 	_t += delta
