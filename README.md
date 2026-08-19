@@ -60,7 +60,7 @@ godot --headless --path game res://tools/smoke_runner.tscn
 
 ## v1.1.1 更新（本分支）
 
-> 追加：开屏动画取消游戏图标，统一使用官方 Godot 引擎图标（原生 boot splash 亦恢复引擎默认 Godot 标识，游戏内开屏第二段改为纯文字）
+> 追加：开屏动画取消游戏图标，统一使用官方 Godot 引擎图标（原生 boot splash 亦恢复引擎默认 Godot 标识，游戏内开屏第二段改为纯文字）；新增 AI 生成的深色雨夜氛围底图（splash_bg.png，压暗+缓慢缩放，Godot 引擎图标浮于其上，缺图自动回退纯色底）
 
 - 游戏名更改为《第十三节课》，同步更新开屏 / 标题 / 工程配置 / 安卓包名（`com.example.the13thperiod`）与全部图标（含自适应图标）
 - 开屏动画统一使用官方 Godot 引擎图标（原生 boot splash + 游戏内开屏，均带无贴图兜底），不再使用游戏图标

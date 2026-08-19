@@ -5,8 +5,8 @@ class_name SplashScreen
 ##   2. 作品信息与内容分级提示（纯文字，不使用游戏图标）
 ##   3. 淡出，进入标题
 ##
-## 全程可点击跳过。所有贴图都是可选资源——缺失时回落到代码绘制的
-## 极简版式，启动路径上绝不因缺图卡住。
+## 底图为可选资源 assets/ui/splash_bg.png（AI 生成的深色雨夜氛围图），
+## 缺失时回退到纯色底；全程可点击跳过，启动路径上绝不因缺图卡住。
 
 signal finished
 
@@ -40,6 +40,25 @@ func _ready() -> void:
 	bg.color = Color(0.012, 0.014, 0.02)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
+
+	# 氛围底图：深色雨夜背景（可选资源，缺失时回退纯色底）。
+	# 压暗到 0.62，保证前景的 Godot 引擎图标对比度。
+	var scene_tex := UITex.get_tex("splash_bg")
+	if scene_tex != null:
+		var scene := TextureRect.new()
+		scene.texture = scene_tex
+		scene.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		scene.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		scene.set_anchors_preset(Control.PRESET_FULL_RECT)
+		scene.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		scene.modulate = Color(0.62, 0.66, 0.72)
+		add_child(scene)
+		# 轻微缓慢缩放：静止画面也有呼吸感（单张图缩放，性能开销可忽略）
+		scene.scale = Vector2(1.08, 1.08)
+		scene.pivot_offset = scene.size * 0.5
+		scene.resized.connect(func(): scene.pivot_offset = scene.size * 0.5)
+		var tw_bg := create_tween()
+		tw_bg.tween_property(scene, "scale", Vector2.ONE, 6.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 	_stage_root = Control.new()
 	_stage_root.set_anchors_preset(Control.PRESET_FULL_RECT)
