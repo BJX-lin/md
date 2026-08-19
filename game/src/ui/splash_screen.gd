@@ -1,8 +1,8 @@
 extends Control
 class_name SplashScreen
 ## 开场动画：
-##   1. Godot Engine 官方标识（引擎署名，图标来自引擎官方 press 资源）
-##   2. 游戏图标 + 游戏名（本项目生成的专属图标）
+##   1. Godot Engine 官方标识（引擎署名，图标来自引擎官方资源）
+##   2. 作品信息与内容分级提示（纯文字，不使用游戏图标）
 ##   3. 淡出，进入标题
 ##
 ## 全程可点击跳过。所有贴图都是可选资源——缺失时回落到代码绘制的
@@ -116,14 +116,6 @@ func _show_stage(i: int) -> void:
 	root.modulate.a = 0.0
 	var tw := create_tween()
 	tw.tween_property(root, "modulate:a", 1.0, FADE)
-	# 第二段图标轻微放大出场
-	if i == 1:
-		var icon := root.get_meta("icon", null) as Control
-		if icon != null:
-			icon.scale = Vector2(0.86, 0.86)
-			icon.pivot_offset = icon.size * 0.5
-			var tw2 := create_tween()
-			tw2.tween_property(icon, "scale", Vector2.ONE, 0.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 # ---------------------------------------------------------------- 第一段：Godot 引擎标识
@@ -204,7 +196,7 @@ func _draw_godot_fallback() -> Control:
 	return c
 
 
-# ---------------------------------------------------------------- 第二段：游戏图标 + 作品信息
+# ---------------------------------------------------------------- 第二段：作品信息（纯文字，无图标）
 func _build_game_stage() -> Control:
 	var c := Control.new()
 	c.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -218,15 +210,6 @@ func _build_game_stage() -> Control:
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_theme_constant_override("separation", 18)
 	center.add_child(v)
-
-	var icon := TextureRect.new()
-	icon.texture = UITex.get_tex("game_icon")
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.custom_minimum_size = Vector2(190, 190)
-	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	v.add_child(icon)
-	c.set_meta("icon", icon)
 
 	var title := Label.new()
 	title.text = Cfg.GAME_TITLE

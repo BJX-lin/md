@@ -14,7 +14,6 @@ config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.png"
 boot_splash/bg_color=Color(0.03, 0.03, 0.04, 1)
 boot_splash/show_image=true
-boot_splash/image="res://icon.png"
 
 [autoload]
 
