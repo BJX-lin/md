@@ -156,7 +156,53 @@ def _check_audio(game_root):
     return miss
 
 
+## UI 贴图清单：名字 → (用途, 期望尺寸)
+## 全部为可选资源，缺失只提示不报错——UITex 会回落到程序化纯色样式。
+UI_TEXTURES = {
+    "dialogue_panel":  ("对话框纸纹底", (1024, 320)),
+    "choice_button":   ("选项按钮卡纸", (768, 128)),
+    "menu_bg":         ("菜单黑板墙底", (1376, 768)),
+    "title_emblem":    ("标题主视觉 空椅子", (768, 1024)),
+    "note_paper":      ("@note 纸条 / 名单纸", (1024, 640)),
+    "panel_frame":     ("菜单面板质感底", (1024, 640)),
+    "ending_vignette": ("结局画面底图", (1376, 768)),
+    "name_plate":      ("说话人名字牌", (512, 72)),
+}
+
+
+def _check_ui(game):
+    """UI 贴图存在性与尺寸核验。"""
+    udir = os.path.join(game, "assets", "ui")
+    print()
+    print("UI 贴图")
+    if not os.path.isdir(udir):
+        print("      assets/ui/ 不存在——UI 全部回落程序化样式（可运行）")
+        return 0
+    missing = []
+    for name, (desc, want) in UI_TEXTURES.items():
+        path = os.path.join(udir, name + ".png")
+        if not os.path.isfile(path):
+            missing.append(name)
+            print(f"      ✗ {name:18s} {desc}  缺失（回落程序化样式）")
+            continue
+        size = ""
+        try:
+            from PIL import Image
+            with Image.open(path) as im:
+                if im.size != want:
+                    size = f"  !! {im.size} ≠ 期望 {want}"
+        except Exception:
+            pass
+        print(f"      ✓ {name:18s} {desc}{size}")
+    if missing:
+        print(f"      共缺 {len(missing)} 张，不影响运行")
+    else:
+        print(f"      {len(UI_TEXTURES)}/{len(UI_TEXTURES)} 全部就位")
+    return 0
+
+
 if __name__ == "__main__":
     _rc = main()
     _check_audio(GAME)
+    _check_ui(GAME)
     sys.exit(_rc)

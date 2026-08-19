@@ -26,18 +26,10 @@ func _ready() -> void:
 	# 标题主视觉：光柱下的空椅子（对应《空席》）。
 	# 居中偏下、低透明度地压在背景之上，标题文字仍在它上层。
 	# 缺图则完全跳过，界面回到原来的纯背景版本。
-	var emblem_path := "res://assets/ui/title_emblem.png"
-	if ResourceLoader.exists(emblem_path):
-		var etex = load(emblem_path)
-		if etex is Texture2D:
-			var emblem := TextureRect.new()
-			emblem.texture = etex
-			emblem.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-			emblem.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			emblem.set_anchors_preset(Control.PRESET_FULL_RECT)
-			emblem.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			emblem.modulate = Color(1, 1, 1, 0.5)
-			add_child(emblem)
+	var emblem := UITex.make_layer("title_emblem", 0.5,
+		TextureRect.STRETCH_KEEP_ASPECT_CENTERED)
+	if emblem != null:
+		add_child(emblem)
 
 	var v := VBoxContainer.new()
 	v.set_anchors_preset(Control.PRESET_CENTER)

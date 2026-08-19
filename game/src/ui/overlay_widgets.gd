@@ -103,17 +103,27 @@ static func note_card(text: String) -> Control:
 	paper.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	paper.grow_vertical = Control.GROW_DIRECTION_BOTH
 	paper.custom_minimum_size = Vector2(820, 0)
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.83, 0.81, 0.74)
-	sb.border_color = Color(0.45, 0.42, 0.36)
-	sb.set_border_width_all(1)
-	sb.content_margin_left = 42
-	sb.content_margin_right = 42
-	sb.content_margin_top = 34
-	sb.content_margin_bottom = 34
-	sb.shadow_color = Color(0, 0, 0, 0.7)
-	sb.shadow_size = 20
-	paper.add_theme_stylebox_override("panel", sb)
+	# 泛黄纸张贴图；缺图则回落到原来的纯米色纸面。
+	# 正文是深色（#20201c），两种底都能读。
+	var note_sb := UITex.style_box("note_paper", Color(1, 1, 1, 1), 24)
+	if note_sb != null:
+		note_sb.content_margin_left = 42
+		note_sb.content_margin_right = 42
+		note_sb.content_margin_top = 34
+		note_sb.content_margin_bottom = 34
+		paper.add_theme_stylebox_override("panel", note_sb)
+	else:
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.83, 0.81, 0.74)
+		sb.border_color = Color(0.45, 0.42, 0.36)
+		sb.set_border_width_all(1)
+		sb.content_margin_left = 42
+		sb.content_margin_right = 42
+		sb.content_margin_top = 34
+		sb.content_margin_bottom = 34
+		sb.shadow_color = Color(0, 0, 0, 0.7)
+		sb.shadow_size = 20
+		paper.add_theme_stylebox_override("panel", sb)
 	root.add_child(paper)
 
 	var rt := RichTextLabel.new()
@@ -172,15 +182,24 @@ static func roster_card() -> Control:
 	paper.set_anchors_preset(Control.PRESET_CENTER)
 	paper.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	paper.grow_vertical = Control.GROW_DIRECTION_BOTH
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.80, 0.78, 0.71)
-	sb.border_color = Color(0.36, 0.33, 0.28)
-	sb.set_border_width_all(2)
-	sb.content_margin_left = 60
-	sb.content_margin_right = 60
-	sb.content_margin_top = 40
-	sb.content_margin_bottom = 40
-	paper.add_theme_stylebox_override("panel", sb)
+	# 名单同样用纸张贴图，但压暗一档：它是"公文"，比随手纸条更沉。
+	var roster_sb := UITex.style_box("note_paper", Color(0.94, 0.93, 0.90, 1), 24)
+	if roster_sb != null:
+		roster_sb.content_margin_left = 60
+		roster_sb.content_margin_right = 60
+		roster_sb.content_margin_top = 40
+		roster_sb.content_margin_bottom = 40
+		paper.add_theme_stylebox_override("panel", roster_sb)
+	else:
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.80, 0.78, 0.71)
+		sb.border_color = Color(0.36, 0.33, 0.28)
+		sb.set_border_width_all(2)
+		sb.content_margin_left = 60
+		sb.content_margin_right = 60
+		sb.content_margin_top = 40
+		sb.content_margin_bottom = 40
+		paper.add_theme_stylebox_override("panel", sb)
 	root.add_child(paper)
 
 	var v := VBoxContainer.new()

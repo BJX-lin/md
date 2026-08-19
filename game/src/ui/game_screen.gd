@@ -29,6 +29,8 @@ var text_label: RichTextLabel
 var box: PanelContainer
 var _box_text_holder: VBoxContainer      # 正文容器，纹理必须插在它之前
 var _box_texture: TextureRect            # 对话框纸纹底（缺图时为 null）
+var _name_plate: PanelContainer          # 名字牌底纹（缺图时为 null）
+var _name_row: HBoxContainer             # 名字牌所在行，随名字一起显隐
 var choice_box: VBoxContainer
 var continue_hint: Label
 var top_bar: HBoxContainer
@@ -265,18 +267,9 @@ func _apply_state_theme() -> void:
 ## assets/ui/dialogue_panel.png 缺失时整段跳过：底色自动还原为
 ## 原来的 0.985 不透明，观感朴素但完全可用。
 func _apply_box_texture() -> void:
-	var path := "res://assets/ui/dialogue_panel.png"
-	if not ResourceLoader.exists(path):
+	_box_texture = UITex.make_layer("dialogue_panel", 1.0)
+	if _box_texture == null:
 		return
-	var tex = load(path)
-	if not (tex is Texture2D):
-		return
-
-	_box_texture = TextureRect.new()
-	_box_texture.texture = tex
-	_box_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_box_texture.stretch_mode = TextureRect.STRETCH_SCALE
-	_box_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_box_texture.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	_box_texture.offset_left = box.offset_left
 	_box_texture.offset_right = box.offset_right
@@ -326,7 +319,24 @@ func _build_text_box() -> void:
 	name_label = Label.new()
 	name_label.add_theme_font_size_override("font_size", 26)
 	name_label.add_theme_color_override("font_color", Color(0.86, 0.72, 0.52))
-	v.add_child(name_label)
+	# 名字牌底纹：套一层 PanelContainer 撑出卡纸感。
+	# 用 HBox 包一下再靠左，避免 PanelContainer 被拉满整行宽度。
+	var plate_sb := UITex.style_box("name_plate", Color(1, 1, 1, 0.9), 10)
+	if plate_sb != null:
+		plate_sb.content_margin_left = 16
+		plate_sb.content_margin_right = 20
+		plate_sb.content_margin_top = 2
+		plate_sb.content_margin_bottom = 3
+		_name_plate = PanelContainer.new()
+		_name_plate.add_theme_stylebox_override("panel", plate_sb)
+		_name_plate.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		_name_plate.add_child(name_label)
+		var plate_row := HBoxContainer.new()
+		plate_row.add_child(_name_plate)
+		v.add_child(plate_row)
+		_name_row = plate_row
+	else:
+		v.add_child(name_label)
 
 	text_label = RichTextLabel.new()
 	text_label.bbcode_enabled = true
@@ -538,8 +548,12 @@ func _on_line(line: Dictionary) -> void:
 
 	if _cur_who == "":
 		name_label.visible = false
+		if is_instance_valid(_name_row):
+			_name_row.visible = false
 	else:
 		name_label.visible = true
+		if is_instance_valid(_name_row):
+			_name_row.visible = true
 		name_label.text = String(Cfg.CHARACTERS.get(_cur_who, {}).get("name", _cur_who))
 		name_label.add_theme_color_override("font_color", Cfg.CHARACTERS.get(_cur_who, {}).get("color", Color.WHITE))
 

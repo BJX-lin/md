@@ -48,6 +48,18 @@ func _ready() -> void:
 	bgc.color = Color(0.02, 0.02, 0.025)
 	add_child(bgc)
 
+	# 结局底图：教室溶进黑暗。用结局主色轻微染一下，
+	# 五个结局共用一张图但气质不同（真结局偏青、焚校偏橙）。
+	var vg := UITex.make_layer("ending_vignette", 0.55)
+	if vg != null:
+		var tint: Color = info["color"]
+		vg.modulate = Color(
+			lerpf(1.0, tint.r, 0.35),
+			lerpf(1.0, tint.g, 0.35),
+			lerpf(1.0, tint.b, 0.35),
+			0.55)
+		add_child(vg)
+
 	AudioDirector.stop_amb()
 	AudioDirector.play_bgm("bgm_ending_true" if ending_id == "ending_true_release" else "bgm_ending_bad")
 

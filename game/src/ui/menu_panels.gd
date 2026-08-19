@@ -16,18 +16,9 @@ static func _shell(title: String) -> Array:
 	# 菜单底纹：夜里的黑板墙。压在遮罩之上、面板之下。
 	# 遮罩已经足够暗，这里只是给大片纯黑加一点质感，透明度压得很低。
 	# 缺图跳过，回到原来的纯色遮罩。
-	var bg_path := "res://assets/ui/menu_bg.png"
-	if ResourceLoader.exists(bg_path):
-		var btex = load(bg_path)
-		if btex is Texture2D:
-			var wall := TextureRect.new()
-			wall.texture = btex
-			wall.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-			wall.stretch_mode = TextureRect.STRETCH_SCALE
-			wall.set_anchors_preset(Control.PRESET_FULL_RECT)
-			wall.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			wall.modulate = Color(1, 1, 1, 0.32)
-			root.add_child(wall)
+	var wall := UITex.make_layer("menu_bg", 0.32)
+	if wall != null:
+		root.add_child(wall)
 
 	var frame := PanelContainer.new()
 	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -35,6 +26,8 @@ static func _shell(title: String) -> Array:
 	frame.offset_right = -60
 	frame.offset_top = 40
 	frame.offset_bottom = -40
+	# 面板底：黑板质感。保留一层半透明纯色打底，
+	# 保证即使贴图偏亮，面板内的文字依旧有足够对比度。
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.06, 0.06, 0.07, 0.98)
 	sb.border_color = Color(0.45, 0.42, 0.37, 0.6)
@@ -45,6 +38,19 @@ static func _shell(title: String) -> Array:
 	sb.content_margin_bottom = 22
 	frame.add_theme_stylebox_override("panel", sb)
 	root.add_child(frame)
+
+	# 贴图铺在 frame 之下、shade 之上（frame 是它的兄弟）。
+	# 不放进 frame 内部，是因为 PanelContainer 会按 content_margin
+	# 把子节点内缩 30px，纹理就铺不满边缘。
+	var grain := UITex.make_layer("panel_frame", 0.30)
+	if grain != null:
+		grain.set_anchors_preset(Control.PRESET_FULL_RECT)
+		grain.offset_left = frame.offset_left
+		grain.offset_right = frame.offset_right
+		grain.offset_top = frame.offset_top
+		grain.offset_bottom = frame.offset_bottom
+		root.add_child(grain)
+		root.move_child(grain, frame.get_index())
 
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 14)
