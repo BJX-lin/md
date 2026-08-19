@@ -1143,6 +1143,8 @@ zhouxu(cold)：进去以后，谁都别数楼梯，别应声，别单独离队�
 第六间不一样。
 @wait 0.8
 第六间的桌椅全部堆到了墙角，堆成一座小山，用绳子捆着。
+@bg oldbuilding_class piled
+@sfx sfx_desk_drag
 教室中间空出一大片地方。
 @bg oldbuilding_class dark
 地上用粉笔画着一个圈。

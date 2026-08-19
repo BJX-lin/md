@@ -97,6 +97,8 @@
 走出门的时候，身后传来一声水响。
 @sfx sfx_water
 你回头看。
+@bg washroom faucet
+@sfx sfx_water_drip
 第三个水龙头在滴水。
 你关紧了的——你记得很清楚，你拧到底，还多拧了半圈。
 @wait 0.8
@@ -106,6 +108,7 @@
 @set truth +1
 你出去了。
 > 走到楼梯口的时候，你听见身后"嗒"的一声。
+@sfx sfx_water_drip
 > 你没有回头。
 @goto ch1_free_hub
 

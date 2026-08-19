@@ -506,6 +506,7 @@ zhouxu(flat)：写你的作业。
 你眯起眼睛。喇叭的网罩后面有一点白。
 不是灰尘。灰尘不会有那种弧度。
 @fx eyes 1.0
+@sfx sfx_nail_scrape
 @sfx sfx_sting
 那是一片指甲。
 指甲盖，从里面抵着网罩。

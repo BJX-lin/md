@@ -487,11 +487,12 @@ zhouxu(tired)：……在这儿。
 
 -- ================================================= 手机
 == ch3_dorm_phone
-@bg dorm dark
+@bg prop phone
 @bgm bgm_horror
 @clearchars
 @advtime 8
 你摸出手机。
+@sfx sfx_phone_buzz
 @wait 0.8
 屏幕亮起来的一瞬间，整间屋子都被照成惨白色，你赶紧调暗。
 @wait 1.0

@@ -114,10 +114,15 @@ const BG_MAP := {
 		"logbook": ["prop_logbook"],
 		"notice": ["prop_notice_board"],
 		"cabinet": ["prop_control_cabinet"],
+		"phone": ["prop_phone"],
 	},
 	"desk": {
 		"": ["desk_carving_shen"], "dark": ["desk_carving_shen"],
 		"carving": ["desk_carving_shen"],
+	},
+	"gate_room": {
+		"": ["gate_clock", "schoolgate_dusk"], "night": ["gate_clock"],
+		"dusk": ["gate_clock"],
 	},
 	"stairwell": {
 		"": ["stairwell_night"], "night": ["stairwell_night"],
@@ -131,7 +136,7 @@ const BG_MAP := {
 	},
 	"schoolgate": {
 		"": ["schoolgate_dusk"], "dusk": ["schoolgate_dusk"],
-		"day": ["schoolgate_dusk"], "night": ["schoolgate_dusk"],
+		"day": ["schoolgate_dusk"], "night": ["schoolgate_night", "schoolgate_dusk"],
 	},
 	"rooftop": {
 		"": ["rooftop_night"], "night": ["rooftop_night"], "dark": ["rooftop_night"],
@@ -141,6 +146,7 @@ const BG_MAP := {
 	"oldbuilding_class": {
 		"": ["old_building_classroom"], "dark": ["old_building_classroom"],
 		"night": ["old_building_classroom"],
+		"piled": ["old_building_classroom_piled", "old_building_classroom"],
 	},
 	"photo_wall": {
 		"": ["graduation_photo_wall", "school_history_hall"],
@@ -182,6 +188,7 @@ const BG_MAP := {
 		"": ["school_history_hall", "library_day"],
 		"dusk": ["history_hall_dusk", "school_history_hall", "library_day"],
 		"dark": ["school_history_hall", "library_day"],
+		"gate": ["history_hall_gate", "history_hall_dusk", "school_history_hall"],
 	},
 	"archive": {
 		"": ["archive_inner_door", "monitor_room"],
@@ -211,6 +218,7 @@ const BG_MAP := {
 		"": ["washroom_night"], "night": ["washroom_night"],
 		"dark": ["washroom_night_mirror", "washroom_night"],
 		"mirror": ["washroom_night_mirror", "washroom_night"],
+		"faucet": ["washroom_faucet", "washroom_night"],
 	},
 	"canteen": {
 		"": ["canteen_day"], "day": ["canteen_day"],

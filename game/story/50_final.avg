@@ -1798,6 +1798,8 @@ me：到。
 @set memory_echo +2
 @endif
 @if flag_zhouyun_proof
+@bg schoolgate night
+@sfx sfx_bell
 放学后，周叙在校门口等你。
 @show zhouxu neutral right
 他手里拿着那张车票。
