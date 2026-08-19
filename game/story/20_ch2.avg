@@ -917,7 +917,7 @@ oldqin(flat)：只怕明天你就不想来了。
 @goto ch2_hub3
 
 == ch2_zhouxu_talk
-@bg hallway day
+@bg lab_hallway day
 @bgm bgm_unease
 @clearchars
 @show zhouxu cold center

@@ -1,14 +1,11 @@
 extends Control
 class_name BGLayer
-## 背景层：全部场景组合均已配齐 PNG 专属贴图（check_bg_coverage 校验 0 回退）。
-## 找不到贴图时只铺一层纯色底，不再挂任何代码绘制层。
-##
-## 资源命名规范（对应《场景图片需求表》的 file_name 列）：
+# Background
+# Draw
+# Background
 ##   res://assets/bg/<file_name>.png
-##   例：classroom_evening.png / dorm_307_night.png / broadcast_room.png
-##
-## 剧本里写的是引擎 scene_id（如 @bg classroom night），
-## 由 BG_MAP 映射到资源表的文件名，并支持按变体逐级回退。
+
+# Engine
 
 const BG_ROOT := "res://assets/bg"
 
@@ -23,8 +20,7 @@ var _t := 0.0
 var _cur_key := ""
 var _cur_tex_path := ""
 
-## scene_id + variant → 候选文件名（按优先级，前面找不到就试后面）
-## 与《场景图片需求表》二、三节完全对应
+# Background
 const BG_MAP := {
 	"office": {
 		"": ["office_day"], "day": ["office_day"], "dusk": ["office_day"],
@@ -136,7 +132,7 @@ const BG_MAP := {
 	},
 	"schoolgate": {
 		"": ["schoolgate_dusk"], "dusk": ["schoolgate_dusk"],
-		"day": ["schoolgate_dusk"], "night": ["schoolgate_night", "schoolgate_dusk"],
+		"day": ["schoolgate_day", "schoolgate_dusk"], "night": ["schoolgate_night", "schoolgate_dusk"],
 	},
 	"rooftop": {
 		"": ["rooftop_night"], "night": ["rooftop_night"], "dark": ["rooftop_night"],
@@ -207,9 +203,13 @@ const BG_MAP := {
 		"night": ["schoolyard_night_path", "schoolyard_night", "campus_rain", "old_building_gate_rain"],
 		"path": ["schoolyard_night_path", "schoolyard_night"],
 		"aerial": ["schoolyard_aerial", "campus_rain"],
-		"day": ["title_school", "campus_rain", "old_building_gate_rain"],
+		"day": ["playground_day", "title_school", "campus_rain"],
 		"keyvisual": ["keyvisual_school_rain", "title_school"],
 		"dusk": ["title_school", "campus_rain", "old_building_gate_rain"],
+	},
+	"lab_hallway": {
+		"": ["experiment_hallway"], "day": ["experiment_hallway"],
+		"night": ["experiment_hallway"], "dark": ["experiment_hallway"],
 	},
 	"dorm_hall": {
 		"": ["dorm_corridor_night"], "night": ["dorm_corridor_night"], "dark": ["dorm_corridor_night"], "day": ["hallway_day"],
@@ -232,8 +232,7 @@ const BG_MAP := {
 }
 
 func _init() -> void:
-	# 必须在 _init 就铺满：set_scene() 可能在入树前被调用，
-	# 若那时 size 仍是 (0,0)，_draw() 会直接 return，表现为整屏全黑。
+
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	anchor_right = 1.0
 	anchor_bottom = 1.0
@@ -244,7 +243,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	set_process(true)
-	# 尺寸变化（旋屏 / 窗口缩放）后必须重绘，否则沿用旧的 cover 计算
+	# Draw
 	resized.connect(queue_redraw)
 	queue_redraw()
 
@@ -256,11 +255,10 @@ func set_scene(id: String, v: String = "") -> void:
 		return
 	_cur_key = key
 	_tex = _find_texture(id, v)
-	# 全部场景组合均已有专属贴图（check_bg_coverage 校验 0 回退），
-	# 找不到贴图时只留纯色底，不再挂代码绘制层。
+
+	# Draw
 	queue_redraw()
 
-## 当前正在显示的贴图路径（供过场加载时标记为「保留，勿释放」）
 func current_texture_path() -> String:
 	return _cur_tex_path
 
@@ -274,10 +272,10 @@ func _find_texture(id: String, v: String) -> Texture2D:
 			candidates.append_array(table[v])
 		if table.has("") and v != "":
 			candidates.append_array(table[""])
-		# 兜底：该场景下所有登记过的文件
+
 		for k in table:
 			candidates.append_array(table[k])
-	# 直接按 scene_id 命名的图也认
+	# Name
 	candidates.append(id + ("_" + v if v != "" else ""))
 	candidates.append(id)
 	for name in candidates:
@@ -288,8 +286,8 @@ func _find_texture(id: String, v: String) -> Texture2D:
 	return null
 
 func _process(delta: float) -> void:
-	# 性能：静止画面不需要每帧重绘。只有存在动态元素
-	# （灯管闪烁 / 雨丝 / 血迹动画）时才推进时间轴并请求重绘。
+	# Perf
+	# Time
 	var animated := flicker > 0.001 or wet > 0.01 or variant == "rain" or blood_amount > 0.001
 	if not animated:
 		return
@@ -299,7 +297,7 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var s := size
-	# 入树早期 size 可能还是 0，此时先用父节点/视口尺寸兜底，避免整屏全黑
+
 	if s.x <= 1.0 or s.y <= 1.0:
 		var p := get_parent_control()
 		if p != null and p.size.x > 1.0:
@@ -307,7 +305,7 @@ func _draw() -> void:
 		else:
 			s = get_viewport_rect().size
 	if _tex == null:
-		# black / white 等纯色场景，或极端缺图情况：铺纯色，避免空白
+
 		draw_rect(Rect2(Vector2.ZERO, s),
 			Color(0.93, 0.93, 0.95) if scene_id == "white" else Color(0.02, 0.02, 0.03), true)
 		return
@@ -315,13 +313,13 @@ func _draw() -> void:
 	var th := float(_tex.get_height())
 	if tw <= 0.0 or th <= 0.0:
 		return
-	# cover 铺满
+
 	var scale := maxf(s.x / tw, s.y / th)
 	var dw := tw * scale
 	var dh := th * scale
 	var pos := Vector2((s.x - dw) * 0.5, (s.y - dh) * 0.5)
 	var lm := 1.0 - flicker * 0.55
-	# 变体调色：没有专门的变体图时，用色调模拟昼夜/血/火
+
 	var tint := Color(lm, lm, lm, 1.0)
 	match variant:
 		"night", "dark":
@@ -336,7 +334,6 @@ func _draw() -> void:
 			tint = Color(lm * 1.0, lm * 0.74, lm * 0.52, 1.0)
 	draw_texture_rect(_tex, Rect2(pos, Vector2(dw, dh)), false, tint)
 
-	# fg_rain_heavy：雨层
 	if wet > 0.01 or variant == "rain":
 		var rng := RandomNumberGenerator.new()
 		rng.seed = 4242
@@ -347,7 +344,6 @@ func _draw() -> void:
 			draw_line(Vector2(x, y), Vector2(x - 5, y + 26 * sp),
 				Color(0.75, 0.82, 0.88, 0.15), 1.2)
 
-	# 血污层
 	if blood_amount > 0.01 and SaveSystem.gore_level() > 0:
 		var lv := SaveSystem.gore_level()
 		var col: Color = Cfg.PALETTE["blood"]
@@ -364,7 +360,6 @@ func _draw() -> void:
 				draw_rect(Rect2(cx - r * 0.18, cy, r * 0.36, hh),
 					Color(col.r, col.g, col.b, 0.38 * blood_amount))
 
-	# 暗角
 	var steps := 14
 	for i in steps:
 		var f := float(i) / steps

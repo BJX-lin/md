@@ -1,5 +1,5 @@
 extends Control
-## 标题界面：程序化氛围（雨夜教学楼 + 闪烁窗 + 广播底噪）
+# UI
 
 signal start_new()
 signal continue_game()
@@ -25,9 +25,8 @@ func _ready() -> void:
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(shade)
 
-	# 标题主视觉：光柱下的空椅子（对应《空席》）。
-	# 动态锚定到菜单栏中心，随窗口比例自适应（修复宽屏手机上椅子偏位）。
-	# 缺图则完全跳过。
+	# Title
+
 	emblem = UITex.make_layer("title_emblem", 0.32,
 		TextureRect.STRETCH_KEEP_ASPECT_CENTERED)
 	if emblem != null:
@@ -36,14 +35,10 @@ func _ready() -> void:
 		_layout_emblem()
 		resized.connect(_layout_emblem)
 
-	# —— 新版布局：左标题 / 右菜单的两栏式，整体可滚动
-	#
-	# 改动理由：
-	#   * 原来是单列居中，菜单一多（现在 7 项）就会顶到屏幕上下边缘，
-	#     小屏或横屏矮机上直接被裁掉，且完全不能滚
-	#   * 两栏把"标题主视觉"和"操作区"分开，视线不打架，
-	#     右侧菜单靠右也更贴合单手拇指操作
-	#   * 外层套 ScrollContainer：无论多矮的屏都能滑到最后一项
+	# Title
+
+	# Title
+
 	var scroll := ScrollContainer.new()
 	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -65,7 +60,7 @@ func _ready() -> void:
 	cols.alignment = BoxContainer.ALIGNMENT_CENTER
 	page.add_child(cols)
 
-	# ---- 左栏：标题 / 副标题 / 周目
+	# Title
 	var left := VBoxContainer.new()
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	left.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -81,7 +76,7 @@ func _ready() -> void:
 	title.add_theme_constant_override("shadow_offset_y", 3)
 	left.add_child(title)
 
-	# 标题下的一道细红线，替代原来空荡荡的间距
+	# Title
 	var rule := ColorRect.new()
 	rule.custom_minimum_size = Vector2(140, 2)
 	rule.color = Color(0.62, 0.20, 0.18, 0.85)
@@ -101,7 +96,6 @@ func _ready() -> void:
 		cy.add_theme_color_override("font_color", Color(0.72, 0.34, 0.30))
 		left.add_child(cy)
 
-	# ---- 右栏：菜单
 	var right := VBoxContainer.new()
 	right.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	right.add_theme_constant_override("separation", 10)
@@ -142,7 +136,7 @@ func _add_btn(v: VBoxContainer, text: String, cb: Callable, disabled := false) -
 	b.text = text
 	b.disabled = disabled
 	b.focus_mode = Control.FOCUS_NONE
-	# 标题菜单是玩家第一次接触到的交互，按钮给足高度
+	# Title
 	b.custom_minimum_size = Vector2(420, 58)
 	b.add_theme_font_size_override("font_size", 28)
 	b.pressed.connect(func():
@@ -191,10 +185,6 @@ func _confirm_new() -> void:
 	h.add_child(no)
 	add_child(root)
 
-## 把椅子主视觉动态对齐到菜单栏中心。
-## 菜单右栏：page 边距 56 + 按钮宽 420 → 中心 = W - 56 - 210。
-## 椅子图（768x1024）在高度受限时按高缩放，锚点按显示宽度反推，
-## 保证任何窗口比例（尤其 20:9 宽屏手机）下椅子都正对菜单。
 func _layout_emblem() -> void:
 	if emblem == null:
 		return
@@ -204,7 +194,7 @@ func _layout_emblem() -> void:
 		return
 	var menu_cx := w - 56.0 - 210.0
 	var disp_w := 768.0 * h / 1024.0
-	# 宽限制场景（极窄窗口）按可用宽度处理，避免图超出屏幕
+
 	disp_w = minf(disp_w, w - 112.0)
 	var half := disp_w * 0.5
 	emblem.anchor_left = clampf((menu_cx - half) / w, 0.0, 1.0)
@@ -216,15 +206,13 @@ func _layout_emblem() -> void:
 	emblem.offset_top = 0
 	emblem.offset_bottom = 0
 
-
 func _process(delta: float) -> void:
 	_t += delta
 	if subtitle_label:
 		subtitle_label.modulate.a = 0.55 + 0.35 * sin(_t * 0.9)
 
-
-## 新游戏第一步：为主角命名（增强代入感）。
-## 取消则留在标题；确认后把名字写入 GameState 再正式开始。
+# Name
+# Name
 func _open_name_entry() -> void:
 	var ne := NameEntryS.new()
 	ne.confirmed.connect(func(player_name: String):

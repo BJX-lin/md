@@ -1,5 +1,5 @@
 extends Control
-## 游戏主界面：背景 / 立绘 / 文本框 / 选项 / 顶栏 / 各类弹窗
+# Sprite
 
 signal finished(ending_id: String)
 signal quit_to_title()
@@ -15,16 +15,14 @@ const OW := preload("res://src/ui/overlay_widgets.gd")
 const MP := preload("res://src/ui/menu_panels.gd")
 const PadlockPanelS := preload("res://src/ui/padlock_panel.gd")
 
-## 触屏最小点击区（逻辑像素）。视口 1280x720 按 canvas_items 拉伸，
-## 在常见手机上约等于物理 9~10mm，接近各家移动端指南的下限建议。
 const TOUCH_MIN := 48
 
-## 理智低于此值开始出现正文重影（叠字）。
-## 平衡后单周目理智中位数约 28、约三成周目会跌破 20，
-## 因此 20 是"多数人至少会遇到一次"的合适门槛。
+# Sanity
+# Sanity
+
 const SANITY_GHOST_AT := 20.0
 
-var world: Control              # 可抖动的容器
+var world: Control
 var bg: BGLayer
 var actor_root: Control
 var actors := {}                # who -> {"node":ActorSprite,"pos":String}
@@ -37,13 +35,13 @@ var ui_root: Control
 
 var name_label: Label
 var text_label: RichTextLabel
-var text_ghost: RichTextLabel            # 低理智重影层
+var text_ghost: RichTextLabel  # Sanity
 var box: PanelContainer
-var _box_text_holder: VBoxContainer      # 正文容器，纹理必须插在它之前
+var _box_text_holder: VBoxContainer
 var _fps_acc := 0.0
-var _box_texture: TextureRect            # 对话框纸纹底（缺图时为 null）
-var _name_plate: PanelContainer          # 名字牌底纹（缺图时为 null）
-var _name_row: HBoxContainer             # 名字牌所在行，随名字一起显隐
+var _box_texture: TextureRect
+var _name_plate: PanelContainer  # Name
+var _name_row: HBoxContainer  # Name
 var choice_box: VBoxContainer
 var continue_hint: Label
 var top_bar: HBoxContainer
@@ -58,7 +56,7 @@ var _cur_who := ""
 var _auto := false
 var _skip := false
 var _auto_timer := 0.0
-var _blocked := false           # 被弹窗/演出阻塞
+var _blocked := false  # FX
 var _pending_wait := 0.0
 
 func _ready() -> void:
@@ -71,9 +69,9 @@ func _ready() -> void:
 func begin(node_id: String) -> void:
 	StoryEngine.start(node_id)
 
-## 读档后立刻把画面还原成存档那一刻：背景 + 台上的立绘。
-## 不这样做的话，存档点所在节点通常没有 @bg 指令，
-## 背景会一直空着，直到玩家推进到下一条 @bg 才出现。
+# Save/Load
+# Save/Load
+# Background
 func restore_scene() -> void:
 	if is_instance_valid(bg):
 		bg.set_scene(GameState.scene_bg, GameState.scene_variant)
@@ -87,7 +85,7 @@ func restore_scene() -> void:
 		_on_actor("show", String(d.get("who", "")),
 			String(d.get("emo", "normal")), String(d.get("pos", "center")))
 
-# ---------------------------------------------------------------- 构建界面
+# UI
 func _build() -> void:
 	world = Control.new()
 	world.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -101,7 +99,7 @@ func _build() -> void:
 	actor_root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	actor_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	world.add_child(actor_root)
-	# 旋屏 / 窗口缩放后必须重新排布立绘，否则位置和尺寸还是旧屏幕的
+	# Sprite
 	resized.connect(_layout_actors)
 
 	fx = EffectsLayerS.new()
@@ -122,13 +120,12 @@ func _build() -> void:
 	ui_root.mouse_filter = Control.MOUSE_FILTER_PASS
 	add_child(ui_root)
 
-	# 点击推进层（在文本框之下）
-	#
-	# 用裸 Control + gui_input 而不是 Button：
-	#   * Button.pressed 只在【松手】时触发，手指按下到抬起之间的时间
-	#     全部体现为"点了没反应"，这是点击延迟的主因
-	#   * Button 还要维护 hover/pressed 状态与样式盒，纯属浪费
-	# 这里改为在按下瞬间就推进，手感明显跟手。
+	# Text
+
+	# Time
+
+	# State
+
 	var click := Control.new()
 	click.set_anchors_preset(Control.PRESET_FULL_RECT)
 	click.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -156,7 +153,7 @@ func _build_top_bar() -> void:
 	wrap.offset_left = 0
 	wrap.offset_right = 0
 	wrap.offset_top = 0
-	# 按钮拉到 48px 触屏高度后，62px 的顶栏会夹住它们，这里同步加高
+
 	wrap.offset_bottom = 68
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.04, 0.04, 0.05, 0.78)
@@ -169,8 +166,6 @@ func _build_top_bar() -> void:
 	wrap.add_theme_stylebox_override("panel", sb)
 	ui_root.add_child(wrap)
 
-	# 顶栏质感底。同样做成兄弟节点铺在 wrap 之下——
-	# PanelContainer 会按 content_margin 内缩子节点，放进去铺不满。
 	var bar_tex := UITex.make_layer("topbar", 0.5)
 	if bar_tex != null:
 		bar_tex.set_anchors_preset(Control.PRESET_TOP_WIDE)
@@ -189,7 +184,6 @@ func _build_top_bar() -> void:
 	time_label.custom_minimum_size.x = 190
 	top_bar.add_child(time_label)
 
-	# 帧率显示（设置里可开）。默认关闭，不占屏幕。
 	fps_label = Label.new()
 	fps_label.add_theme_font_size_override("font_size", 18)
 	fps_label.add_theme_color_override("font_color", Color(0.55, 0.75, 0.60))
@@ -219,8 +213,7 @@ func _build_top_bar() -> void:
 		b.text = String(spec[0])
 		b.focus_mode = Control.FOCUS_NONE
 		b.add_theme_font_size_override("font_size", 21)
-		# 触屏最小点击区 48px：顶栏 7 个按钮排得密，原来只有约 32px 高，
-		# 拇指很容易点错到隔壁。这里强制拉到 TOUCH_MIN。
+
 		b.custom_minimum_size = Vector2(64, TOUCH_MIN)
 		var s2 := StyleBoxFlat.new()
 		s2.bg_color = Color(0.13, 0.12, 0.13, 0.85)
@@ -243,7 +236,7 @@ func _refresh_time() -> void:
 	if time_label == null:
 		return
 	time_label.text = GameState.time_display()
-	# 深夜/凌晨用冷色，强化时段感
+
 	var h := GameState.story_minute / 60
 	if h >= 22 or h < 5:
 		time_label.add_theme_color_override("font_color", Color(0.62, 0.72, 0.84))
@@ -253,8 +246,8 @@ func _refresh_time() -> void:
 		time_label.add_theme_color_override("font_color", Color(0.80, 0.77, 0.68))
 
 func _refresh_status() -> void:
-	# 复用已建好的量表节点，只更新数值——原先每次全部 queue_free 再重建，
-	# 数值一变就重建 4 个 Label，白白产生垃圾。
+	# Stats
+	# Stats
 	if status_strip.get_child_count() != Cfg.NUM_VISIBLE.size():
 		for c in status_strip.get_children():
 			c.queue_free()
@@ -273,10 +266,10 @@ func _refresh_status() -> void:
 		node.set_value(GameState.get_num(key), int(rng[1]))
 	_apply_state_theme()
 
-## 让整个界面随数值变化，而不只是顶栏数字：
-##   - 理智越低，文本框边框越红、正文越发灰、字距轻微不稳
-##   - 沈禾关注度高时，名字栏染上一层红
-##   - 真相到达阈值时，顶栏出现一条渐亮的提示线
+# UI
+# Text
+# Name
+# Truth
 func _apply_state_theme() -> void:
 	var san := float(GameState.get_num("sanity"))
 	var san_max: float = float((Cfg.NUM_RANGE.get("sanity", [0, 100]) as Array)[1])
@@ -285,12 +278,12 @@ func _apply_state_theme() -> void:
 	if is_instance_valid(box):
 		var sb := box.get_theme_stylebox("panel") as StyleBoxFlat
 		if sb != null:
-			# 边框由冷灰渐变为暗红
+
 			sb.border_color = Color(0.48, 0.44, 0.40, 0.55).lerp(
 				Color(0.72, 0.24, 0.22, 0.85), sev)
 			sb.set_border_width_all(1 + int(round(sev * 1.5)))
 	if is_instance_valid(text_label):
-		# 正文在低理智时略微褪色发灰
+		# Sanity
 		text_label.modulate = Color(1, 1, 1).lerp(Color(0.86, 0.82, 0.82), sev * 0.8)
 
 	var focus := float(GameState.get_num("shenhe_focus"))
@@ -300,18 +293,9 @@ func _apply_state_theme() -> void:
 		name_label.add_theme_color_override("font_color",
 			Color(0.84, 0.78, 0.62).lerp(Color(0.92, 0.42, 0.38), fr * 0.75))
 
-## 给对话框铺一层纸纹底。
-##
-## 纹理做成 box 的【兄弟节点并排在它前面】，而不是 box 的子节点：
-## PanelContainer 会把子节点按 content_margin 内缩 28px，
-## 纹理若放进去就铺不满边缘，会露出一圈色差。
-##
-## 相应地把 StyleBoxFlat 的底色调成半透明——底色只负责压暗，
-## 遮挡立绘下半身的任务交给不透明的纹理本身。
-## 边框仍在 StyleBoxFlat 上，_apply_state_theme() 的理智染色照常生效。
-##
-## assets/ui/dialogue_panel.png 缺失时整段跳过：底色自动还原为
-## 原来的 0.985 不透明，观感朴素但完全可用。
+# Sprite
+# Sanity
+
 func _apply_box_texture() -> void:
 	_box_texture = UITex.make_layer("dialogue_panel", 1.0)
 	if _box_texture == null:
@@ -324,7 +308,6 @@ func _apply_box_texture() -> void:
 	ui_root.add_child(_box_texture)
 	ui_root.move_child(_box_texture, box.get_index())
 
-	# 底色让位给纹理：只保留压暗作用
 	var sb := box.get_theme_stylebox("panel") as StyleBoxFlat
 	if sb != null:
 		sb.bg_color = Color(0.03, 0.03, 0.04, 0.55)
@@ -337,7 +320,7 @@ func _build_text_box() -> void:
 	box.offset_top = -252
 	box.offset_bottom = -20
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.045, 0.045, 0.055, 0.985)   # 半身构图：需完全遮住立绘下半身
+	sb.bg_color = Color(0.045, 0.045, 0.055, 0.985)  # Sprite
 	sb.border_color = Color(0.48, 0.44, 0.40, 0.55)
 	sb.set_border_width_all(1)
 	sb.set_corner_radius_all(4)
@@ -351,10 +334,8 @@ func _build_text_box() -> void:
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_root.add_child(box)
 
-	# 纹理底纹：铺在 StyleBoxFlat 之上、正文之下。
-	# 之所以用独立 TextureRect 而不是把 panel 换成 StyleBoxTexture，
-	# 是因为 _apply_state_theme() 需要按理智值改边框颜色/粗细，
-	# 那段逻辑依赖 panel 仍然是 StyleBoxFlat。
+	# Sanity
+
 	_apply_box_texture()
 
 	var v := VBoxContainer.new()
@@ -365,8 +346,8 @@ func _build_text_box() -> void:
 	name_label = Label.new()
 	name_label.add_theme_font_size_override("font_size", 26)
 	name_label.add_theme_color_override("font_color", Color(0.86, 0.72, 0.52))
-	# 名字牌底纹：套一层 PanelContainer 撑出卡纸感。
-	# 用 HBox 包一下再靠左，避免 PanelContainer 被拉满整行宽度。
+	# Name
+
 	var plate_sb := UITex.style_box("name_plate", Color(1, 1, 1, 0.9), 10)
 	if plate_sb != null:
 		plate_sb.content_margin_left = 16
@@ -384,9 +365,8 @@ func _build_text_box() -> void:
 	else:
 		v.add_child(name_label)
 
-	# 正文与「重影层」叠在同一格里：
-	# 低理智时重影层显示同一段文字，带位移与色偏，制造看不清、
-	# 字在动的错觉。正文本身始终原样，保证读得懂。
+	# Sanity
+	# Text
 	var text_stack := Control.new()
 	text_stack.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -427,12 +407,12 @@ func _build_choice_area() -> void:
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_root.add_child(center)
 	choice_box = VBoxContainer.new()
-	# 选项之间留够间距，避免拇指误触相邻项（原来 12px 偏挤）
+	# Choices
 	choice_box.add_theme_constant_override("separation", 16)
 	choice_box.custom_minimum_size.x = 720
 	center.add_child(choice_box)
 
-# ---------------------------------------------------------------- 引擎连接
+# Engine
 func _connect_engine() -> void:
 	StoryEngine.line_ready.connect(_on_line)
 	StoryEngine.choices_ready.connect(_on_choices)
@@ -465,7 +445,7 @@ func _on_actor(kind: String, who: String, emo: String, pos: String) -> void:
 				actors[who] = {"node": a, "pos": pos}
 			a.setup(who, emo if emo != "" else "normal")
 			actors[who]["pos"] = pos
-			# 特殊呈现
+
 			a.glitch = 0.0
 			a.wounded = 0.0
 			if who == "shenhe":
@@ -500,41 +480,33 @@ func _layout_actors() -> void:
 		if not slots.has(pos):
 			fx_ratio = 0.5 + (i - (keys.size() - 1) * 0.5) * 0.26
 
-		# —— 半身构图 ——
-		# 立绘素材是 768x768 半身图（已裁掉永远看不见的下半身）：
-		# 让人物占满可视区，图的底边沉进文本框被遮住。
-		# 这样脸部更大、表情更清楚，也符合常见 AVG 的视觉习惯。
+		# Text
 		var box_top: float = size.y - 272.0
 		if is_instance_valid(box) and box.size.y > 1.0:
 			box_top = box.position.y
 		var top_bar_h := 56.0
-
-		# 立绘素材已由 tools/crop_sprites.py 裁成半身（到大腿中部为止），
-		# 因此图的底边就相当于「腰线偏下」，直接对齐到文本框内即可。
-		# 裁切让每张立绘的显存占用降低 40%。
-		const WAIST_RATIO := 0.88
+		var ratio: float = ActorSpriteS.UPPER_RATIO
 		var waist_y: float = box_top + 40.0
-		# 可视区 = 顶栏下沿 → 腰线，这段要装下人物的「头顶到腰」
+
 		var visible_h: float = waist_y - top_bar_h
-		# 由此反推整张立绘应有的高度
-		var h: float = visible_h / WAIST_RATIO
-		var w: float = h * (768.0 / 768.0)
-		# 多人同屏时按槽位间距收窄，防止相邻立绘互相重叠
+		var scale := visible_h / (768.0 * ratio)
+		# Sprite
 		var max_w: float = size.x * (0.52 if keys.size() > 1 else 0.68)
-		if w > max_w:
-			w = max_w
-			h = w * (768.0 / 768.0)
+		if 768.0 * scale > max_w:
+			scale = max_w / 768.0
+		var w := 768.0 * scale
+		var h := 768.0 * ratio * scale
 		a.size = Vector2(w, h)
-		# 纵向：让腰线对齐 waist_y（头顶可能超出顶栏一点，由 ActorSprite 内部裁掉）
-		var top_y: float = waist_y - h * WAIST_RATIO
-		# 横向夹紧，保证脸部不被切
+
+		var top_y: float = waist_y - h
+
 		var x: float = clampf(size.x * fx_ratio - w * 0.5, -w * 0.08,
 			maxf(0.0, size.x - w * 0.92))
 		a.position = Vector2(x, top_y)
 		i += 1
 
 func _on_effect(name: String, power: float) -> void:
-	# 血腥 UI 痕迹（仅完整血腥档生效，内部自带开关判断）
+	# UI
 	match name:
 		"handprint", "bloodhand":
 			gore.add_mark("handprint", power)
@@ -618,14 +590,13 @@ func _unblock() -> void:
 	_blocked = false
 	StoryEngine.advance()
 
-
-## 说话人名显示：主角（me/linzhou/linday）显示玩家自定义的名字
+# Name
 func _speaker_display_name(who: String) -> String:
 	if who in ["me", "linzhou", "linday"]:
 		return GameState.player_name
 	return String(Cfg.CHARACTERS.get(who, {}).get("name", who))
 
-# ---------------------------------------------------------------- 文本
+# Text
 func _on_line(line: Dictionary) -> void:
 	_clear_choices()
 	_cur_who = String(line.get("who", ""))
@@ -643,7 +614,6 @@ func _on_line(line: Dictionary) -> void:
 		name_label.text = _speaker_display_name(_cur_who)
 		name_label.add_theme_color_override("font_color", Cfg.CHARACTERS.get(_cur_who, {}).get("color", Color.WHITE))
 
-	# 高亮说话者
 	for k in actors:
 		actors[k]["node"].active = (k == _cur_who)
 
@@ -662,7 +632,7 @@ func _on_line(line: Dictionary) -> void:
 	_full_text = prefix + raw + suffix
 	text_label.text = _full_text
 	text_label.visible_characters = 0
-	# 重影层同步文本（是否显示、怎么错位由 _update_text_ghost 每帧决定）
+	# Text
 	if is_instance_valid(text_ghost):
 		text_ghost.text = _full_text
 		text_ghost.visible_characters = 0
@@ -673,23 +643,15 @@ func _on_line(line: Dictionary) -> void:
 	if _cur_who != "":
 		AudioDirector.play_sfx("sfx_click", 0.10)
 
-## 低理智时的文本篡改（保证叙述不可靠感）
-## 低理智不再篡改台词本身（会影响阅读与理解），
-## 改为通过 SanityFX 影响 UI 呈现：抖动、色偏、暗角、噪点，
-## 以及 _update_text_ghost 的正文重影。
-## 低理智正文重影。
-##
-## 理智低于 SANITY_GHOST_AT 时，在正文下方叠一层同样的文字，
-## 带位移 + 色偏 + 轻微抖动，读起来像重影／叠字。
-##
-## 关键取舍：**动的是重影层，正文层永远不动、永远不改字**。
-## 这样既有"看不清"的压迫感，又不会真的读不懂——
-## 玩家眯眼或等一下总能读完，不会卡在看不清剧情上。
-##
-## 越低越夸张：
-##   20 以下  开始出现淡淡重影
-##   10 以下  位移拉大、色偏明显（红/青分离）
-##    5 以下  重影抖动，偶尔出现第二层
+# Text
+# Text
+# UI
+
+# Sanity
+# Sanity
+
+# Story
+
 func _update_text_ghost(_delta: float) -> void:
 	if not is_instance_valid(text_ghost):
 		return
@@ -699,12 +661,11 @@ func _update_text_ghost(_delta: float) -> void:
 			text_ghost.visible = false
 		return
 
-	# 0（刚到 20）→ 1（0）
 	var g := clampf((SANITY_GHOST_AT - san) / SANITY_GHOST_AT, 0.0, 1.0)
 	text_ghost.visible = true
 	text_ghost.visible_characters = text_label.visible_characters
 
-	var amp := 1.5 + g * 7.0                     # 位移幅度
+	var amp := 1.5 + g * 7.0
 	var jitter := 0.0
 	if g > 0.5 and bool(SaveSystem.settings.get("screen_shake", true)):
 		jitter = (g - 0.5) * 4.0
@@ -712,7 +673,7 @@ func _update_text_ghost(_delta: float) -> void:
 	var gx := -amp + sin(t * 2.3) * jitter
 	var gy := amp * 0.45 + cos(t * 3.1) * jitter * 0.6
 	text_ghost.position = Vector2(gx, gy)
-	# 色偏：低理智时偏冷红，像印刷套色没对准
+	# Sanity
 	text_ghost.modulate = Color(0.95, 0.42, 0.40, 0.16 + g * 0.30)
 
 func _process(delta: float) -> void:
@@ -722,7 +683,7 @@ func _process(delta: float) -> void:
 		if fps_label.visible != want:
 			fps_label.visible = want
 		if want:
-			# 四分之一秒刷新一次就够读，每帧改文本反而增加开销
+			# Text
 			_fps_acc += delta
 			if _fps_acc >= 0.25:
 				_fps_acc = 0.0
@@ -755,7 +716,7 @@ func _process(delta: float) -> void:
 		if _auto_timer >= need:
 			_auto_timer = 0.0
 			_advance()
-	# 呼吸提示
+	# Breathe
 	if continue_hint.visible:
 		continue_hint.modulate.a = 0.4 + 0.6 * absf(sin(Time.get_ticks_msec() / 500.0))
 	_layout_actors_if_needed()
@@ -766,7 +727,7 @@ func _layout_actors_if_needed() -> void:
 		_last_size = size
 		_layout_actors()
 
-# ---------------------------------------------------------------- 选项
+# Choices
 func _on_choices(list: Array) -> void:
 	_clear_choices()
 	continue_hint.visible = false
@@ -781,7 +742,7 @@ func _on_choices(list: Array) -> void:
 		b.text = txt
 		b.disabled = not bool(ch.get("enabled", true))
 		b.focus_mode = Control.FOCUS_NONE
-		# 选项是全篇最主要的交互，给足高度；长文本自动换行而不是撑破版面
+		# Text
 		b.custom_minimum_size = Vector2(720, TOUCH_MIN + 8)
 		b.add_theme_font_size_override("font_size", 27)
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -797,8 +758,6 @@ func _on_choices(list: Array) -> void:
 		tw.tween_property(b, "modulate:a", 1.0, 0.22)
 		idx += 1
 
-## 选择反馈：先把选中项高亮、其余淡出，飘出这次选择造成的影响，
-## 再决定是直接推进还是走过场加载。
 func _confirm_choice(btn: Button, ch: Dictionary) -> void:
 	_blocked = true
 	for c in choice_box.get_children():
@@ -810,7 +769,6 @@ func _confirm_choice(btn: Button, ch: Dictionary) -> void:
 			var tw_o := create_tween()
 			tw_o.tween_property(other, "modulate:a", 0.18, 0.16)
 
-	# 选中项：描边高亮 + 轻微放大
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.20, 0.19, 0.16, 0.95)
 	sb.border_color = Color(0.86, 0.78, 0.56)
@@ -837,7 +795,7 @@ func _confirm_choice(btn: Button, ch: Dictionary) -> void:
 	else:
 		StoryEngine.pick_choice(ch)
 
-## 把选项造成的数值 / 线索变化，以小字飘在文本框上方
+# Text
 func _flash_choice_effects(ch: Dictionary) -> void:
 	var msgs: Array[String] = []
 	for e in ch.get("effects", []):
@@ -872,7 +830,7 @@ func _flash_choice_effects(ch: Dictionary) -> void:
 	tw.tween_property(lbl, "modulate:a", 0.0, 0.9).set_delay(0.35)
 	tw.chain().tween_callback(lbl.queue_free)
 
-## 重大选择判定：带 flag / 道具 / 结局分支，或数值改动较大
+# Endings
 func _is_major_choice(ch: Dictionary) -> bool:
 	var weight := 0
 	for e in ch.get("effects", []):
@@ -890,7 +848,6 @@ func _is_major_choice(ch: Dictionary) -> bool:
 					weight += 2
 	return weight >= 4
 
-## 过场：显示进度条 + 后台预取 + 释放已过场资源，完成后执行 next
 func _run_transition(next: Callable) -> void:
 	var ov := LoadingOverlayS.new()
 	add_child(ov)
@@ -909,7 +866,6 @@ func _clear_choices() -> void:
 	for c in choice_box.get_children():
 		c.queue_free()
 
-# ---------------------------------------------------------------- 输入
 func _on_screen_tap() -> void:
 	if choice_box.get_child_count() > 0:
 		return
@@ -959,7 +915,6 @@ func _mark_toggle() -> void:
 			var on := (_auto and r == "auto") or (_skip and r == "skip")
 			b.modulate = Color(1.0, 0.7, 0.6) if on else Color.WHITE
 
-# ---------------------------------------------------------------- 菜单
 func _open_history() -> void:
 	_push_panel(MP.history_panel())
 

@@ -1,5 +1,5 @@
 extends Node
-## 存档系统：8 个手动槽 + 1 个自动槽 + 设置 + 跨周目持久数据
+# Save/Load
 
 const SAVE_DIR := "user://saves"
 const SETTINGS_PATH := "user://settings.cfg"
@@ -8,21 +8,19 @@ const SLOT_COUNT := 8
 
 var settings := {
 	"text_speed": 2,        # 0..3
-	"auto_speed": 1.6,      # 自动模式停顿秒
+	"auto_speed": 1.6,
 	"vol_master": 1.0,
 	"vol_bgm": 0.7,
 	"vol_sfx": 0.85,
-	"gore": 2,              # 0=关闭 1=温和 2=完整
-	# 镜头晃动默认关闭。
-	# 长时间阅读型 AVG 里，频繁的画面位移会明显加重晕动感与疲劳，
-	# 且会让正文出现"读到一半被抖走"的挫败。恐怖表现改由
-	# 血色暗角 / 色差 / 噪点 / 心跳暗角 等不位移的手段承担。
-	# 想要的玩家仍可在设置里自行打开。
+	"gore": 2,
+
+	# Time
+
 	"screen_shake": false,
-	"flash": true,          # 强闪光（光敏友好开关）
+	"flash": true,
 	"skip_seen_only": true,
 	"font_scale": 1.0,
-	"show_fps": false,      # 设置页可开，用于自查性能
+	"show_fps": false,  # Perf
 }
 
 func _ready() -> void:
@@ -31,7 +29,6 @@ func _ready() -> void:
 	load_persistent()
 	AudioDirector.apply_settings(settings)
 
-# ---------------------------------------------------------------- 设置
 func load_settings() -> void:
 	if not FileAccess.file_exists(SETTINGS_PATH):
 		return
@@ -42,9 +39,7 @@ func load_settings() -> void:
 	if d is Dictionary:
 		for k in d:
 			settings[k] = d[k]
-		# 一次性迁移：镜头晃动改为默认关闭。
-		# 老配置里存着 screen_shake=true，不迁移的话老玩家感受不到这次改动。
-		# 只做一次，之后玩家自己开了就尊重玩家。
+
 		if not bool(settings.get("_shake_migrated", false)):
 			settings["screen_shake"] = false
 			settings["_shake_migrated"] = true
@@ -67,7 +62,6 @@ func text_delay() -> float:
 func gore_level() -> int:
 	return int(settings.get("gore", 2))
 
-# ---------------------------------------------------------------- 持久数据
 func load_persistent() -> void:
 	if not FileAccess.file_exists(PERSIST_PATH):
 		return
@@ -84,24 +78,22 @@ func save_persistent() -> void:
 	if f:
 		f.store_string(JSON.stringify(GameState.persistent, "\t"))
 
-# ---------------------------------------------------------------- 存档完整性
-## 存档签名。
-##
-## 目的不是「防止玩家改档」——单机游戏没必要跟玩家为敌，改了也只影响自己。
-## 真正要挡的是：改档后解锁本该靠通关拿到的真结局 / 全线索图鉴，
-## 然后拿着残缺的体验去评价作品，或散播「这游戏结局有 bug」。
-##
-## 因此策略是「检测并提示」而非「拒绝加载」：
-## 签名不符时照常读档，但标记 tampered，结局判定与图鉴解锁走保守分支。
-## 发行版盐值：已替换为随机串（原先是可被猜到的日期占位值）。
-## 更换盐值会使旧版本存档签名失效——按上面的策略，这不会导致读档失败，
-## 只是旧档会被标记 tampered。1.0.0 是首个正式发行版本，无历史存档负担。
+# Save/Load
+# Save/Load
+
+# Endings
+# Endings
+
+# Save/Load
+
+# Save/Load
+# Save/Load
 const SAVE_SALT := "3d80609c5901cb4d96a76c28bcc02a72a2359629ddfd4ec5"
 
 func _sign(payload: Dictionary) -> String:
 	var d := payload.duplicate(true)
 	d.erase("_sig")
-	# 键排序后再序列化，保证同一份数据签名稳定
+	# Save/Load
 	var keys := d.keys()
 	keys.sort()
 	var ordered := {}
@@ -115,7 +107,7 @@ func _verify(d: Dictionary) -> bool:
 		return false
 	return String(d["_sig"]) == _sign(d)
 
-# ---------------------------------------------------------------- 存档槽
+# Save/Load
 func slot_path(i: int) -> String:
 	return "%s/slot_%d.json" % [SAVE_DIR, i]
 

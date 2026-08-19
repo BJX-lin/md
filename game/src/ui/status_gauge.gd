@@ -1,24 +1,20 @@
 extends Control
 class_name StatusGauge
-## 顶栏的单个数值指示器：文字 + 条形量表 + 变化反馈。
-##
-## 相比原先的纯数字，这里能表达三件事：
-##   1. 当前量级 —— 条形长度按阈值归一化
-##   2. 变化方向 —— 升/降时飘出 +N / -N，并短暂高亮
-##   3. 危险程度 —— 低理智会脉动，高关注度会缓慢呼吸
-##
-## 数值不变时完全不重绘（_process 直接 return），不占性能。
+# Stats
+
+# Breathe
+# Perf
 
 var key := ""
 var label_text := ""
 var value := 0
 var vmax := 100
-var _shown := 0.0          # 条形当前显示值，用于平滑过渡
-var _flash := 0.0          # 变化高亮残留
-var _delta := 0            # 最近一次变化量
+var _shown := 0.0
+var _flash := 0.0
+var _delta := 0
 var _delta_life := 0.0
 var _pulse := 0.0
-var _danger := false       # 危险态（低理智 / 高关注）
+var _danger := false  # Sanity
 var _base_col := Color(0.72, 0.71, 0.68)
 
 const W := 132.0
@@ -32,7 +28,7 @@ func _ready() -> void:
 	set_process(true)
 	_shown = float(value)
 
-## 由 game_screen 调用：更新数值并触发反馈
+# Stats
 func set_value(v: int, vmax_: int) -> void:
 	vmax = maxi(1, vmax_)
 	if v != value:
@@ -44,7 +40,7 @@ func set_value(v: int, vmax_: int) -> void:
 
 func _process(delta: float) -> void:
 	var active := false
-	# 条形平滑追赶
+
 	if absf(_shown - float(value)) > 0.5:
 		_shown = lerpf(_shown, float(value), clampf(delta * 6.0, 0.0, 1.0))
 		active = true
@@ -67,7 +63,7 @@ func _draw() -> void:
 
 	match key:
 		"sanity":
-			# 理智：越低越红，低于 30% 开始脉动
+			# Sanity
 			if ratio >= 0.6:
 				col = Color(0.55, 0.78, 0.72)
 			elif ratio >= 0.3:
@@ -80,7 +76,7 @@ func _draw() -> void:
 			col = Color(0.68, 0.75, 0.85).lerp(Color(0.80, 0.88, 1.0), ratio)
 			_danger = false
 		"shenhe_focus":
-			# 沈禾关注：越高越危险，缓慢呼吸
+			# Breathe
 			col = Color(0.70, 0.68, 0.70).lerp(Color(0.90, 0.36, 0.32), ratio)
 			_danger = ratio > 0.45
 			if _danger:
@@ -91,29 +87,25 @@ func _draw() -> void:
 		_:
 			_danger = false
 
-	# 变化瞬间整体提亮
 	if _flash > 0.0:
 		col = col.lerp(Color(1, 1, 1), _flash * 0.5)
 
-	# —— 文字
 	var f := get_theme_default_font()
 	var fs := 18
 	draw_string(f, Vector2(0, 15), "%s %d" % [label_text, value],
 		HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 
-	# —— 条形底槽
 	draw_rect(Rect2(0, 21, W - 18, BAR_H), Color(0.20, 0.20, 0.23, 0.85), true)
-	# —— 条形填充
+
 	var fill_w := (W - 18) * ratio
 	if fill_w > 0.5:
 		var bc := Color(col.r, col.g, col.b, 0.92)
 		draw_rect(Rect2(0, 21, fill_w, BAR_H), bc, true)
-		# 危险态在条尾加一点辉光
+
 		if glow > 0.01:
 			draw_rect(Rect2(maxf(0.0, fill_w - 12.0), 20, 12, BAR_H + 2),
 				Color(col.r, col.g, col.b, 0.45 * glow), true)
 
-	# —— 变化量飘字
 	if _delta_life > 0.0 and _delta != 0:
 		var a := clampf(_delta_life / 1.6, 0.0, 1.0)
 		var rise := (1.0 - a) * 10.0

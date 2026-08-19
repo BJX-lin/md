@@ -1,25 +1,24 @@
 extends Control
 class_name NameEntry
-## 新游戏前的角色命名界面。
-## 玩家可以为主角起名（默认「林昼」），名字会出现在正文、
-## 名册与存档中；取消则返回标题界面。
+# UI
+# Name
+# Save/Load
 
 signal confirmed(player_name: String)
 signal cancelled()
 
 const MAX_LEN := 6
 
-## 随机名字池（默认名 + 文档里的候选名）
+# Name
 const NAME_POOL: Array[String] = ["林昼", "许言", "陈渡", "沈默", "江晚", "陆离"]
 
 var _edit: LineEdit
-
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_PASS
 
-	# 遮罩：吞掉下层标题界面的点击；点击遮罩空白处 = 取消
+	# UI
 	var shade := ColorRect.new()
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	shade.color = Color(0.01, 0.01, 0.015, 0.86)
@@ -110,7 +109,6 @@ func _ready() -> void:
 	btns.add_child(cancel)
 
 	_edit.grab_focus()
-
 
 func _confirm() -> void:
 	var n := _edit.text.strip_edges()

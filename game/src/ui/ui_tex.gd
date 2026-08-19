@@ -1,21 +1,17 @@
 extends RefCounted
 class_name UITex
-## UI 贴图统一入口。
-##
-## 整套 UI 贴图都是【可选资源】：assets/ui/ 下任何一张缺失，
-## 调用方都会回落到原来的程序化纯色样式，绝不报错、绝不崩。
-## 这条约束很重要——UI 位于启动路径上，不能因为缺图卡住。
-##
-## 纹理只做质感底纹，配色/状态反馈仍由各处的 modulate 与
-## StyleBoxFlat 控制，因此换皮不会破坏既有的交互反馈逻辑。
+# UI
+# UI
+
+# UI
+# State
 
 const ROOT := "res://assets/ui"
 
-## 已解析过的路径缓存。UI 贴图数量少、生命周期长，
-## 常驻缓存比反复 load 更划算，也避免打开菜单时的卡顿。
+# UI
+# Cache
 static var _cache := {}
 
-## 安全取贴图：缺图或类型不对都返回 null。
 static func get_tex(name: String) -> Texture2D:
 	if _cache.has(name):
 		return _cache[name]
@@ -31,10 +27,8 @@ static func get_tex(name: String) -> Texture2D:
 static func has(name: String) -> bool:
 	return get_tex(name) != null
 
-## 造一个铺满父节点的贴图背景层。
-##
-## alpha 一律压得比较低：这些图是"质感"，不是"主角"，
-## 压过头会吃掉正文对比度。缺图返回 null，调用方直接跳过即可。
+# Background
+
 static func make_layer(name: String, alpha := 1.0,
 		stretch := TextureRect.STRETCH_SCALE) -> TextureRect:
 	var tex := get_tex(name)
@@ -49,7 +43,6 @@ static func make_layer(name: String, alpha := 1.0,
 	tr.modulate = Color(1, 1, 1, alpha)
 	return tr
 
-## 把贴图层插进容器最底下（在其它子节点之前）。
 static func add_under(parent: Control, name: String, alpha := 1.0) -> TextureRect:
 	var layer := make_layer(name, alpha)
 	if layer == null:
@@ -58,8 +51,6 @@ static func add_under(parent: Control, name: String, alpha := 1.0) -> TextureRec
 	parent.move_child(layer, 0)
 	return layer
 
-## 纹理样式盒，用于 Button / Panel。
-## 九宫格边距避免细节在拉伸时变形。
 static func style_box(name: String, tint := Color(1, 1, 1, 1),
 		margin := 8) -> StyleBoxTexture:
 	var tex := get_tex(name)

@@ -1,17 +1,14 @@
 extends Control
 class_name SplashScreen
-## 开场动画：
-##   1. Godot Engine 官方标识（引擎署名，图标来自引擎官方资源）
-##   2. 作品信息与内容分级提示（纯文字，不使用游戏图标）
-##   3. 淡出，进入标题
-##
-## 底图为可选资源 assets/ui/splash_bg.png（AI 生成的深色雨夜氛围图），
-## 缺失时回退到纯色底；全程可点击跳过，启动路径上绝不因缺图卡住。
+# Splash
+# Engine
+
+# Title
 
 signal finished
 
-const STAGE_DUR := [2.4, 2.8]     # 每段停留时长（秒）
-const FADE := 0.45                # 段内淡入/淡出时长
+const STAGE_DUR := [2.4, 2.8]
+const FADE := 0.45
 
 var _t := 0.0
 var _stage := 0
@@ -21,14 +18,12 @@ var _stage_root: Control
 var _stage0: Control
 var _stage1: Control
 
-
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	anchor_right = 1.0
 	anchor_bottom = 1.0
 	offset_right = 0.0
 	offset_bottom = 0.0
-
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -41,8 +36,8 @@ func _ready() -> void:
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
 
-	# 氛围底图：深色雨夜背景（可选资源，缺失时回退纯色底）。
-	# 压暗到 0.62，保证前景的 Godot 引擎图标对比度。
+	# Background
+	# Engine
 	var scene_tex := UITex.get_tex("splash_bg")
 	if scene_tex != null:
 		var scene := TextureRect.new()
@@ -53,7 +48,7 @@ func _ready() -> void:
 		scene.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		scene.modulate = Color(0.62, 0.66, 0.72)
 		add_child(scene)
-		# 轻微缓慢缩放：静止画面也有呼吸感（单张图缩放，性能开销可忽略）
+		# Perf
 		scene.scale = Vector2(1.08, 1.08)
 		scene.pivot_offset = scene.size * 0.5
 		scene.resized.connect(func(): scene.pivot_offset = scene.size * 0.5)
@@ -87,19 +82,16 @@ func _ready() -> void:
 			_skip()
 	)
 
-
 func _unhandled_input(e: InputEvent) -> void:
 	if e is InputEventKey and e.pressed and not e.echo:
 		_skip()
 	elif e is InputEventScreenTouch and e.pressed:
 		_skip()
 
-
 func _skip() -> void:
 	if _done:
 		return
 	_finish()
-
 
 func _process(delta: float) -> void:
 	if _done:
@@ -114,7 +106,6 @@ func _process(delta: float) -> void:
 			return
 		_show_stage(_stage)
 
-
 func _finish() -> void:
 	if _done:
 		return
@@ -127,7 +118,6 @@ func _finish() -> void:
 		queue_free()
 	)
 
-
 func _show_stage(i: int) -> void:
 	_stage0.visible = i == 0
 	_stage1.visible = i == 1
@@ -136,8 +126,7 @@ func _show_stage(i: int) -> void:
 	var tw := create_tween()
 	tw.tween_property(root, "modulate:a", 1.0, FADE)
 
-
-# ---------------------------------------------------------------- 第一段：Godot 引擎标识
+# Engine
 func _build_godot_stage() -> Control:
 	var c := Control.new()
 	c.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -168,7 +157,7 @@ func _build_godot_stage() -> Control:
 	wordmark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(wordmark)
 
-	# 官方贴图缺失时的代码绘制兜底（仍在同一容器里）
+	# Draw
 	if icon.texture == null:
 		var fb := _draw_godot_fallback()
 		fb.custom_minimum_size = Vector2(140, 140)
@@ -189,8 +178,6 @@ func _build_godot_stage() -> Control:
 	v.add_child(site)
 	return c
 
-
-## 无贴图时的 Godot 机器人简笔剪影（与旧版一致，保证启动路径不依赖资源）
 func _draw_godot_fallback() -> Control:
 	var c := Control.new()
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -214,8 +201,6 @@ func _draw_godot_fallback() -> Control:
 	)
 	return c
 
-
-# ---------------------------------------------------------------- 第二段：作品信息（纯文字，无图标）
 func _build_game_stage() -> Control:
 	var c := Control.new()
 	c.set_anchors_preset(Control.PRESET_FULL_RECT)

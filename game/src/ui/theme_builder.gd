@@ -1,5 +1,5 @@
 extends RefCounted
-## 程序化主题：不依赖外部字体文件（使用系统 CJK 字体回退），全部样式代码生成。
+# Theme
 
 const BG := Color(0.055, 0.057, 0.065)
 const PANEL := Color(0.09, 0.09, 0.10, 0.92)
@@ -8,8 +8,7 @@ const TEXT := Color(0.88, 0.87, 0.84)
 const DIM := Color(0.62, 0.61, 0.58)
 const ACC := Color(0.72, 0.28, 0.24)
 
-## UI 贴图统一走 UITex（src/ui/ui_tex.gd）。整套贴图都是可选的：
-## 缺任何一张都会自动回落到原来的程序化纯色样式，不影响运行。
+# UI
 
 static func build() -> Theme:
 	var t := Theme.new()
@@ -19,8 +18,7 @@ static func build() -> Theme:
 	t.default_font_size = 26
 
 	# ---- Button
-	# 有 assets/ui/choice_button.png 就用纹理底，否则回落到纯色样式。
-	# 纹理只做底纹，配色仍由 modulate 控制，保证选中/按下的反馈依旧明显。
+
 	var b_norm: StyleBox = UITex.style_box("choice_button", Color(1, 1, 1, 0.94), 6)
 	var b_hover: StyleBox
 	var b_press: StyleBox
@@ -77,8 +75,6 @@ static func build() -> Theme:
 	t.set_stylebox("panel", "PopupPanel", _sb(Color(0.07, 0.07, 0.08, 0.98), LINE, 1))
 	return t
 
-
-
 static func _sb(bg: Color, border: Color, bw: int, radius: int = 3) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = bg
@@ -89,7 +85,7 @@ static func _sb(bg: Color, border: Color, bw: int, radius: int = 3) -> StyleBoxF
 	return s
 
 static func _load_font() -> Font:
-	# 优先项目内字体；否则用系统 CJK 字体族回退，保证中文可显示
+
 	var candidates := [
 		"res://assets/fonts/main.ttf", "res://assets/fonts/main.otf",
 		"res://assets/fonts/NotoSerifSC.ttf",

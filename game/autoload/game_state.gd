@@ -1,6 +1,5 @@
 extends Node
-## 全局游戏状态：数值 / 布尔标记 / 枚举状态 / 道具 / 线索 / 章节结算 / 结局判定
-## 数据规格来自 f.md《开发总表》与 e.md《各章正式脚本》
+# Endings
 
 signal var_changed(key: String, old_value: int, new_value: int)
 signal flag_changed(key: String, value: bool)
@@ -16,35 +15,34 @@ var states: Dictionary = {}
 var inventory: Array[String] = []
 var clues: Array[String] = []
 var visited_nodes: Dictionary = {}
-var history: Array = []              # 回想记录 [{who,text}]
-## 玩家自定义的主角名。新游戏时由命名界面写入；
-## 读档时从存档恢复。reset_run 不重置它（改名只在开新档时发生）。
+var history: Array = []
+# UI
+# Save/Load
 var player_name: String = "林昼"
 var current_chapter: int = 1
-## 当前演出状态：读档后要用它把画面还原成存档那一刻的样子。
-## 只存 @bg / @show 的结果，不存立绘节点本身。
-var save_tampered := false     # 读入的存档签名不符（见 SaveSystem._verify）
+# Save/Load
+# Sprite
+var save_tampered := false  # Save/Load
 var scene_bg: String = "black"
 var scene_variant: String = ""
 var scene_actors: Array = []        # [{who, emo, pos}, ...]
 var current_node: String = ""
-## 剧情内时间：第几天 + 当天分钟数（0~1439）
+# Time
 var story_day: int = 1
-var story_minute: int = 14 * 60 + 40      # 第一天下午 14:40 报到
+var story_minute: int = 14 * 60 + 40
 var play_seconds: float = 0.0
-var deaths: Array[String] = []       # 本周目死亡/失踪角色
-var choice_log: Array = []           # 关键选择记录
+var deaths: Array[String] = []
+var choice_log: Array = []
 
-# 跨周目（持久化）数据
 var persistent := {
-	"endings": {},        # ending_id -> 次数
-	"clues_seen": [],     # 全局线索图鉴
-	"cycles": 0,          # 通关轮数（对应“第109次”梗）
-	"gallery": [],        # 解锁的演出/CG式画面
+	"endings": {},
+	"clues_seen": [],  # Clues
+	"cycles": 0,
+	"gallery": [],  # FX
 	"best_truth": 0,
 }
 
-# ---------------------------------------------------------------- 道具表
+# Items
 const ITEMS := {
 	"item_record_slip": {"name": "被揉皱的违纪记录表", "desc": "纸背印着一行被擦过的名字，笔压还在。终章可证明你被“看守”过。"},
 	"item_library_card": {"name": "梁野的借书卡", "desc": "卡上名字被反复描过。终章可用来把梁野从名单里拉回一次。"},
@@ -71,7 +69,7 @@ const ITEMS := {
 	"item_mirror_shard": {"name": "镜片碎片", "desc": "碎片里的你，总比你慢半拍。边缘割过手。"},
 }
 
-# ---------------------------------------------------------------- 线索表
+# Clues
 const CLUES := {
 	"clue_mirror": {"name": "镜子里多一个", "ch": 2, "text": "水房镜子里比实际多一个人。他背对镜子却出现在镜中，头原地转了一百八十度，对口型说「你也别替我答到」。"},
 	"clue_liheng": {"name": "被挪走的李恒", "ch": 2, "text": "307 门牌名单里，印刷体的「李恒」被记号笔写的「林昼」盖住。李恒还在上学，但他「住在这里」这件事被删掉了。"},
@@ -118,7 +116,6 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	play_seconds += delta
 
-# ---------------------------------------------------------------- 生命周期
 func reset_run() -> void:
 	nums = Cfg.NUM_DEFAULT.duplicate(true)
 	flags = {}
@@ -137,21 +134,21 @@ func reset_run() -> void:
 	story_day = 1
 	story_minute = 14 * 60 + 40
 	play_seconds = 0.0
-	# 循环继承：第二周目起，回响天然更高（“既视感”）
+
 	var cyc: int = int(persistent.get("cycles", 0))
 	if cyc > 0:
 		nums["memory_echo"] = mini(3 + cyc, 8)
 
-# ---------------------------------------------------------------- 剧情时间
+# Time
 const DAY_LABEL: Array[String] = ["", "第一天", "第二天", "第三天", "第四天", "第五天"]
 
 func set_story_time(day: int, minute: int) -> void:
 	var before := story_day * 24 * 60 + story_minute
 	story_day = maxi(1, day)
 	story_minute = clampi(minute, 0, 24 * 60 - 1)
-	# 开发期护栏：@time 是绝对赋值，可自由排序的支线用它会把时钟往回拨。
-	# 这类问题在正式版里只体现为"时间显示忽然变早"，很难被发现，
-	# 因此在调试构建里直接报出来，提示改用 @timeat。
+
+	# Time
+
 	if OS.is_debug_build():
 		var after := story_day * 24 * 60 + story_minute
 		if after < before:
@@ -161,16 +158,11 @@ func set_story_time(day: int, minute: int) -> void:
 			push_warning(msg + "若该节点可被多条支线以不同顺序进入，请改用 @timeat。")
 	time_changed.emit(story_day, story_minute)
 
-## 单调时钟：把时间推进到「不早于」指定时刻，绝不倒流。
-##
-## 用于可自由排序的支线（第四章许清 / 老秦 / 李恒等）。这些节点各自
-## 写死一个绝对时刻，玩家换个顺序进入就会把时钟往回拨——先见 22:30 的
-## 李恒、再见 19:20 的许清，时间就倒流了 3 小时。
-##
-## 规则：
-##   目标时刻晚于当前 → 直接跳到目标（正常推进）
-##   目标时刻早于当前 → 保持当前时刻，只加 min_advance 分钟
-## 这样无论玩家用什么顺序访问，时间线都保持单调递增。
+# Time
+
+# Time
+
+# Time
 func seek_story_time(day: int, minute: int, min_advance: int = 5) -> void:
 	var target := day * 24 * 60 + clampi(minute, 0, 24 * 60 - 1)
 	var now := story_day * 24 * 60 + story_minute
@@ -181,7 +173,6 @@ func seek_story_time(day: int, minute: int, min_advance: int = 5) -> void:
 	else:
 		advance_time(maxi(0, min_advance))
 
-## 推进 n 分钟，跨过 24:00 自动进入下一天
 func advance_time(minutes: int) -> void:
 	var total := story_minute + minutes
 	while total >= 24 * 60:
@@ -193,7 +184,6 @@ func advance_time(minutes: int) -> void:
 func time_hhmm() -> String:
 	return "%02d:%02d" % [story_minute / 60, story_minute % 60]
 
-## 时段中文名，用于氛围提示
 func time_phase() -> String:
 	var h := story_minute / 60
 	if h < 5:
@@ -214,7 +204,7 @@ func time_display() -> String:
 	var d: String = DAY_LABEL[clampi(story_day, 0, DAY_LABEL.size() - 1)] if story_day < DAY_LABEL.size() else ("第%d天" % story_day)
 	return "%s　%s %s" % [d, time_phase(), time_hhmm()]
 
-# ---------------------------------------------------------------- 数值
+# Stats
 func get_num(key: String) -> int:
 	return int(nums.get(key, 0))
 
@@ -230,7 +220,6 @@ func set_num(key: String, value: int) -> void:
 func add_num(key: String, delta: int) -> void:
 	set_num(key, get_num(key) + delta)
 
-# ---------------------------------------------------------------- 标记
 func get_flag(key: String) -> bool:
 	return bool(flags.get(key, false))
 
@@ -238,7 +227,6 @@ func set_flag(key: String, value: bool = true) -> void:
 	flags[key] = value
 	flag_changed.emit(key, value)
 
-# ---------------------------------------------------------------- 枚举
 func get_state(key: String) -> String:
 	return String(states.get(key, ""))
 
@@ -246,7 +234,7 @@ func set_state(key: String, value: String) -> void:
 	states[key] = value
 	state_changed.emit(key, value)
 
-# ---------------------------------------------------------------- 道具与线索
+# Items
 func has_item(id: String) -> bool:
 	return inventory.has(id)
 
@@ -270,14 +258,13 @@ func add_clue(id: String) -> void:
 func item_name(id: String) -> String:
 	return String(ITEMS.get(id, {}).get("name", id))
 
-# ---------------------------------------------------------------- 死亡登记
 func register_loss(who: String, kind: String) -> void:
 	var rec := "%s:%s" % [who, kind]
 	if not deaths.has(rec):
 		deaths.append(rec)
 
-# ---------------------------------------------------------------- 章节结算
-## 第一章（e.md 六、第一章章节结算逻辑）
+# Chapters
+# Chapters
 func settle_chapter_1() -> void:
 	if get_flag("flag_liangye_library") and get_flag("flag_library_page109"):
 		set_state("liangye_state", "fear_alive")
@@ -304,7 +291,7 @@ func settle_chapter_1() -> void:
 		set_state("xuqing_state", "suspected")
 	current_chapter = 2
 
-## 第二章（e.md 五、第二章章节结算逻辑 + f.md 状态机）
+# Chapters
 func settle_chapter_2() -> void:
 	if get_flag("flag_liangye_marked") and get_num("trust_liangye") < 0:
 		set_state("liangye_state", "missing_marked")
@@ -345,9 +332,9 @@ func settle_chapter_2() -> void:
 		set_state("xuqing_state", "suspected")
 	current_chapter = 3
 
-## 第三章（e.md 五、第三章章节结算逻辑）
+# Chapters
 func settle_chapter_3() -> void:
-	# 梁野
+
 	if get_flag("flag_gave_up_roommate"):
 		set_state("liangye_final_state_ch3", "abandoned")
 		register_loss("梁野", "被放弃")
@@ -363,7 +350,6 @@ func settle_chapter_3() -> void:
 	else:
 		set_state("liangye_final_state_ch3", "fragile_alive")
 
-	# 周叙
 	if get_num("trust_zhouxu") >= 4 and get_flag("flag_zhouxu_confessed_part"):
 		set_state("zhouxu_final_state_ch3", "confessor_protector")
 	elif get_num("trust_zhouxu") <= -5:
@@ -371,7 +357,7 @@ func settle_chapter_3() -> void:
 	else:
 		set_state("zhouxu_final_state_ch3", "split_guard")
 
-	# 真结局前置
+	# Endings
 	if get_flag("flag_name_written_back"):
 		set_flag("true_end_precondition_1", true)
 	if get_flag("flag_night_roster_taken") or has_item("item_night_roster"):
@@ -380,26 +366,23 @@ func settle_chapter_3() -> void:
 		set_flag("archive_route_bonus", true)
 	current_chapter = 4
 
-## 第四章（e.md 五、第四章章节结算逻辑）
+# Chapters
 func settle_chapter_4() -> void:
-	# 真结局前置复核。
-	#
-	# 这两个 flag 原本只在第三章结算时判定一次，但它们依赖的道具
-	# （夜间名单 / 核心名单页）在第四章才拿得到，导致「第四章明明拿到了，
-	# 前置却仍是 false」。这里在第四章结算时再判一次，只增不减。
+	# Endings
+	# Conditions
+
 	if get_flag("flag_name_written_back"):
 		set_flag("true_end_precondition_1", true)
 	if get_flag("flag_night_roster_taken") or has_item("item_night_roster"):
 		set_flag("true_end_precondition_2", true)
 
-	# 真相层级
+	# Truth
 	var t := get_num("truth")
 	var core := get_flag("flag_saw_fire_video") and get_flag("flag_saw_self_repeat") and get_flag("flag_rule_terms_complete")
-	# 替沈禾作过证的玩家，真相门槛下调：
-	# 亲身完成「作证」这一步，胜过多翻十页档案。
-	# 中等难度：默认 920，作过证再降到 830。
-	# 原值 1180/1071 相对全收集上限 3918 看似不高，但单周目实际可达真相
-	# 中位数只有 642、极值 1284，1180 等于要求近乎完美路线，真结局率仅 0.5%。
+	# Truth
+
+	# Truth
+	# Endings
 	var th_complete := 740 if get_flag("flag_testimony_given") else 820
 	if t >= th_complete and core and get_flag("flag_true_linday_status_known"):
 		set_state("truth_state", "complete")
@@ -408,7 +391,7 @@ func settle_chapter_4() -> void:
 	else:
 		set_state("truth_state", "partial")
 
-	# 梁野终章前状态
+	# State
 	match get_state("liangye_final_state_ch3"):
 		"anchor_alive":
 			set_state("liangye_end_state", "present_anchor" if not get_flag("flag_liangye_final_loss") else "absent_echo")
@@ -419,7 +402,7 @@ func settle_chapter_4() -> void:
 		_:
 			set_state("liangye_end_state", "absent_echo")
 
-	# 周叙终章前状态
+	# State
 	match get_state("zhouxu_final_state_ch3"):
 		"confessor_protector":
 			set_state("zhouxu_end_state", "enter_with_player" if get_num("trust_zhouxu") >= 4 else "follow_to_threshold")
@@ -428,7 +411,7 @@ func settle_chapter_4() -> void:
 		_:
 			set_state("zhouxu_end_state", "follow_to_threshold")
 
-	# 终章广播改写条件
+	# Conditions
 	var ready_broadcast := (has_item("item_roster_core") or has_item("item_night_roster")) \
 		and (has_item("item_admin_key") or get_flag("flag_fakewall_opened")) \
 		and get_num("truth") >= 863
@@ -436,12 +419,12 @@ func settle_chapter_4() -> void:
 		set_flag("flag_terminal_broadcast_ready", true)
 	current_chapter = 5
 
-# ---------------------------------------------------------------- 结局判定（f.md 七 / e.md 七）
+# Endings
 var player_chose_self_substitute := false
 var player_triggered_fire_sequence := false
 
-## 真结局软权重（f.md 9.1 权重表 + 8.1/8.2 角色状态影响）。
-## 满分 14；与 f.md 判定一致：权重 >= 8 且硬条件满足才可进真结局。
+# Endings
+# Endings
 func _true_end_weight() -> int:
 	var w := 0
 	if get_flag("flag_name_written_back"):
@@ -468,7 +451,6 @@ func _true_end_weight() -> int:
 	if get_flag("flag_true_linday_status_known"):
 		w += 1
 	return w
-
 
 func can_true_end() -> bool:
 	return (
@@ -508,8 +490,8 @@ func can_manager() -> bool:
 	)
 
 func determine_ending() -> String:
-	# 改档解锁真结局会让玩家错过整段体验，因此篡改档一律回落到空席。
-	# 正常游玩不受任何影响。
+	# Endings
+
 	if save_tampered:
 		return "ending_empty_seat"
 	if flags.get("flag_count_overflow", false):
@@ -543,7 +525,7 @@ func unlock_gallery(id: String) -> void:
 		persistent["gallery"] = g
 		SaveSystem.save_persistent()
 
-# ---------------------------------------------------------------- 序列化
+# Save/Load
 func to_dict() -> Dictionary:
 	return {
 		"player_name": player_name,

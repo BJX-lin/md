@@ -1,5 +1,5 @@
 extends Control
-## 结局结算界面：结局标题 + 收束文本 + 本周目统计 + 伏笔回收清单
+# Text
 
 signal back_to_title()
 
@@ -48,8 +48,8 @@ func _ready() -> void:
 	bgc.color = Color(0.02, 0.02, 0.025)
 	add_child(bgc)
 
-	# 结局底图：教室溶进黑暗。用结局主色轻微染一下，
-	# 五个结局共用一张图但气质不同（真结局偏青、焚校偏橙）。
+	# Endings
+	# Endings
 	var vg := UITex.make_layer("ending_vignette", 0.55)
 	if vg != null:
 		var tint: Color = info["color"]
@@ -102,7 +102,6 @@ func _ready() -> void:
 
 	v.add_child(_sep())
 
-	# 本周目统计
 	var stat := Label.new()
 	stat.text = "本周目：真相 %d / 理智 %d / 回响 %d / 关注 %d　　线索 %d/%d　　用时 %d 分钟" % [
 		GameState.get_num("truth"), GameState.get_num("sanity"),
@@ -115,7 +114,6 @@ func _ready() -> void:
 	stat.add_theme_color_override("font_color", Color(0.72, 0.76, 0.80))
 	v.add_child(stat)
 
-	# 人物去向
 	var fate := RichTextLabel.new()
 	fate.bbcode_enabled = true
 	fate.fit_content = true
@@ -126,7 +124,6 @@ func _ready() -> void:
 
 	v.add_child(_sep())
 
-	# 伏笔回收
 	var recap := RichTextLabel.new()
 	recap.bbcode_enabled = true
 	recap.fit_content = true

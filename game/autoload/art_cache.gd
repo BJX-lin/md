@@ -1,19 +1,17 @@
 extends Node
-## 贴图缓存与生命周期管理（性能优化核心）。
-##
-## 背景 1920x1080、立绘 768x1280，全部常驻会吃掉几百 MB 显存，
-## 手机上很容易被系统杀掉。这里做三件事：
-##   1. 统一走缓存拿贴图，避免同一张图被反复 load
-##   2. 按章节预取「接下来要用的」
-##   3. 释放「已经过场、后面不会再用的」
-##
-## 章节→资源的映射由 CHAPTER_BG / CHAPTER_CHARS 描述，
-## 与剧本里的 @bg / @show 实际使用情况对应。
+# Perf
+# Sprite
+
+# Cache
+# Chapters
+
+# Chapters
+# Story
 
 const BG_ROOT := "res://assets/bg"
 const SPRITE_ROOT := "res://assets/sprites"
 
-## 每章会用到的背景文件名（不含扩展名）
+# Background
 const CHAPTER_BG := {
 	0: ["keyvisual_school_rain", "office_day", "gate_clock"],
 	1: ["canteen_day", "classroom_day", "classroom_evening",
@@ -52,7 +50,7 @@ const CHAPTER_BG := {
 		"schoolyard_aerial", "title_school"],
 }
 
-## 每章登场的角色（用于预取其立绘目录下的所有差分）
+# Sprite
 const CHAPTER_CHARS := {
 	0: ["linday"],
 	1: ["canteen_aunt", "classmate_boy", "classmate_girl", "liangye", "unknown", "xuqing",
@@ -71,7 +69,7 @@ var _misses := 0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
-## 取贴图：命中缓存直接返回，否则同步 load 并存入缓存
+# Cache
 func get_tex(path: String) -> Texture2D:
 	if _cache.has(path):
 		_hits += 1
@@ -92,7 +90,6 @@ func put(path: String, res: Resource) -> void:
 func has(path: String) -> bool:
 	return _cache.has(path)
 
-## 某一章需要预取的全部资源路径
 func paths_for_chapter(chapter: int) -> Array[String]:
 	var out: Array[String] = []
 	for name in CHAPTER_BG.get(chapter, []):
@@ -112,7 +109,7 @@ func paths_for_chapter(chapter: int) -> Array[String]:
 				out.append(sp)
 	return out
 
-## 释放「本章及以后都不会再用」的缓存。keep 里的路径强制保留（当前画面正在用）。
+# Cache
 func release_stale(chapter: int, keep: Array[String] = []) -> int:
 	var needed := {}
 	for ch in range(chapter, 6):
@@ -128,7 +125,7 @@ func release_stale(chapter: int, keep: Array[String] = []) -> int:
 		_cache.erase(p)
 	return drop.size()
 
-## 与 paths_for_chapter 相同，但不跳过已缓存的（用于计算「还需要哪些」）
+# Cache
 func paths_for_chapter_all(chapter: int) -> Array[String]:
 	var out: Array[String] = []
 	for name in CHAPTER_BG.get(chapter, []):

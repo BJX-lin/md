@@ -1,9 +1,9 @@
 extends RefCounted
 class_name OverlayWidgets
-## 演出用浮层：章节卡 / 大字幕 / 便签 / 动态名单 / Toast
+# Chapters
 
 static func _when_in_tree(n: Node, cb: Callable) -> void:
-	## Tween 只能在节点进入场景树后创建，这里统一延后执行
+
 	if n.is_inside_tree():
 		cb.call()
 	else:
@@ -89,7 +89,7 @@ static func title_card(text: String) -> Control:
 	return root
 
 static func note_card(text: String) -> Control:
-	## 纸片/规则纸样式，需要点击关闭
+
 	var root := Control.new()
 	_full(root)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -103,8 +103,7 @@ static func note_card(text: String) -> Control:
 	paper.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	paper.grow_vertical = Control.GROW_DIRECTION_BOTH
 	paper.custom_minimum_size = Vector2(820, 0)
-	# 泛黄纸张贴图；缺图则回落到原来的纯米色纸面。
-	# 正文是深色（#20201c），两种底都能读。
+
 	var note_sb := UITex.style_box("note_paper", Color(1, 1, 1, 1), 24)
 	if note_sb != null:
 		note_sb.content_margin_left = 42
@@ -156,7 +155,7 @@ static func note_card(text: String) -> Control:
 	return root
 
 static func roster_card() -> Control:
-	## 动态名单：按当前状态生成条目（f.md / e.md 终章名单规范）
+	# State
 	var lines: Array[String] = []
 	lines.append("高二（三）班  补录名单")
 	lines.append("————————————————")
@@ -182,7 +181,7 @@ static func roster_card() -> Control:
 	paper.set_anchors_preset(Control.PRESET_CENTER)
 	paper.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	paper.grow_vertical = Control.GROW_DIRECTION_BOTH
-	# 名单同样用纸张贴图，但压暗一档：它是"公文"，比随手纸条更沉。
+
 	var roster_sb := UITex.style_box("note_paper", Color(0.94, 0.93, 0.90, 1), 24)
 	if roster_sb != null:
 		roster_sb.content_margin_left = 60

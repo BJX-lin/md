@@ -1,19 +1,13 @@
 extends Node
-## 核心文件完整性清单（自动生成，请勿手改）
-##
-## 由 tools/gen_integrity.py 生成。改动任何受保护文件后必须重新生成：
-##     python3 tools/gen_integrity.py --write
-##
-## 校验失败时：仅记录并提示，不影响正常游玩。
-## 目的是让玩家在拿到被第三方修改过的包时能知情，
-## 而不是拒绝启动——本地校验挡不住重新编译整个工程的人。
+# Integrity
 
-## 受保护文件 → SHA256（盐 + 文件内容）
+##     python3 tools/gen_integrity.py --write
+
 const MANIFEST := {
-	"autoload/config.gd": "d0aef22c5047d8f5573d6c41308c588c84c85268d3651e94bb43c2b232fdcced",
-	"autoload/game_state.gd": "4f0e905a33b80082f80f4434399e8eab332d7bc81a1acdcc95f46a0cffdc2ea9",
-	"autoload/save_system.gd": "450fdb3f0ca6f68777472d37fbaf5b0159e924795e139a7124a0cf6ca4ac4b5a",
-	"autoload/story_engine.gd": "cfaf04e6b52bb3292c4dfaa2325b3af78e5b685049230e9ec87fc5d062bdffa2",
+	"autoload/config.gd": "d712c9792420c941ac547ce6dba1f2829bf46a4321ae2d9929f8059c47a4fe8f",
+	"autoload/game_state.gd": "49a15812aefae74c7645469b03c9ce57923e47439010c8944c97a9bc05347c17",
+	"autoload/save_system.gd": "975f4fdfd5b04356bd922eebe4b5b6e928b199f5299493d1ac978d38ea41b059",
+	"autoload/story_engine.gd": "875a77dea51991da69cd03440bd1fd22e7974e796c22732f1f90eb9811ca302a",
 }
 
 const SALT := "The13thPeriod::integrity::v1"
@@ -21,7 +15,6 @@ const SALT := "The13thPeriod::integrity::v1"
 var _failed: Array[String] = []
 var _checked := false
 
-## 字节数组的 SHA256 十六进制摘要（PackedByteArray 无 sha256_text）。
 static func _sha256_hex(data: PackedByteArray) -> String:
 	var ctx := HashingContext.new()
 	ctx.start(HashingContext.HASH_SHA256)
@@ -31,7 +24,7 @@ static func _sha256_hex(data: PackedByteArray) -> String:
 func _ready() -> void:
 	verify()
 
-## 逐个校验。结果缓存，只在启动时做一次。
+# Cache
 func verify() -> void:
 	if _checked:
 		return
@@ -58,7 +51,6 @@ func is_intact() -> bool:
 func failed_files() -> Array[String]:
 	return _failed
 
-## 给玩家看的说明。
 func notice() -> String:
 	if _failed.is_empty():
 		return ""

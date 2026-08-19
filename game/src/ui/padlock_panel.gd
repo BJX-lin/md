@@ -1,8 +1,7 @@
 extends Control
 class_name PadlockPanel
-## 数字密码锁小游戏面板（解谜元素）。
-## 4 位数字密码键盘：输错 → failed（由剧本决定惩罚与重试），
-## 输入正确 → solved，全部由 StoryEngine.padlock_done 结算。
+# Password lock
+# Password lock
 
 signal solved()
 signal failed()
@@ -12,7 +11,6 @@ var _display: Label
 var _input := ""
 
 const KEY_ROWS := [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["⌫", "0", "确认"]]
-
 
 func setup(code: String, hint: String) -> void:
 	_code = code
@@ -51,7 +49,6 @@ func setup(code: String, hint: String) -> void:
 		h.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		v.add_child(h)
 
-	# 四位显示窗
 	var win := PanelContainer.new()
 	win.custom_minimum_size = Vector2(300, 72)
 	var win_sb := StyleBoxFlat.new()
@@ -68,7 +65,7 @@ func setup(code: String, hint: String) -> void:
 	win.add_child(_display)
 	v.add_child(win)
 
-	# 键盘（可选贴图 assets/ui/keypad_button.png，缺失时回落主题样式）
+	# Theme
 	var grid := VBoxContainer.new()
 	grid.add_theme_constant_override("separation", 10)
 	v.add_child(grid)
@@ -109,7 +106,6 @@ func setup(code: String, hint: String) -> void:
 	)
 	v.add_child(cancel)
 
-
 func _on_key(k: String) -> void:
 	AudioDirector.play_sfx("sfx_click", 0.8)
 	match k:
@@ -124,13 +120,11 @@ func _on_key(k: String) -> void:
 				_input += k
 				_refresh()
 
-
 func _refresh() -> void:
 	var s := ""
 	for i in 4:
 		s += (_input[i] if i < _input.length() else "·") + " "
 	_display.text = s.rstrip(" ")
-
 
 func _submit() -> void:
 	if _input == _code:
@@ -139,7 +133,7 @@ func _submit() -> void:
 		solved.emit()
 		queue_free()
 	else:
-		# 输错：红光 + 抖动，交由剧本结算
+		# Story
 		_display.add_theme_color_override("font_color", Color(1.0, 0.3, 0.25))
 		var base := _display.position
 		var tw := create_tween()

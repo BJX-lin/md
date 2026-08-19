@@ -1,8 +1,7 @@
 extends Node
-## 音频总监：全部音频在运行时程序化合成（AudioStreamWAV），
-## 不依赖任何外部音频文件——空资源也不会报错（对应 e.md《音频安全方案》方案B）。
-##
-## 通道：music（BGM 循环）/ ambience（环境）/ sfx（音效，8 路复用）
+# Audio
+# Audio
+# Audio
 
 const SR := 22050
 const AUDIO_ROOT := "res://assets/audio"
@@ -39,7 +38,6 @@ func apply_settings(s: Dictionary) -> void:
 	_music.volume_db = linear_to_db(maxf(0.0001, bgm_volume * master_volume))
 	_amb.volume_db = linear_to_db(maxf(0.0001, bgm_volume * master_volume * 0.8))
 
-# ---------------------------------------------------------------- 播放接口
 func play_bgm(id: String) -> void:
 	if id == _cur_bgm and _music.playing:
 		return
@@ -81,7 +79,6 @@ func play_sfx(id: String, vol_scale: float = 1.0) -> void:
 	p.pitch_scale = randf_range(0.96, 1.04)
 	p.play()
 
-## 打字机的“字音”，按角色音色变调
 func play_blip(char_key: String) -> void:
 	var st := _stream_for("_blip")
 	if st == null:
@@ -94,16 +91,15 @@ func play_blip(char_key: String) -> void:
 	p.volume_db = linear_to_db(maxf(0.0001, sfx_volume * master_volume * 0.16))
 	p.play()
 
-# ---------------------------------------------------------------- 取流
-## 音效缓存上限。BGM / 环境音各自只有一条在播，不计入；
-## 音效有 26 种但同一场景反复用的就那几种，超出上限就淘汰最久未用的。
+# Audio
+# Audio
 const SFX_CACHE_MAX := 12
 var _lru: Array[String] = []
 
 func _touch(id: String) -> void:
 	_lru.erase(id)
 	_lru.append(id)
-	# BGM / 环境音常驻（只有 1~2 条），只淘汰音效
+	# Audio
 	var sfx := _lru.filter(func(x): return x.begins_with("sfx_"))
 	while sfx.size() > SFX_CACHE_MAX:
 		var old: String = sfx.pop_front()
@@ -114,14 +110,14 @@ func _stream_for(id: String) -> AudioStream:
 	if _cache.has(id):
 		_touch(id)
 		return _cache[id]
-	# 优先使用外置音频文件（res://assets/audio/<id>.wav|.ogg|.mp3）。
-	# 音频与代码解耦：换音只要按同名覆盖文件，不必改任何代码。
+	# Audio
+	# Audio
 	var ext := _external_stream(id)
 	if ext != null:
 		_cache[id] = ext
 		_touch(id)
 		return ext
-	# 找不到文件才回退到内置程序化合成（保证永远有声音）
+
 	var data := _synth(id)
 	if data.is_empty():
 		return null
@@ -137,8 +133,8 @@ func _stream_for(id: String) -> AudioStream:
 	_cache[id] = st
 	return st
 
-## 从 res://assets/audio/ 读取外置音频。
-## 支持 .ogg / .wav / .mp3，按此优先级查找。
+# Audio
+
 func _external_stream(id: String) -> AudioStream:
 	for ext in [".ogg", ".wav", ".mp3"]:
 		var p := "%s/%s%s" % [AUDIO_ROOT, id, ext]
@@ -147,7 +143,7 @@ func _external_stream(id: String) -> AudioStream:
 		var st := load(p) as AudioStream
 		if st == null:
 			continue
-		# BGM 与环境音需要循环
+		# Audio
 		if id.begins_with("bgm_") or id.begins_with("amb_"):
 			if st is AudioStreamWAV:
 				var w := st as AudioStreamWAV
@@ -161,9 +157,9 @@ func _external_stream(id: String) -> AudioStream:
 		return st
 	return null
 
-## 外置音频缺失时的兜底：返回一段极短静音，避免上层拿到 null。
-## 全部 48 个音频已烘焙到 res://assets/audio/（见 tools/bake_audio.py），
-## 正常情况下不会走到这里。原先 550 行程序化合成代码已随音频外置一并移除。
+# Audio
+# Audio
+# Audio
 func _synth(_id: String) -> PackedByteArray:
 	var out := PackedByteArray()
 	out.resize(int(SR * 0.05) * 2)

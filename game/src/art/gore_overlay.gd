@@ -1,14 +1,12 @@
 extends Control
 class_name GoreOverlay
-## 血腥 UI 特效层 —— 仅在「血腥表现 = 完整」时显示
-##
-## 与 effects_layer 的区别：
-##   effects_layer 是一次性演出（闪一下就没）
-##   本层是**持续附着在 UI 上**的痕迹：血手印、血指痕、下淌血迹、
-##   文本框边缘渗血、屏幕裂痕血丝
-##
-## 全部由 @fx 指令触发，痕迹会缓慢变干（颜色变暗）但不会立刻消失，
-## 制造"界面本身被弄脏了"的感觉。
+# UI
+
+# FX
+# UI
+# Text
+
+# UI
 
 const MAX_MARKS := 14
 
@@ -30,7 +28,7 @@ func add_mark(kind: String, power: float = 1.0) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.randomize()
 	var pos := Vector2(randf_range(0.12, 0.88), randf_range(0.16, 0.78))
-	# 手印偏向屏幕两侧（像有人从旁边扶过屏幕）
+
 	if kind == "handprint":
 		pos.x = randf_range(0.08, 0.30) if randf() < 0.5 else randf_range(0.70, 0.92)
 		pos.y = randf_range(0.22, 0.62)
@@ -75,12 +73,12 @@ func _draw() -> void:
 		var age := float(m["age"])
 		var life := float(m["life"])
 		var f := age / life
-		# 前 8% 时间快速出现，之后缓慢变干变淡
+		# Time
 		var alpha := (f / 0.08) if f < 0.08 else (1.0 - (f - 0.08) / 0.92)
 		alpha = clampf(alpha, 0.0, 1.0) * 0.82
 		if alpha <= 0.01:
 			continue
-		# 变干：鲜红 → 暗褐
+
 		var wet: float = clampf(1.0 - f * 1.4, 0.0, 1.0)
 		var col := Color(0.52, 0.06, 0.06).lerp(Color(0.24, 0.07, 0.05), 1.0 - wet)
 		col.a = alpha
@@ -93,11 +91,6 @@ func _draw() -> void:
 			"edge": _draw_edge(s, col, int(m["seed"]))
 			"crack": _draw_crack(c, sc, col, int(m["seed"]))
 
-## 血手印。
-##
-## 优先用 assets/ui/handprint.png（真实质感、带干裂纹理）；
-## 缺图时回落到下面的程序化画法，保证不开天窗。
-## 贴图按 col 染色，因此「变干：鲜红→暗褐」的渐变依然生效。
 func _draw_hand(c: Vector2, sc: float, rot: float, col: Color, sd: int) -> void:
 	var tex := UITex.get_tex("handprint")
 	if tex != null:
@@ -108,11 +101,11 @@ func _draw_hand(c: Vector2, sc: float, rot: float, col: Color, sd: int) -> void:
 		return
 	var rng := RandomNumberGenerator.new()
 	rng.seed = sd
-	# 掌心
+
 	var palm := sc * 0.40
 	draw_circle(c, palm, col)
 	draw_circle(c + Vector2(0, palm * 0.42), palm * 0.86, col)
-	# 五指
+
 	for i in 5:
 		var base_a := -PI * 0.92 + i * 0.40 + rot
 		var flen: float = sc * (0.78 if i != 0 else 0.60)
@@ -120,7 +113,7 @@ func _draw_hand(c: Vector2, sc: float, rot: float, col: Color, sd: int) -> void:
 		var w := sc * (0.155 if i != 0 else 0.185)
 		draw_line(c + Vector2(cos(base_a), sin(base_a)) * palm * 0.7, tip, col, w)
 		draw_circle(tip, w * 0.56, col)
-	# 边缘不规则的溅点
+
 	for i in 7:
 		var a := rng.randf() * TAU
 		var d := sc * rng.randf_range(0.5, 1.0)
@@ -146,7 +139,7 @@ func _draw_drip(c: Vector2, sc: float, col: Color, sd: int, f: float) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = sd
 	draw_circle(c, sc * 0.22, col)
-	# 下淌：随时间变长
+	# Time
 	var n := 3 + (sd % 3)
 	for i in n:
 		var ox := rng.randf_range(-sc * 0.22, sc * 0.22)
@@ -156,7 +149,7 @@ func _draw_drip(c: Vector2, sc: float, col: Color, sd: int, f: float) -> void:
 		draw_circle(Vector2(c.x + ox, c.y + len_), w * 0.75, col)
 
 func _draw_edge(s: Vector2, col: Color, sd: int) -> void:
-	# 屏幕四边渗血
+
 	var rng := RandomNumberGenerator.new()
 	rng.seed = sd
 	var band := s.y * 0.07

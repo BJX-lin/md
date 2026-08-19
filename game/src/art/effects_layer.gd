@@ -1,7 +1,6 @@
 extends Control
 class_name EffectsLayer
-## 全屏演出特效层：抖动 / 闪光 / 故障 / 血幕 / 雪花 / 雾 / 心跳 / 名字浮现 / 静电扫描线
-## 所有效果均遵守玩家设置（screen_shake / flash / gore）。
+# Name
 
 signal shake_offset(offset: Vector2)
 
@@ -9,7 +8,7 @@ var _effects: Array = []          # {type, t, dur, power}
 var _t := 0.0
 var _static_seed := 0
 var _was_active := false
-var _names_overlay: Array = []    # 浮现的名字
+var _names_overlay: Array = []  # Name
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -78,9 +77,9 @@ func _process(delta: float) -> void:
 				"glitch":
 					off += Vector2(randf_range(-1, 1) * 5.0 * p, 0)
 		i -= 1
-	# 性能：没有活跃特效时不再每帧重绘全屏。
-	# 原先无条件 queue_redraw 会让这一层常驻占用一次全屏 draw call，
-	# 在中低端手机上是白白的持续开销。
+	# Perf
+	# Conditions
+
 	var active := not _effects.is_empty()
 	if active or _was_active:
 		shake_offset.emit(off)
@@ -162,7 +161,7 @@ func _draw_blood_veil(s: Vector2, a: float, burst: bool) -> void:
 	if lv == 0:
 		return
 	var col: Color = Cfg.PALETTE["blood_bright"]
-	# 边缘血雾
+
 	for i in 20:
 		var f := float(i) / 20.0
 		draw_rect(Rect2(0, 0, s.x, s.y * 0.06 * (1.0 - f)), Color(col.r, col.g * 0.4, col.b * 0.4, 0.05 * a))
@@ -235,7 +234,7 @@ func _draw_handprint(s: Vector2, f: float, p: float) -> void:
 	var a := sin(PI * clampf(f * 1.2, 0.0, 1.0)) * p * 0.75
 	var c := Vector2(s.x * 0.72, s.y * 0.44)
 	var scale := s.y * 0.16
-	draw_circle(c, scale * 0.42, Color(col.r, col.g, col.b, a))       # 掌
+	draw_circle(c, scale * 0.42, Color(col.r, col.g, col.b, a))
 	for i in 5:
 		var ang := -PI * 0.85 + i * 0.42
 		var tip := c + Vector2(cos(ang), sin(ang)) * scale * 0.75

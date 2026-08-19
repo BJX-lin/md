@@ -1,13 +1,11 @@
 extends RefCounted
 class_name MenuPanels
-## 各类菜单面板：回想 / 线索 / 状态 / 存读档 / 系统设置 / 图鉴 / BUG 反馈
+# Save/Load
 
-## 触屏最小点击区（逻辑像素），与 game_screen.TOUCH_MIN 保持一致。
-## 所有可点/可拖的控件都不应低于这个高度。
 const TOUCH_MIN := 48
 
 static func _shell(title: String) -> Array:
-	## 返回 [root, content_vbox]
+
 	var root := Control.new()
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -17,9 +15,6 @@ static func _shell(title: String) -> Array:
 	shade.color = Color(0.01, 0.01, 0.015, 0.90)
 	root.add_child(shade)
 
-	# 菜单底纹：夜里的黑板墙。压在遮罩之上、面板之下。
-	# 遮罩已经足够暗，这里只是给大片纯黑加一点质感，透明度压得很低。
-	# 缺图跳过，回到原来的纯色遮罩。
 	var wall := UITex.make_layer("menu_bg", 0.32)
 	if wall != null:
 		root.add_child(wall)
@@ -30,8 +25,7 @@ static func _shell(title: String) -> Array:
 	frame.offset_right = -60
 	frame.offset_top = 40
 	frame.offset_bottom = -40
-	# 面板底：黑板质感。保留一层半透明纯色打底，
-	# 保证即使贴图偏亮，面板内的文字依旧有足够对比度。
+
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.06, 0.06, 0.07, 0.98)
 	sb.border_color = Color(0.45, 0.42, 0.37, 0.6)
@@ -43,9 +37,6 @@ static func _shell(title: String) -> Array:
 	frame.add_theme_stylebox_override("panel", sb)
 	root.add_child(frame)
 
-	# 贴图铺在 frame 之下、shade 之上（frame 是它的兄弟）。
-	# 不放进 frame 内部，是因为 PanelContainer 会按 content_margin
-	# 把子节点内缩 30px，纹理就铺不满边缘。
 	var grain := UITex.make_layer("panel_frame", 0.30)
 	if grain != null:
 		grain.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -94,7 +85,7 @@ static func _scroll(parent: Control) -> VBoxContainer:
 	sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	sc.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	# 手机端：开启触摸拖拽与惯性，滚动条加宽便于拇指操作
+
 	sc.follow_focus = false
 	sc.scroll_deadzone = 12
 	parent.add_child(sc)
@@ -107,7 +98,6 @@ static func _scroll(parent: Control) -> VBoxContainer:
 	sc.add_child(v)
 	return v
 
-# ---------------------------------------------------------------- 回想
 static func history_panel() -> Control:
 	var pair := _shell("回想")
 	var root: Control = pair[0]
@@ -116,8 +106,6 @@ static func history_panel() -> Control:
 	var hist: Array = GameState.history
 	var start := maxi(0, hist.size() - 300)
 
-	# 用 ScrollContainer + VBox，并额外挂一个拖拽转发器，
-	# 让整块区域都能像手机 App 那样按住拖动（不必精准按住滚动条）
 	var sc := ScrollContainer.new()
 	sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -141,7 +129,7 @@ static func history_panel() -> Control:
 		rt.fit_content = true
 		rt.scroll_active = false
 		rt.selection_enabled = false
-		# 关键：让子控件不吃掉拖拽事件，否则手指按在文字上无法滑动
+
 		rt.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		rt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		rt.add_theme_font_size_override("normal_font_size", 25)
@@ -163,7 +151,6 @@ static func history_panel() -> Control:
 		e.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		v.add_child(e)
 
-	# 底部快捷跳转条：一键回到最新 / 最早，避免长回想里反复拖
 	var bar := HBoxContainer.new()
 	bar.alignment = BoxContainer.ALIGNMENT_CENTER
 	bar.add_theme_constant_override("separation", 16)
@@ -189,7 +176,6 @@ static func history_panel() -> Control:
 	)
 	bar.add_child(b_bottom)
 
-	# 打开时默认停在最新一条
 	root.ready.connect(func():
 		await root.get_tree().process_frame
 		var bar_v := sc.get_v_scroll_bar()
@@ -198,12 +184,12 @@ static func history_panel() -> Control:
 	, CONNECT_ONE_SHOT)
 	return root
 
-# ---------------------------------------------------------------- 线索
+# Clues
 static func clue_panel() -> Control:
 	var pair := _shell("线索簿　（%d / %d）" % [GameState.clues.size(), GameState.CLUES.size()])
 	var root: Control = pair[0]
 	var v := _scroll(pair[1])
-	# 已解锁线索
+	# Clues
 	for cid in GameState.CLUES:
 		var info: Dictionary = GameState.CLUES[cid]
 		var got := GameState.clues.has(cid)
@@ -232,7 +218,7 @@ static func clue_panel() -> Control:
 		d.add_theme_color_override("font_color", Color(0.78, 0.77, 0.74) if got else Color(0.32, 0.32, 0.32))
 		vv.add_child(d)
 
-	# 道具
+	# Items
 	var t2 := Label.new()
 	t2.text = "—— 随身物品 ——"
 	t2.add_theme_font_size_override("font_size", 27)
@@ -253,7 +239,7 @@ static func clue_panel() -> Control:
 		v.add_child(l)
 	return root
 
-# ---------------------------------------------------------------- 状态
+# State
 static func status_panel() -> Control:
 	var pair := _shell("状态")
 	var root: Control = pair[0]
@@ -284,7 +270,7 @@ static func status_panel() -> Control:
 	for key in ["route_obedience", "route_investigate", "route_empathy", "route_hostility", "taboo_count"]:
 		v.add_child(_bar_row(key))
 
-	# 阈值提示（真相解读）
+	# Truth
 	var tips := Label.new()
 	var truth := GameState.get_num("truth")
 	var msg := "你还什么都不确定。"
@@ -309,7 +295,7 @@ static func status_panel() -> Control:
 	stip.add_theme_color_override("font_color", Color(0.86, 0.66, 0.52))
 	v.add_child(stip)
 
-	# 角色状态
+	# State
 	var sep3 := Label.new()
 	sep3.text = "—— 相关的人 ——"
 	sep3.add_theme_color_override("font_color", Color(0.80, 0.62, 0.40))
@@ -417,7 +403,7 @@ static func _oldqin_desc() -> String:
 		"missing": return "钥匙板上少了一把钥匙，人也少了一个。"
 		_: return "守夜的老保安。抽很凶的烟。"
 
-# ---------------------------------------------------------------- 存读档
+# Save/Load
 static func save_panel(allow_save: bool) -> Control:
 	var pair := _shell("存档 / 读档")
 	var root: Control = pair[0]
@@ -491,7 +477,6 @@ static func save_panel(allow_save: bool) -> Control:
 		hb.add_child(bl)
 	return root
 
-# ---------------------------------------------------------------- 系统设置
 static func system_panel() -> Control:
 	var pair := _shell("设置")
 	var root: Control = pair[0]
@@ -523,9 +508,9 @@ static func system_panel() -> Control:
 	warn.add_theme_color_override("font_color", Color(0.75, 0.58, 0.42))
 	v.add_child(warn)
 
-	# —— 底部操作区：应用 / 继续游戏 / 返回标题
-	# 设置项本身是即改即生效（各 row 直接写 SaveSystem），
-	# 但玩家需要一个明确的"我改完了"的确认动作，否则容易怀疑没保存。
+	# Title
+
+	# Save/Load
 	var sep2 := ColorRect.new()
 	sep2.custom_minimum_size = Vector2(0, 1)
 	sep2.color = Color(0.4, 0.38, 0.34, 0.4)
@@ -557,8 +542,6 @@ static func system_panel() -> Control:
 	)
 	row.add_child(apply)
 
-	# 继续游戏＝关掉设置面板回到当前进度。
-	# 从游戏内打开设置时这是最常用的出口，之前只能点右上角"关闭"。
 	var cont := Button.new()
 	cont.text = "继续游戏"
 	cont.focus_mode = Control.FOCUS_NONE
@@ -644,7 +627,6 @@ static func _slider_row(title: String, value: float, cb: Callable, display := -1
 	h.add_child(s)
 	return h
 
-# ---------------------------------------------------------------- 图鉴
 static func gallery_panel() -> Control:
 	var pair := _shell("结局与记录")
 	var root: Control = pair[0]
@@ -696,24 +678,17 @@ static func gallery_panel() -> Control:
 	v.add_child(st)
 	return root
 
-# ---------------------------------------------------------------- BUG 反馈
-## BUG 反馈 / 玩家交流面板。
-##
-## 手机端玩家没法用鼠标选中文字，所以群号必须给"一键复制"；
-## 二维码给"长按识别 / 另一台设备扫"这两种用法。
-## 二维码图缺失时不留空洞，改成纯文字引导，功能不受影响。
 static func feedback_panel() -> Control:
 	var pair := _shell("BUG 反馈 / 玩家交流")
 	var root: Control = pair[0]
 	var v := _scroll(pair[1])
 
-	# 联系方式走防篡改解码：被改过会返回空串。
 	var qq := Cfg.qq_group()
 	var qr_ok := Cfg.qq_qr_valid()
 	var tampered := qq == "" or Cfg.qq_group_url() == "" or not qr_ok
 
 	if tampered:
-		# 宁可不给联系方式，也不能把玩家送进假群。
+
 		var warn_box := PanelContainer.new()
 		var wsb := StyleBoxFlat.new()
 		wsb.bg_color = Color(0.20, 0.06, 0.05, 0.95)
@@ -742,7 +717,6 @@ static func feedback_panel() -> Control:
 	intro.add_theme_color_override("font_color", Color(0.80, 0.79, 0.75))
 	v.add_child(intro)
 
-	# —— 群号（大号显示 + 一键复制）
 	var card := PanelContainer.new()
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = Color(0.10, 0.10, 0.12, 0.95)
@@ -801,7 +775,6 @@ static func feedback_panel() -> Control:
 	copy_row.add_child(copy_btn)
 	cv.add_child(tip)
 
-	# —— 二维码
 	var qr := UITex.get_tex("qq_qr")
 	if qr != null:
 		var qrow := HBoxContainer.new()
@@ -828,7 +801,6 @@ static func feedback_panel() -> Control:
 		qmiss.add_theme_color_override("font_color", Color(0.60, 0.58, 0.55))
 		v.add_child(qmiss)
 
-	# —— 反馈时请附上的信息（直接给可复制的环境串，省去来回追问）
 	var env := PanelContainer.new()
 	var esb := StyleBoxFlat.new()
 	esb.bg_color = Color(0.07, 0.07, 0.085, 0.9)
@@ -881,13 +853,10 @@ static func feedback_panel() -> Control:
 
 	return root
 
-## 组装一段可直接粘进群里的环境信息。
-## 带上进度定位（章节 / 节点 / 剧情时间），比只报"卡住了"有用得多。
-## 组装一段可直接粘进群里的环境信息。
-##
-## 目标：玩家一次粘贴，就够定位问题，不用来回追问。
-## 因此除了进度定位，还带上设备/渲染/性能与关键数值——
-## 这些正是"卡在哪""为什么掉帧""为什么结局不对"最常用到的信息。
+# Chapters
+
+# Perf
+# Endings
 static func _env_string() -> String:
 	var node_id := String(GameState.current_node)
 	if node_id == "":

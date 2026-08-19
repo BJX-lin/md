@@ -9,17 +9,17 @@
 
 ## 直接下载（GitHub raw 直链）
 
-**方式一：完整单包（87MB，最简单）**
+**方式一：完整单包（完整单包）**
 
 ```
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.2_full_project.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.3_full_project.zip
 ```
 
 **方式二：分卷下载（两个包均 <100MB，规避 GitHub 单文件上限）**
 
 ```
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.2_part1_project.zip
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.2_part2_assets.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.3_part1_project.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.3_part2_assets.zip
 ```
 
 > 分卷使用方法：把两个 ZIP **解压到同一个文件夹**即可合并——
@@ -89,11 +89,11 @@ godot --headless --path game res://tools/smoke_runner.tscn
 >
 > ```bash
 > # 在你自己的电脑上（网络可达 uploads.github.com）执行，把 ZIP 挂到 v1.1.2 Release：
-> gh release upload v1.1.2 dist/The13thPeriod_v1.1.2_full_project.zip --repo BJX-lin/md
+> gh release upload v1.1.3 dist/The13thPeriod_v1.1.3_full_project.zip --repo BJX-lin/md
 > ```
 >
 > 上传完成后，下载地址为：
-> `https://github.com/BJX-lin/md/releases/download/v1.1.2/The13thPeriod_v1.1.2_full_project.zip`
+> `https://github.com/BJX-lin/md/releases/download/v1.1.3/The13thPeriod_v1.1.3_full_project.zip`
 >
 > 其他备选方案：Git LFS（单文件 2~5GB，但免费存储/流量额度有限）、
 > 分包压缩（拆成多个 <100MB 的分卷）。注意：曾经提交进 git 历史的旧 ZIP

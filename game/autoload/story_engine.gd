@@ -1,36 +1,29 @@
 extends Node
-## 剧本引擎：.avg 剧本 DSL 的解析器 + 运行时虚拟机
-##
-## DSL 速查
-##   == node_id              节点开始
-##   -- 注释
-##   @bg id [变体]           切换背景
+# Engine
+
+# Background
 ##   @bgm id / @amb id / @sfx id / @stopbgm
-##   @fx name [强度]         演出特效（shake/flash/glitch/blood/static/fog/heartbeat...）
-##   @show 角色 表情 [位置]  立绘出场   @hide 角色   @clearchars
-##   @set 变量 +N|-N|=N
-##   @flag 名 [true|false]
-##   @state 键 值
+# FX
+# Sprite
+
 ##   @item +id|-id           @clue id
-##   @time 天 时:分          设置剧情时间（如 @time 1 14:40）
-##   @timeat 天 时:分 [兜底分钟]  单调推进到该时刻，绝不倒流。
-##                           用于可自由排序的支线 hub：若玩家已经走到更晚的
-##                           时刻，则不回拨，改为只前进「兜底分钟」（默认 5）。
-##   @advtime 分钟            推进剧情时间（如 @advtime 25）
-##   @wait 秒
-##   @title 文本             大字幕
-##   @roster                 显示动态名单
-##   @padlock 密码 成功节点 [失败节点]   数字密码锁小游戏；rest 为提示文本
-##   @if 条件 / @elif / @else / @endif
-##   @goto 节点              @settle 章号     @ending 结局id     @return
-##   @chapter 数字 标题
-##   * 选项文本 -> 目标节点         （其后缩进的 @ 行是该选项的即时效果）
-##   * [if 条件] 选项文本 -> 目标   （不满足条件则隐藏）
-##   * [lock 条件] 选项文本 -> 目标 （不满足条件则灰显不可选）
-##   角色: 台词                     （角色为 Cfg.CHARACTERS 的键）
-##   角色(表情): 台词
-##   > 旁白强调行
-##   普通行 = 旁白
+# Time
+
+# Time
+
+# Text
+
+# Text
+# Conditions
+# Endings
+# Title
+# Text
+# Text
+# Text
+# Text
+# Text
+# Text
+# Text
 
 signal node_started(node_id: String)
 signal line_ready(line: Dictionary)
@@ -50,10 +43,9 @@ var _cur: Array = []
 var _cur_id: String = ""
 var running := false
 var waiting_choice := false
-## 当前挂起的密码锁（padlock_done 回调时消费）
+# Password lock
 var _padlock: Dictionary = {}
 
-# ---------------------------------------------------------------- 载入
 func _ready() -> void:
 	load_all()
 
@@ -86,7 +78,7 @@ func parse_text(txt: String, src: String = "") -> void:
 	var lines := txt.replace("\r\n", "\n").split("\n")
 	var cur_id := ""
 	var prog: Array = []
-	var if_stack: Array = []      # 每层： {"jumps":[待回填的跳出位置], "cond_idx": int}
+	var if_stack: Array = []
 	var last_choice_block: Array = []
 
 	for raw_line in lines:
@@ -98,7 +90,6 @@ func parse_text(txt: String, src: String = "") -> void:
 		if stripped.begins_with("--"):
 			continue
 
-		# 节点头
 		if stripped.begins_with("=="):
 			if cur_id != "":
 				_finalize_node(cur_id, prog, src)
@@ -111,7 +102,7 @@ func parse_text(txt: String, src: String = "") -> void:
 		if cur_id == "":
 			continue
 
-		# 选项效果（缩进 @ 行紧跟选项）
+		# Choices
 		if not last_choice_block.is_empty() and line.begins_with(" ") and stripped.begins_with("@"):
 			var eff := _parse_command(stripped)
 			if not eff.is_empty():
@@ -121,7 +112,7 @@ func parse_text(txt: String, src: String = "") -> void:
 				last_ch["effects"] = arr
 			continue
 
-		# 选项
+		# Choices
 		if stripped.begins_with("*"):
 			var ch := _parse_choice(stripped.substr(1).strip_edges())
 			if ch.is_empty():
@@ -141,7 +132,6 @@ func parse_text(txt: String, src: String = "") -> void:
 			continue
 		last_choice_block = []
 
-		# 命令
 		if stripped.begins_with("@"):
 			var head := stripped.substr(1).split(" ", true, 1)[0].to_lower()
 			match head:
@@ -180,12 +170,12 @@ func parse_text(txt: String, src: String = "") -> void:
 						prog.append(cmd)
 			continue
 
-		# 旁白强调
+		# Text
 		if stripped.begins_with(">"):
 			prog.append({"op": "say", "who": "", "emo": "", "text": stripped.substr(1).strip_edges(), "style": "note"})
 			continue
 
-		# 台词 / 旁白
+		# Text
 		prog.append(_parse_say(stripped))
 
 	if cur_id != "":
@@ -251,7 +241,6 @@ func _parse_say(s: String) -> Dictionary:
 			return {"op": "say", "who": head, "emo": emo, "text": text, "style": "line"}
 	return {"op": "say", "who": "", "emo": "", "text": s, "style": "narration"}
 
-# ---------------------------------------------------------------- 运行
 func start(node_id: String) -> void:
 	if not nodes.has(node_id):
 		push_error("节点不存在：" + node_id)
@@ -269,7 +258,6 @@ func start(node_id: String) -> void:
 func has_story_node(id: String) -> bool:
 	return nodes.has(id)
 
-## 推进到下一个需要玩家交互的点
 func advance() -> void:
 	if not running or waiting_choice:
 		return
@@ -308,7 +296,7 @@ func advance() -> void:
 				var stop := _exec_cmd(ins)
 				if stop:
 					return
-	# 节点自然结束
+
 	running = false
 
 func pick_choice(choice: Dictionary) -> void:
@@ -330,8 +318,7 @@ func pick_choice(choice: Dictionary) -> void:
 	else:
 		advance()
 
-
-## 密码锁结算：成功 -> 跳成功节点；失败 -> 有失败节点则跳转，否则继续推进。
+# Password lock
 func padlock_done(success: bool) -> void:
 	var p := _padlock
 	_padlock = {}
@@ -355,21 +342,18 @@ func padlock_done(success: bool) -> void:
 				push_error("@padlock 失败节点不存在：" + fail)
 			advance()
 
-
-## 追加回想记录并限制长度（防止长周目内存无界增长）
 func _append_history(who: String, text: String) -> void:
 	GameState.history.append({"who": who, "text": text})
 	if GameState.history.size() > 400:
 		GameState.history.pop_front()
 
-## 返回 true 表示需要等待（暂停推进）
 func _exec_cmd(ins: Dictionary) -> bool:
 	var cmd := String(ins.get("cmd", ""))
 	var args: Array = ins.get("args", [])
 	var rest := String(ins.get("rest", ""))
 	match cmd:
 		"bg":
-			# 记录当前场景，读档时用它还原画面（否则要等到下一条 @bg 才有背景）
+			# Save/Load
 			GameState.scene_bg = _arg(args, 0)
 			GameState.scene_variant = _arg(args, 1)
 			scene_requested.emit("bg", _arg(args, 0), _arg(args, 1))
@@ -421,13 +405,13 @@ func _exec_cmd(ins: Dictionary) -> bool:
 			overlay_requested.emit("roster", {})
 			return true
 		"padlock":
-			# 数字密码锁：@padlock 密码 成功节点 [失败节点] 提示文本
+			# Text
 			var code := _arg(args, 0)
 			var ok_node := _arg(args, 1)
 			if code.is_empty() or ok_node.is_empty():
 				push_error("格式应为 @padlock 密码 成功节点 [失败节点] 提示文本")
 				return false
-			# 提示文本 = rest 去掉前几个参数后的剩余部分
+			# Text
 			var hint := rest
 			var strip_n := mini(args.size(), 3)
 			for i in strip_n:
@@ -453,8 +437,8 @@ func _exec_cmd(ins: Dictionary) -> bool:
 				mi = int(hm[0]) * 60 + int(hm[1])
 			GameState.set_story_time(d, mi)
 		"timeat":
-			# 单调时钟：推进到不早于该时刻，绝不倒流。
-			# 用于可自由排序的支线，避免玩家换顺序导致时间错乱。
+
+			# Time
 			var d2 := int(_arg(args, 0, "1"))
 			var hm2 := _arg(args, 1, "0:00").split(":")
 			var mi2 := 0
@@ -518,9 +502,9 @@ func _apply_set(key: String, expr: String) -> void:
 	else:
 		GameState.add_num(key, int(expr))
 
-# ---------------------------------------------------------------- 文本插值
-## 支持 {num:truth} {item:item_page109} {name:liangye} {if cond?A|B} {pname}
-## 玩家改名后，正文中的默认名「林昼」自动替换为玩家起的名字。
+# Text
+
+# Name
 func _resolve_text(t: String) -> String:
 	var out := t
 	while true:
@@ -563,8 +547,8 @@ func _eval_token(tok: String) -> String:
 		return a if eval_cond(cond) else b
 	return ""
 
-# ---------------------------------------------------------------- 条件求值
-## 支持 and/or、括号外的简单串联，原子形如：
+# Conditions
+
 ##   truth>=5 / sanity<40 / trust_liangye>=2
 ##   flag_xxx / !flag_xxx
 ##   item:item_page109 / !item:item_admin_key
@@ -574,7 +558,7 @@ func eval_cond(expr: String) -> bool:
 	var e := expr.strip_edges()
 	if e.is_empty():
 		return true
-	# or 优先级最低
+
 	if e.contains(" or "):
 		for part in e.split(" or "):
 			if eval_cond(String(part)):
@@ -630,7 +614,7 @@ func _eval_atom(a: String) -> bool:
 			if Cfg.NUM_RANGE.has(key):
 				return _cmp_num(GameState.get_num(key), tail)
 			return false
-	# 裸标记
+
 	if Cfg.NUM_RANGE.has(s):
 		return GameState.get_num(s) > 0
 	return GameState.get_flag(s)
@@ -667,7 +651,7 @@ func _lock_hint(lock: String) -> String:
 				return "需要 %s %s" % [Cfg.NUM_LABEL[k], s.substr(i)]
 	return "条件未满足"
 
-## 维护 GameState.scene_actors，使存档能还原「当时台上有谁」
+# Save/Load
 func _record_actor(kind: String, who: String, emo: String, pos: String) -> void:	match kind:
 		"show":
 			for a in GameState.scene_actors:
@@ -684,7 +668,7 @@ func _record_actor(kind: String, who: String, emo: String, pos: String) -> void:
 		"clear":
 			GameState.scene_actors.clear()
 
-# ---------------------------------------------------------------- 存档接口
+# Save/Load
 func snapshot() -> Dictionary:
 	return {"node": _cur_id, "ip": _ip}
 
