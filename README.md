@@ -38,7 +38,7 @@ game/                  # Godot 工程（直接用 Godot 4.7.1 打开 game/projec
 ├── assets/            # 背景 / 立绘 / UI 贴图 / 程序化音频占位
 ├── tools/             # 开发工具：gen_integrity.py / check_avg.py
 └── export_presets.cfg # Android / Windows / Linux 导出预设
-docs/                  # 剧本全文、防破解与发行加固指南
+docs/                  # 剧本全文、技术文档、防破解与发行加固指南
 ```
 
 ## 常用开发命令
