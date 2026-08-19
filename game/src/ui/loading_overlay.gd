@@ -67,6 +67,28 @@ func _build() -> void:
 	_panel.add_theme_stylebox_override("panel", sb)
 	add_child(_panel)
 
+	# 过场面板质感底。与其它面板同样作兄弟节点铺放：
+	# PanelContainer 会按 content_margin 内缩子节点，放进去铺不满边缘。
+	# 这里用 CenterContainer 跟随 _panel 尺寸，避免手算偏移。
+	var grain := UITex.get_tex("panel_frame")
+	if grain != null:
+		var holder := CenterContainer.new()
+		holder.set_anchors_preset(Control.PRESET_FULL_RECT)
+		holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var tr := TextureRect.new()
+		tr.texture = grain
+		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr.stretch_mode = TextureRect.STRETCH_SCALE
+		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		tr.modulate = Color(1, 1, 1, 0.26)
+		# 跟随面板实际尺寸，面板变大变小都不会露边
+		_panel.resized.connect(func():
+			tr.custom_minimum_size = _panel.size
+			tr.size = _panel.size)
+		holder.add_child(tr)
+		add_child(holder)
+		move_child(holder, _panel.get_index())
+
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 12)
 	v.custom_minimum_size.x = 520
@@ -85,7 +107,7 @@ func _build() -> void:
 	_bar.max_value = 100.0
 	_bar.value = 0.0
 	_bar.show_percentage = false
-	_bar.custom_minimum_size = Vector2(520, 8)
+	_bar.custom_minimum_size = Vector2(520, 12)
 	var fill := StyleBoxFlat.new()
 	fill.bg_color = Color(0.62, 0.58, 0.50)
 	fill.set_corner_radius_all(2)

@@ -80,7 +80,10 @@ func save_persistent() -> void:
 ##
 ## 因此策略是「检测并提示」而非「拒绝加载」：
 ## 签名不符时照常读档，但标记 tampered，结局判定与图鉴解锁走保守分支。
-const SAVE_SALT := "AfterEveningStudy::2015-05-17::42"
+## 发行版盐值：已替换为随机串（原先是可被猜到的日期占位值）。
+## 更换盐值会使旧版本存档签名失效——按上面的策略，这不会导致读档失败，
+## 只是旧档会被标记 tampered。1.0.0 是首个正式发行版本，无历史存档负担。
+const SAVE_SALT := "3d80609c5901cb4d96a76c28bcc02a72a2359629ddfd4ec5"
 
 func _sign(payload: Dictionary) -> String:
 	var d := payload.duplicate(true)
