@@ -31,6 +31,7 @@ var fx: EffectsLayer
 var sanity_fx: SanityFX
 var gore: GoreOverlay
 var time_label: Label
+var fps_label: Label
 var ui_root: Control
 
 var name_label: Label
@@ -38,6 +39,7 @@ var text_label: RichTextLabel
 var text_ghost: RichTextLabel            # 低理智重影层
 var box: PanelContainer
 var _box_text_holder: VBoxContainer      # 正文容器，纹理必须插在它之前
+var _fps_acc := 0.0
 var _box_texture: TextureRect            # 对话框纸纹底（缺图时为 null）
 var _name_plate: PanelContainer          # 名字牌底纹（缺图时为 null）
 var _name_row: HBoxContainer             # 名字牌所在行，随名字一起显隐
@@ -120,16 +122,27 @@ func _build() -> void:
 	add_child(ui_root)
 
 	# 点击推进层（在文本框之下）
-	var click := Button.new()
+	#
+	# 用裸 Control + gui_input 而不是 Button：
+	#   * Button.pressed 只在【松手】时触发，手指按下到抬起之间的时间
+	#     全部体现为"点了没反应"，这是点击延迟的主因
+	#   * Button 还要维护 hover/pressed 状态与样式盒，纯属浪费
+	# 这里改为在按下瞬间就推进，手感明显跟手。
+	var click := Control.new()
 	click.set_anchors_preset(Control.PRESET_FULL_RECT)
-	click.flat = true
-	click.focus_mode = Control.FOCUS_NONE
-	click.pressed.connect(_on_screen_tap)
-	var empty := StyleBoxEmpty.new()
-	click.add_theme_stylebox_override("normal", empty)
-	click.add_theme_stylebox_override("hover", empty)
-	click.add_theme_stylebox_override("pressed", empty)
-	click.add_theme_stylebox_override("focus", empty)
+	click.mouse_filter = Control.MOUSE_FILTER_STOP
+	click.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton:
+			var mb := e as InputEventMouseButton
+			if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+				_on_screen_tap()
+				click.accept_event()
+		elif e is InputEventScreenTouch:
+			var st := e as InputEventScreenTouch
+			if st.pressed:
+				_on_screen_tap()
+				click.accept_event()
+	)
 	ui_root.add_child(click)
 
 	_build_top_bar()
@@ -174,6 +187,14 @@ func _build_top_bar() -> void:
 	time_label.add_theme_color_override("font_color", Color(0.78, 0.76, 0.68))
 	time_label.custom_minimum_size.x = 190
 	top_bar.add_child(time_label)
+
+	# 帧率显示（设置里可开）。默认关闭，不占屏幕。
+	fps_label = Label.new()
+	fps_label.add_theme_font_size_override("font_size", 18)
+	fps_label.add_theme_color_override("font_color", Color(0.55, 0.75, 0.60))
+	fps_label.custom_minimum_size.x = 74
+	fps_label.visible = bool(SaveSystem.settings.get("show_fps", false))
+	top_bar.add_child(fps_label)
 	_refresh_time()
 	GameState.time_changed.connect(func(_d, _m): _refresh_time())
 
@@ -679,6 +700,16 @@ func _update_text_ghost(_delta: float) -> void:
 
 func _process(delta: float) -> void:
 	_update_text_ghost(delta)
+	if is_instance_valid(fps_label):
+		var want := bool(SaveSystem.settings.get("show_fps", false))
+		if fps_label.visible != want:
+			fps_label.visible = want
+		if want:
+			# 四分之一秒刷新一次就够读，每帧改文本反而增加开销
+			_fps_acc += delta
+			if _fps_acc >= 0.25:
+				_fps_acc = 0.0
+				fps_label.text = "%d FPS" % Engine.get_frames_per_second()
 	if _pending_wait > 0.0:
 		_pending_wait -= delta
 		if _pending_wait <= 0.0:

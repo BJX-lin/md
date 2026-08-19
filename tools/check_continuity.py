@@ -25,6 +25,10 @@ if not os.path.isfile(os.path.join(GAME, "project.godot")):
 STORY = os.path.join(GAME, "story")
 
 # 章节归属：文件名前缀 → 章节号
+## 允许被多个章节进入的支线 hub（有意设计，非章节回退）
+CROSS_CHAPTER_HUBS = {"liheng_hub"}
+
+
 def chapter_of(fname):
     m = re.match(r"(\d+)_", fname)
     if not m:
@@ -123,6 +127,10 @@ def main():
         for t in tgts:
             tc = node_chapter.get(t)
             if tc is None or sc == 99 or tc == 99:
+                continue
+            # 跨章可回访的支线 hub：这些节点被设计成多个章节都能进入
+            # （李恒线从第二章和第三章都可以观察），不算回退。
+            if t in CROSS_CHAPTER_HUBS:
                 continue
             if tc < sc and sc - tc >= 1 and t not in ("prologue",):
                 warns.append(f"[章节] {src}(第{sc}章) → {t}(第{tc}章) 章节回退")

@@ -21,6 +21,22 @@
 你几乎没睡。躺在床上听了一整夜的雨，中间起来两次，两次都看见周叙也睁着眼。
 @wait 1.0
 @set sanity -1
+@if death:梁野
+-- 梁野已在旧楼失踪：不能让他若无其事地坐在床沿穿鞋。
+-- 空床本身就是最好的演出。
+第三次醒来的时候天已经蒙蒙亮。
+@wait 0.8
+你侧过头，看见对面那张床。
+被子叠得很整齐——整齐得不像高中生叠的。
+@wait 1.2
+> 昨天早上他还坐在那儿穿鞋。
+@fx heartbeat 1.0
+@set sanity -2
+@set memory_echo +3
+@set truth +2
+@wait 1.0
+@clearchars
+@else
 第三次醒来的时候天已经蒙蒙亮，梁野正坐在床沿穿鞋。
 @wait 0.8
 @show liangye nervous left
@@ -42,6 +58,7 @@ liangye(nervous)：等下课再说吧。
 @clearchars
 @set truth +2
 @flag flag_liangye_has_something
+@endif
 @goto ch4_day_rollcall
 
 -- ================================================= 早读点名（主线必经）
@@ -485,7 +502,7 @@ xuqing(tired)：五年了，第一次有人在那个位置抬手。
 @set truth +2
 @set sanity -1
 @endif
-* [if flag_liangye_has_something and !visited:ch4_day_liangye] 梁野说要跟你说件事 -> ch4_day_liangye
+* [if flag_liangye_has_something and !visited:ch4_day_liangye and !death:梁野] 梁野说要跟你说件事 -> ch4_day_liangye
     @set trust_liangye +2
 * [if !visited:ch4_day_class] 回教室上课 -> ch4_day_class
     @set truth +2
@@ -799,6 +816,26 @@ liangye(fragile)：我记住了。
 @wait 1.0
 你退了一步。
 @wait 0.6
+@if death:老秦
+-- 老秦已死于值班室那场火：这里不能再让他活着出现。
+-- 改为只留声音，且明确点出他已经不在了——把 bug 变成伏笔。
+身后有人说话，你吓了一跳。
+@wait 1.0
+> "别看了。"
+@fx glitch 0.6
+@sfx sfx_whisper
+你回头。走廊是空的。
+@wait 1.0
+> 那是老秦的声音。
+> 老秦已经不在了。
+@set sanity -2
+@set memory_echo +3
+@set truth +4
+@set end_cycle_score +2
+@flag flag_qin_fifth_warning
+@clearchars
+@goto ch4_day_hub
+@endif
 身后有人说话，你吓了一跳。
 @wait 1.0
 @show oldqin warning right

@@ -28,7 +28,9 @@ var _cur_tex_path := ""
 const BG_MAP := {
 	"office": {
 		"": ["office_day"], "day": ["office_day"], "dusk": ["office_day"],
-		"night": ["office_night", "office_day"], "dark": ["office_night", "office_day"],
+		"night": ["office_night_lamp", "office_night", "office_day"],
+		"dark": ["office_night_lamp", "office_night", "office_day"],
+		"lamp": ["office_night_lamp", "office_night"],
 		"dawn": ["office_dawn", "office_night"],
 	},
 	"classroom": {
@@ -128,6 +130,7 @@ const BG_MAP := {
 	},
 	"rooftop": {
 		"": ["rooftop_night"], "night": ["rooftop_night"], "dark": ["rooftop_night"],
+		"door": ["rooftop_door_night", "rooftop_night"],
 	},
 	"oldbuilding_class": {
 		"": ["old_building_classroom"], "dark": ["old_building_classroom"],

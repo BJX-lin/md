@@ -129,7 +129,7 @@ unknown(flat)：查寝。
 @goto ch3_night_hub
 
 == ch3_side_roof
-@bg rooftop night
+@bg rooftop door
 @bgm bgm_unease
 @amb amb_hallway
 @clearchars

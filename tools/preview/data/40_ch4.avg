@@ -116,7 +116,7 @@ zhouxu(flat)：两步的话，我回头能抓住你。
 * [if !flag_xuqing_done] 先去办公室找许清 -> xuqing_hub
     @set truth +2
     @set route_empathy +1
-* [if !flag_oldqin_done] 先去值班室找老秦 -> oldqin_hub
+* [if !flag_oldqin_done and !death:老秦] 先去值班室找老秦 -> oldqin_hub
     @set truth +2
     @set route_investigate +1
 * [if flag_can_meet_liheng and !flag_liheng_present] 去教室找李恒 -> liheng2_hub

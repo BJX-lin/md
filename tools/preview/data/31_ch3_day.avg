@@ -35,7 +35,7 @@
 * [if !visited:ch3_day_liheng] 找李恒，问他那张座位表 -> ch3_day_liheng
     @set truth +2
     @set route_empathy +1
-* [if !visited:ch3_day_liangye] 看看梁野今天怎么样 -> ch3_day_liangye
+* [if !visited:ch3_day_liangye and !death:梁野] 看看梁野今天怎么样 -> ch3_day_liangye
     @set trust_liangye +1
 * 收起本子，等天黑 -> ch3_day_end
     @set route_obedience +1

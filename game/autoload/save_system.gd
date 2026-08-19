@@ -13,10 +13,16 @@ var settings := {
 	"vol_bgm": 0.7,
 	"vol_sfx": 0.85,
 	"gore": 2,              # 0=关闭 1=温和 2=完整
-	"screen_shake": true,
+	# 镜头晃动默认关闭。
+	# 长时间阅读型 AVG 里，频繁的画面位移会明显加重晕动感与疲劳，
+	# 且会让正文出现"读到一半被抖走"的挫败。恐怖表现改由
+	# 血色暗角 / 色差 / 噪点 / 心跳暗角 等不位移的手段承担。
+	# 想要的玩家仍可在设置里自行打开。
+	"screen_shake": false,
 	"flash": true,          # 强闪光（光敏友好开关）
 	"skip_seen_only": true,
 	"font_scale": 1.0,
+	"show_fps": false,      # 设置页可开，用于自查性能
 }
 
 func _ready() -> void:
@@ -36,6 +42,13 @@ func load_settings() -> void:
 	if d is Dictionary:
 		for k in d:
 			settings[k] = d[k]
+		# 一次性迁移：镜头晃动改为默认关闭。
+		# 老配置里存着 screen_shake=true，不迁移的话老玩家感受不到这次改动。
+		# 只做一次，之后玩家自己开了就尊重玩家。
+		if not bool(settings.get("_shake_migrated", false)):
+			settings["screen_shake"] = false
+			settings["_shake_migrated"] = true
+			save_settings()
 
 func save_settings() -> void:
 	var f := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)

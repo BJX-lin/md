@@ -120,7 +120,9 @@ class Parser:
                 else:
                     prog.append(self.cmd(s))
                 continue
-            prog.append({"op": "say"})
+            # 记录说话人，供死亡连贯性检查使用（不影响模拟逻辑）
+            _mw = re.match(r"^([a-z_]+)[（(：]", s)
+            prog.append({"op": "say", "who": _mw.group(1) if _mw else ""})
         if cur:
             self.nodes[cur] = prog
 
@@ -379,6 +381,7 @@ class Runner:
         self.trace = trace
         self.path = []
         self.steps = 0
+        self.dead_speaks = {}
 
     def run(self, start="prologue", max_steps=40000):
         nid = start
@@ -398,6 +401,10 @@ class Runner:
                 ip += 1
                 op = ins["op"]
                 if op == "say":
+                    # 死亡连贯性：沿真实执行分支记录"已死角色仍开口"
+                    _w = ins.get("who", "")
+                    if _w and _w in getattr(self.st, "_dead_ids", ()):
+                        self.dead_speaks[(_w, nid)] = self.dead_speaks.get((_w, nid), 0) + 1
                     continue
                 if op == "branch":
                     if not ev(self.st, ins["cond"]):
@@ -454,6 +461,13 @@ class Runner:
             st.clues.add(a[0])
         elif c == "death":
             st.deaths.append(a[0])
+            # 供死亡连贯性检查：中文名 -> 角色 id
+            _N2I = {"梁野": "liangye", "老秦": "oldqin", "周叙": "zhouxu",
+                    "许清": "xuqing", "沈禾": "shenhe", "李恒": "liheng"}
+            if not hasattr(st, "_dead_ids"):
+                st._dead_ids = set()
+            if a[0] in _N2I:
+                st._dead_ids.add(_N2I[a[0]])
         elif c == "settle":
             st.settle(int(a[0]))
         elif c == "chapter":

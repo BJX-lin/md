@@ -24,6 +24,7 @@ var _noise_seed := 0
 var _flash_timer := 0.0
 var _blackout := 0.0        # 瞬时闪断
 var _shudder := Vector2.ZERO
+var _was_active := false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -60,7 +61,13 @@ func _process(delta: float) -> void:
 			_flash_timer = randf_range(2.0, 9.0 - sev * 6.0)
 			if bool(SaveSystem.settings.get("flash", true)):
 				_blackout = 1.0
-	queue_redraw()
+	# 性能：理智健康（sev≈0）时这一层什么都不画，
+	# 却仍每帧 queue_redraw 一次全屏，属纯浪费。
+	# 只在真正有效果、或刚从有效果变为无效果（需要清屏）时重绘。
+	var active := sev > 0.01
+	if active or _was_active:
+		queue_redraw()
+	_was_active = active
 
 ## 供 game_screen 取用，叠加到世界层位移上
 func shudder_offset() -> Vector2:

@@ -501,7 +501,7 @@ static func system_panel() -> Control:
 		SaveSystem.set_setting("text_speed", i)))
 	v.add_child(_option_row("血腥表现", ["关闭", "温和", "完整"], int(SaveSystem.settings.get("gore", 2)), func(i):
 		SaveSystem.set_setting("gore", i)))
-	v.add_child(_toggle_row("画面震动", bool(SaveSystem.settings.get("screen_shake", true)), func(b):
+	v.add_child(_toggle_row("画面震动（默认关）", bool(SaveSystem.settings.get("screen_shake", false)), func(b):
 		SaveSystem.set_setting("screen_shake", b)))
 	v.add_child(_toggle_row("强闪光效果", bool(SaveSystem.settings.get("flash", true)), func(b):
 		SaveSystem.set_setting("flash", b)))
@@ -511,6 +511,8 @@ static func system_panel() -> Control:
 		SaveSystem.set_setting("vol_bgm", x)))
 	v.add_child(_slider_row("音效", float(SaveSystem.settings.get("vol_sfx", 0.85)), func(x):
 		SaveSystem.set_setting("vol_sfx", x)))
+	v.add_child(_toggle_row("显示帧率", bool(SaveSystem.settings.get("show_fps", false)), func(b):
+		SaveSystem.set_setting("show_fps", b)))
 	v.add_child(_slider_row("自动播放停顿", float(SaveSystem.settings.get("auto_speed", 1.6)), func(x):
 		SaveSystem.set_setting("auto_speed", clampf(x * 3.0, 0.3, 3.0)), float(SaveSystem.settings.get("auto_speed", 1.6)) / 3.0))
 
@@ -521,9 +523,58 @@ static func system_panel() -> Control:
 	warn.add_theme_color_override("font_color", Color(0.75, 0.58, 0.42))
 	v.add_child(warn)
 
+	# —— 底部操作区：应用 / 继续游戏 / 返回标题
+	# 设置项本身是即改即生效（各 row 直接写 SaveSystem），
+	# 但玩家需要一个明确的"我改完了"的确认动作，否则容易怀疑没保存。
+	var sep2 := ColorRect.new()
+	sep2.custom_minimum_size = Vector2(0, 1)
+	sep2.color = Color(0.4, 0.38, 0.34, 0.4)
+	v.add_child(sep2)
+
+	var applied := Label.new()
+	applied.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	applied.add_theme_font_size_override("font_size", 21)
+	applied.add_theme_color_override("font_color", Color(0.58, 0.78, 0.62))
+	applied.modulate.a = 0.0
+
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 14)
+	v.add_child(row)
+
+	var apply := Button.new()
+	apply.text = "应用"
+	apply.focus_mode = Control.FOCUS_NONE
+	apply.custom_minimum_size = Vector2(150, TOUCH_MIN + 6)
+	apply.pressed.connect(func():
+		SaveSystem.save_settings()
+		AudioDirector.play_sfx("sfx_click", 0.8)
+		applied.text = "设置已保存"
+		applied.modulate.a = 1.0
+		if applied.is_inside_tree():
+			applied.create_tween().tween_property(applied, "modulate:a", 0.0, 2.0) \
+				.set_delay(1.2)
+	)
+	row.add_child(apply)
+
+	# 继续游戏＝关掉设置面板回到当前进度。
+	# 从游戏内打开设置时这是最常用的出口，之前只能点右上角"关闭"。
+	var cont := Button.new()
+	cont.text = "继续游戏"
+	cont.focus_mode = Control.FOCUS_NONE
+	cont.custom_minimum_size = Vector2(180, TOUCH_MIN + 6)
+	cont.pressed.connect(func():
+		SaveSystem.save_settings()
+		AudioDirector.play_sfx("sfx_click", 0.8)
+		root.queue_free()
+	)
+	row.add_child(cont)
+	v.add_child(applied)
+
 	var quit := Button.new()
 	quit.text = "保存并返回标题"
 	quit.focus_mode = Control.FOCUS_NONE
+	quit.custom_minimum_size.y = TOUCH_MIN
 	quit.pressed.connect(func():
 		var cb = root.get_meta("on_quit", null)
 		root.queue_free()
@@ -805,16 +856,44 @@ static func feedback_panel() -> Control:
 
 ## 组装一段可直接粘进群里的环境信息。
 ## 带上进度定位（章节 / 节点 / 剧情时间），比只报"卡住了"有用得多。
+## 组装一段可直接粘进群里的环境信息。
+##
+## 目标：玩家一次粘贴，就够定位问题，不用来回追问。
+## 因此除了进度定位，还带上设备/渲染/性能与关键数值——
+## 这些正是"卡在哪""为什么掉帧""为什么结局不对"最常用到的信息。
 static func _env_string() -> String:
 	var node_id := String(GameState.current_node)
 	if node_id == "":
 		node_id = "-"
-	return "版本 v%s　平台 %s\n章节 第%d章　节点 %s\n剧情时间 第%d天 %s　周目 %d" % [
-		Cfg.VERSION,
-		OS.get_name(),
-		GameState.current_chapter,
-		node_id,
-		GameState.story_day,
-		GameState.time_hhmm(),
-		int(GameState.persistent.get("cycles", 0)) + 1,
-	]
+	var vp := DisplayServer.window_get_size()
+	var lines := PackedStringArray()
+	lines.append("——《%s》反馈信息——" % Cfg.GAME_TITLE)
+	lines.append("版本 v%s　引擎 Godot %s" % [Cfg.VERSION, Engine.get_version_info().get("string", "?")])
+	lines.append("系统 %s %s　机型 %s" % [
+		OS.get_name(), OS.get_version(), OS.get_model_name()])
+	lines.append("渲染 %s　窗口 %dx%d　帧率 %d" % [
+		str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "?")),
+		vp.x, vp.y, Engine.get_frames_per_second()])
+	lines.append("语言 %s　内存 %.0fMB" % [
+		OS.get_locale(), OS.get_static_memory_usage() / 1048576.0])
+	lines.append("—— 进度 ——")
+	lines.append("章节 第%d章　节点 %s" % [GameState.current_chapter, node_id])
+	lines.append("剧情时间 第%d天 %s　周目 %d" % [
+		GameState.story_day, GameState.time_hhmm(),
+		int(GameState.persistent.get("cycles", 0)) + 1])
+	lines.append("真相 %d　理智 %d　救人线 %d　沈禾关注 %d" % [
+		GameState.get_num("truth"), GameState.get_num("sanity"),
+		GameState.get_num("save_route_score"), GameState.get_num("shenhe_focus")])
+	lines.append("真相层级 %s　线索 %d/%d　道具 %d" % [
+		GameState.get_state("truth_state"),
+		GameState.clues.size(), GameState.CLUES.size(),
+		GameState.inventory.size()])
+	if not GameState.deaths.is_empty():
+		lines.append("死亡/失踪 %s" % ", ".join(GameState.deaths))
+	lines.append("—— 设置 ——")
+	lines.append("血腥 %d　震动 %s　闪光 %s　文字速度 %d" % [
+		int(SaveSystem.settings.get("gore", 2)),
+		"开" if bool(SaveSystem.settings.get("screen_shake", false)) else "关",
+		"开" if bool(SaveSystem.settings.get("flash", true)) else "关",
+		int(SaveSystem.settings.get("text_speed", 2))])
+	return "\n".join(lines)

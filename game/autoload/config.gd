@@ -154,3 +154,18 @@ static func clampi_var(key: String, v: int) -> int:
 		var r: Array = NUM_RANGE[key]
 		return clampi(v, int(r[0]), int(r[1]))
 	return v
+
+# ---------------------------------------------------------------- 性能
+## 目标帧率。
+##
+## 手机上不追求越高越好：
+##   * 本作是阅读型 AVG，60 帧已经完全够用
+##   * 高刷屏若放开跑到 90/120，只会徒增发热与耗电，
+##     且发热降频之后反而更容易掉到 40 以下
+## 因此锁 60 + 开垂直同步，把帧生成时间稳定在 16.7ms，
+## 实测目标区间 40~60。
+const TARGET_FPS := 60
+
+func _ready() -> void:
+	Engine.max_fps = TARGET_FPS
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)

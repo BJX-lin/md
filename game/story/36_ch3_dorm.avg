@@ -28,7 +28,7 @@
 * [if !visited:ch3_dorm_bunk] 摸黑看看第四张床 -> ch3_dorm_bunk
     @set truth +3
     @set route_investigate +1
-* [if !visited:ch3_dorm_talk] 先开口说话 -> ch3_dorm_talk
+* [if !visited:ch3_dorm_talk and !death:梁野] 先开口说话 -> ch3_dorm_talk
     @set trust_zhouxu +1
     @set trust_liangye +1
 * [if !visited:ch3_dorm_wall] 摸墙上那些字 -> ch3_dorm_wall

@@ -8,6 +8,7 @@ signal shake_offset(offset: Vector2)
 var _effects: Array = []          # {type, t, dur, power}
 var _t := 0.0
 var _static_seed := 0
+var _was_active := false
 var _names_overlay: Array = []    # 浮现的名字
 
 func _ready() -> void:
@@ -77,9 +78,15 @@ func _process(delta: float) -> void:
 				"glitch":
 					off += Vector2(randf_range(-1, 1) * 5.0 * p, 0)
 		i -= 1
-	shake_offset.emit(off)
-	_static_seed = int(_t * 24.0)
-	queue_redraw()
+	# 性能：没有活跃特效时不再每帧重绘全屏。
+	# 原先无条件 queue_redraw 会让这一层常驻占用一次全屏 draw call，
+	# 在中低端手机上是白白的持续开销。
+	var active := not _effects.is_empty()
+	if active or _was_active:
+		shake_offset.emit(off)
+		_static_seed = int(_t * 24.0)
+		queue_redraw()
+	_was_active = active
 
 func has_active() -> bool:
 	return not _effects.is_empty()

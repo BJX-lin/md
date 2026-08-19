@@ -44,7 +44,9 @@ renderer/rendering_method="mobile"
 renderer/rendering_method.mobile="mobile"
 textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.03, 0.03, 0.04, 1)
-anti_aliasing/quality/msaa_2d=1
+; MSAA 关闭：本作是纯 2D 图片合成，没有需要抗锯齿的斜边几何，
+; 开 2x MSAA 只是让整个 viewport 多一遍解析，中低端手机上白掉帧。
+anti_aliasing/quality/msaa_2d=0
 
 [gui]
 
