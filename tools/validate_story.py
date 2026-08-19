@@ -34,7 +34,7 @@ KNOWN_CMDS = {
     "bg", "bgm", "stopbgm", "amb", "stopamb", "sfx", "fx", "show", "hide",
     "clearchars", "set", "flag", "state", "item", "clue", "death", "gallery",
     "title", "roster", "note", "wait", "chapter", "settle", "autosave",
-    "time", "advtime",
+    "time", "timeat", "advtime",
     "goto", "ending", "return", "if", "elif", "else", "endif",
 }
 KNOWN_FX = {

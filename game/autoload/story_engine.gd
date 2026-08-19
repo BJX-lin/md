@@ -13,6 +13,9 @@ extends Node
 ##   @state 键 值
 ##   @item +id|-id           @clue id
 ##   @time 天 时:分          设置剧情时间（如 @time 1 14:40）
+##   @timeat 天 时:分 [兜底分钟]  单调推进到该时刻，绝不倒流。
+##                           用于可自由排序的支线 hub：若玩家已经走到更晚的
+##                           时刻，则不回拨，改为只前进「兜底分钟」（默认 5）。
 ##   @advtime 分钟            推进剧情时间（如 @advtime 25）
 ##   @wait 秒
 ##   @title 文本             大字幕
@@ -395,6 +398,15 @@ func _exec_cmd(ins: Dictionary) -> bool:
 			if hm.size() >= 2:
 				mi = int(hm[0]) * 60 + int(hm[1])
 			GameState.set_story_time(d, mi)
+		"timeat":
+			# 单调时钟：推进到不早于该时刻，绝不倒流。
+			# 用于可自由排序的支线，避免玩家换顺序导致时间错乱。
+			var d2 := int(_arg(args, 0, "1"))
+			var hm2 := _arg(args, 1, "0:00").split(":")
+			var mi2 := 0
+			if hm2.size() >= 2:
+				mi2 = int(hm2[0]) * 60 + int(hm2[1])
+			GameState.seek_story_time(d2, mi2, int(_arg(args, 2, "5")))
 		"advtime":
 			GameState.advance_time(int(_arg(args, 0, "0")))
 		"wait":

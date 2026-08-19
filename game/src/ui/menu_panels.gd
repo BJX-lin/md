@@ -13,6 +13,22 @@ static func _shell(title: String) -> Array:
 	shade.color = Color(0.01, 0.01, 0.015, 0.90)
 	root.add_child(shade)
 
+	# 菜单底纹：夜里的黑板墙。压在遮罩之上、面板之下。
+	# 遮罩已经足够暗，这里只是给大片纯黑加一点质感，透明度压得很低。
+	# 缺图跳过，回到原来的纯色遮罩。
+	var bg_path := "res://assets/ui/menu_bg.png"
+	if ResourceLoader.exists(bg_path):
+		var btex = load(bg_path)
+		if btex is Texture2D:
+			var wall := TextureRect.new()
+			wall.texture = btex
+			wall.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			wall.stretch_mode = TextureRect.STRETCH_SCALE
+			wall.set_anchors_preset(Control.PRESET_FULL_RECT)
+			wall.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			wall.modulate = Color(1, 1, 1, 0.32)
+			root.add_child(wall)
+
 	var frame := PanelContainer.new()
 	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
 	frame.offset_left = 60

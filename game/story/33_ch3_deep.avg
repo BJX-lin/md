@@ -684,11 +684,29 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 @goto ch3_deep_hub
 
 -- ================================================= 收束
+-- 深夜路线的收尾拆成两段：
+--   ch3_deep_end   —— 凌晨两点多，先走 ch3_sc9（周叙讲五年前那场火）
+--   ch3_deep_dawn  —— 谈完之后才睡，天亮收束
+-- 这样无论从哪条支线进来，时间都保持单调递增，不会出现
+-- 「已经睡到 05:30，又跳回 02:17 说话」的错乱。
 == ch3_deep_end
 @bg dorm dark
 @bgm bgm_unease
 @clearchars
-@time 4 05:30
+@timeat 4 02:05
+@flag flag_deep_route_night
+你躺回床上，但没有闭眼。
+@wait 0.8
+黑暗里，你听见对面床铺的人翻了个身。
+> 周叙也醒着。
+@wait 0.6
+@goto ch3_sc9
+
+== ch3_deep_dawn
+@bg dorm dark
+@bgm bgm_unease
+@clearchars
+@timeat 4 05:30
 你闭上眼。
 @wait 1.0
 你以为自己睡不着，但不知道什么时候还是睡着了——那种很浅的睡，一直知道自己在睡。
@@ -730,4 +748,4 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 > 第三天结束了。
 > 你活过了三个晚上。
 @set truth +1
-@goto ch3_sc9
+@goto ch3_sc10

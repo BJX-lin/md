@@ -1,23 +1,37 @@
 -- 第四章《照片》—— 档案的裂缝
 -- 场景：雨后校史馆 / 进入 / 假墙与内门 / 许清现身 / 监控内档室 / 站位锁定 / 三路线锁定 / 崩塌 / 冲向旧楼
 
+-- 第四章从清晨开场：ch4_start 之后立刻转入 ch4_day_start（07:05 早读），
+-- 白天流程走完再由 ch4_day_end 推到下午。原先这里写死 15:20，
+-- 却又跳回 07:05 演早上，会把时钟往回拨 8 小时。
 == ch4_start
 @chapter 4 照片
-@time 4 15:20
+@timeat 4 06:40
 @set sanity +25
-@bg schoolyard rain
+@bg dorm dark
 @bgm bgm_investigate
 @amb amb_rain
 @clearchars
 @autosave
-第四天。下午，雨又下起来了。
-比前几天大。雨点砸在教学楼的铁皮雨棚上，"哗"的一片，说话得提高嗓门。
+第四天。天还没亮透，雨又下起来了。
+比前几天大。雨点砸在宿舍楼的铁皮雨棚上，"哗"的一片，说话得提高嗓门。
 @wait 0.6
-上午的课你几乎是撑过来的。
-第二节课下课，你去水房洗脸，看见镜子里自己的眼睛——眼白上有几道红丝，眼下青黑。
+你几乎没怎么睡。
+起床铃响之前你就醒了，去水房洗脸，看见镜子里自己的眼睛——眼白上有几道红丝，眼下青黑。
 > 你才来四天。
 @set truth +1
 @wait 0.8
+@wait 0.8
+@goto ch4_day_start
+
+-- 下午：白天流程（41_ch4_day）走完后由 ch4_day_end 转入这里。
+-- 原先这段和清晨开场挤在同一个 ch4_start 里，导致 15:20 → 07:05 倒流。
+== ch4_afternoon
+@timeat 4 15:20
+@bg schoolyard rain
+@bgm bgm_investigate
+@amb amb_rain
+@clearchars
 校史馆在实验楼后面。
 一栋两层的小灰楼，独立的，和别的楼隔着一片冬青。平时只在校庆和上级检查的时候开门。
 门口有块石碑，刻着"南栖中学校史馆"，落款是十二年前。
@@ -89,7 +103,7 @@ zhouxu(flat)：两步的话，我回头能抓住你。
 @set truth +1
 @endif
 @wait 0.6
-@goto ch4_day_start
+@goto ch4_prep_hub
 
 == ch4_prep_hub
 @bg schoolyard rain

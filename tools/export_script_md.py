@@ -76,7 +76,7 @@ NUM_LABEL = {
 # 纯演出指令：折叠成注记
 STAGE = {"bg", "bgm", "amb", "sfx", "fx", "wait", "show", "hide",
          "clearchars", "stopbgm", "stopamb", "autosave", "overlay",
-         "time", "advtime", "title", "chapter"}
+         "time", "timeat", "advtime", "title", "chapter"}
 # 影响类指令：附在选项/节点后
 EFFECT = {"set", "flag", "item", "clue", "state", "death", "ending"}
 

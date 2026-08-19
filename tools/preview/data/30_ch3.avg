@@ -44,7 +44,7 @@ radio：今晚不点名。
 
 -- ================================================= Scene 2 307规则纸
 == ch3_sc2
-@time 3 21:20
+@timeat 3 21:20
 @bg dorm night
 @amb amb_dorm_night
 @clearchars
@@ -456,7 +456,7 @@ zhouxu(sad)：不是我怕死。是我替过一次，就知道替一次是什么
 
 -- ================================================= Scene 6 第一次正式查寝
 == ch3_sc6
-@time 3 22:30
+@timeat 3 22:30
 @bg dorm dark
 @bgm bgm_horror
 @amb amb_dorm_night
@@ -1296,6 +1296,9 @@ zhouxu(sad)：四十一个人，四十一份笔录，一个字都不差。
 > 一个字都不差的四十一份笔录，本身就是答案。
 @clue clue_fire_truth
 @set truth +2
+@if flag_deep_route_night
+@goto ch3_deep_dawn
+@endif
 @goto ch3_sc10
 
 == ch3_s9_why
@@ -1307,6 +1310,9 @@ zhouxu(sad)：她说她要在广播里念一段话，念完，所有人就都能
 zhouxu(sad)：结果她一个人也没走成。
 @clue clue_fire_truth
 @set truth +3
+@if flag_deep_route_night
+@goto ch3_deep_dawn
+@endif
 @goto ch3_sc10
 
 == ch3_s9_how
@@ -1322,6 +1328,9 @@ zhouxu(sad)：是穿老师衣服的人。她没有穿鞋。
 @clue clue_fire_truth
 @set truth +4
 @set memory_echo +1
+@if flag_deep_route_night
+@goto ch3_deep_dawn
+@endif
 @goto ch3_sc10
 
 -- ================================================= Scene 10 收束：前往校史馆

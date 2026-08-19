@@ -6,7 +6,7 @@
 -- 并直接决定第三章夜里梁野被点名时能用几种手段救他。
 
 == ch3_day_hub
-@time 3 16:45
+@timeat 3 16:45
 @bg classroom dusk
 @bgm bgm_investigate
 @amb amb_classroom_day

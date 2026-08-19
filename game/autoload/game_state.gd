@@ -143,9 +143,40 @@ func reset_run() -> void:
 const DAY_LABEL: Array[String] = ["", "第一天", "第二天", "第三天", "第四天", "第五天"]
 
 func set_story_time(day: int, minute: int) -> void:
+	var before := story_day * 24 * 60 + story_minute
 	story_day = maxi(1, day)
 	story_minute = clampi(minute, 0, 24 * 60 - 1)
+	# 开发期护栏：@time 是绝对赋值，可自由排序的支线用它会把时钟往回拨。
+	# 这类问题在正式版里只体现为"时间显示忽然变早"，很难被发现，
+	# 因此在调试构建里直接报出来，提示改用 @timeat。
+	if OS.is_debug_build():
+		var after := story_day * 24 * 60 + story_minute
+		if after < before:
+			var msg := "[时间倒流] @time 把时钟从 第%d天%02d:%02d 拨回 第%d天%02d:%02d；" % [
+				before / 1440, (before % 1440) / 60, (before % 1440) % 60,
+				story_day, story_minute / 60, story_minute % 60]
+			push_warning(msg + "若该节点可被多条支线以不同顺序进入，请改用 @timeat。")
 	time_changed.emit(story_day, story_minute)
+
+## 单调时钟：把时间推进到「不早于」指定时刻，绝不倒流。
+##
+## 用于可自由排序的支线（第四章许清 / 老秦 / 李恒等）。这些节点各自
+## 写死一个绝对时刻，玩家换个顺序进入就会把时钟往回拨——先见 22:30 的
+## 李恒、再见 19:20 的许清，时间就倒流了 3 小时。
+##
+## 规则：
+##   目标时刻晚于当前 → 直接跳到目标（正常推进）
+##   目标时刻早于当前 → 保持当前时刻，只加 min_advance 分钟
+## 这样无论玩家用什么顺序访问，时间线都保持单调递增。
+func seek_story_time(day: int, minute: int, min_advance: int = 5) -> void:
+	var target := day * 24 * 60 + clampi(minute, 0, 24 * 60 - 1)
+	var now := story_day * 24 * 60 + story_minute
+	if target > now:
+		story_day = maxi(1, day)
+		story_minute = clampi(minute, 0, 24 * 60 - 1)
+		time_changed.emit(story_day, story_minute)
+	else:
+		advance_time(maxi(0, min_advance))
 
 ## 推进 n 分钟，跨过 24:00 自动进入下一天
 func advance_time(minutes: int) -> void:

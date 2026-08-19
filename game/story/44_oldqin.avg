@@ -4,7 +4,7 @@
 -- 接入：ch4 主线（值班室）
 
 == oldqin_hub
-@time 4 21:05
+@timeat 4 21:05
 @bg duty_room night
 @bgm bgm_unease
 @amb amb_rain

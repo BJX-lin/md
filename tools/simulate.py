@@ -452,7 +452,7 @@ class Runner:
             st.settle(int(a[0]))
         elif c == "chapter":
             st.chapter = int(a[0])
-        elif c in ("time", "advtime"):
+        elif c in ("time", "timeat", "advtime"):
             pass
         elif c == "goto":
             t = a[0]

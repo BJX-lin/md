@@ -27,6 +27,8 @@ var ui_root: Control
 var name_label: Label
 var text_label: RichTextLabel
 var box: PanelContainer
+var _box_text_holder: VBoxContainer      # 正文容器，纹理必须插在它之前
+var _box_texture: TextureRect            # 对话框纸纹底（缺图时为 null）
 var choice_box: VBoxContainer
 var continue_hint: Label
 var top_bar: HBoxContainer
@@ -250,6 +252,44 @@ func _apply_state_theme() -> void:
 		name_label.add_theme_color_override("font_color",
 			Color(0.84, 0.78, 0.62).lerp(Color(0.92, 0.42, 0.38), fr * 0.75))
 
+## 给对话框铺一层纸纹底。
+##
+## 纹理做成 box 的【兄弟节点并排在它前面】，而不是 box 的子节点：
+## PanelContainer 会把子节点按 content_margin 内缩 28px，
+## 纹理若放进去就铺不满边缘，会露出一圈色差。
+##
+## 相应地把 StyleBoxFlat 的底色调成半透明——底色只负责压暗，
+## 遮挡立绘下半身的任务交给不透明的纹理本身。
+## 边框仍在 StyleBoxFlat 上，_apply_state_theme() 的理智染色照常生效。
+##
+## assets/ui/dialogue_panel.png 缺失时整段跳过：底色自动还原为
+## 原来的 0.985 不透明，观感朴素但完全可用。
+func _apply_box_texture() -> void:
+	var path := "res://assets/ui/dialogue_panel.png"
+	if not ResourceLoader.exists(path):
+		return
+	var tex = load(path)
+	if not (tex is Texture2D):
+		return
+
+	_box_texture = TextureRect.new()
+	_box_texture.texture = tex
+	_box_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_box_texture.stretch_mode = TextureRect.STRETCH_SCALE
+	_box_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_box_texture.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	_box_texture.offset_left = box.offset_left
+	_box_texture.offset_right = box.offset_right
+	_box_texture.offset_top = box.offset_top
+	_box_texture.offset_bottom = box.offset_bottom
+	ui_root.add_child(_box_texture)
+	ui_root.move_child(_box_texture, box.get_index())
+
+	# 底色让位给纹理：只保留压暗作用
+	var sb := box.get_theme_stylebox("panel") as StyleBoxFlat
+	if sb != null:
+		sb.bg_color = Color(0.03, 0.03, 0.04, 0.55)
+
 func _build_text_box() -> void:
 	box = PanelContainer.new()
 	box.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
@@ -272,9 +312,16 @@ func _build_text_box() -> void:
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_root.add_child(box)
 
+	# 纹理底纹：铺在 StyleBoxFlat 之上、正文之下。
+	# 之所以用独立 TextureRect 而不是把 panel 换成 StyleBoxTexture，
+	# 是因为 _apply_state_theme() 需要按理智值改边框颜色/粗细，
+	# 那段逻辑依赖 panel 仍然是 StyleBoxFlat。
+	_apply_box_texture()
+
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 6)
 	box.add_child(v)
+	_box_text_holder = v
 
 	name_label = Label.new()
 	name_label.add_theme_font_size_override("font_size", 26)

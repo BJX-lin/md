@@ -15,7 +15,7 @@ validate_story.py 保证「结构可达」，simulate.py 保证「能通关」�
 import os
 import re
 import sys
-from collections import defaultdict
+from collections import defaultdict, deque
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -129,19 +129,121 @@ def main():
             elif tc - sc >= 2:
                 warns.append(f"[章节] {src}(第{sc}章) → {t}(第{tc}章) 跳过了整章")
 
-    # —— 6. 时间倒流（按文件内顺序）
+    # —— 6. 时间倒流（沿跳转图传播，能抓到「换个顺序走支线导致时钟倒退」）
+    #
+    # 只看文件内行序是不够的：第四章许清/老秦/李恒三条支线可任意排序，
+    # 各自写死一个绝对 @time，玩家先看 22:30 的李恒再看 19:20 的许清就会倒流。
+    # 这里从 prologue 出发，在跳转图上传播每个节点的【最早/最晚】到达时刻，
+    # 若某节点的 @time 早于它可能的到达时刻，即判定为时间倒流。
+    #
+    # @timeat 是单调时钟（只进不退），因此豁免。
+    node_time = {}    # node -> [(kind, value, line)]  kind: set/seek/adv
+    node_out = {}
+    cur_node = None
     for fn in files:
-        last = None
         for ln, raw in enumerate(open(os.path.join(STORY, fn), encoding="utf-8"), 1):
-            m = re.match(r"\s*@time\s+(\d+)\s+(\d+):(\d+)", raw)
-            if not m:
+            s = raw.rstrip("\n")
+            m = re.match(r"==\s*(\S+)", s)
+            if m:
+                cur_node = m.group(1)
+                node_time[cur_node] = []
+                node_out[cur_node] = []
                 continue
-            cur = (int(m.group(1)), int(m.group(2)) * 60 + int(m.group(3)))
-            if last and cur < last:
-                warns.append(f"[时间] {fn}:{ln} 时间回退 "
-                             f"第{last[0]}天{last[1] // 60:02d}:{last[1] % 60:02d}"
-                             f" → 第{cur[0]}天{cur[1] // 60:02d}:{cur[1] % 60:02d}")
-            last = cur
+            if cur_node is None:
+                continue
+            t = s.strip()
+            m = re.match(r"@(time|timeat)\s+(\d+)\s+(\d+):(\d+)", t)
+            if m:
+                node_time[cur_node].append(
+                    ("set" if m.group(1) == "time" else "seek",
+                     int(m.group(2)) * 1440 + int(m.group(3)) * 60 + int(m.group(4)), ln))
+            m = re.match(r"@advtime\s+(-?\d+)", t)
+            if m:
+                node_time[cur_node].append(("adv", int(m.group(1)), ln))
+            for tg in re.findall(r"->\s*(\S+)", s) + re.findall(r"@goto\s+(\S+)", s):
+                node_out[cur_node].append(tg)
+
+    START = "prologue"
+    if START in node_time:
+        # 支线 hub 普遍带 [if !visited:X] 守卫，实际不可能无限循环。
+        # 若沿着环反复累加 @advtime，"最晚到达"会被夸大到荒谬的值（第 40 天）。
+        # 因此先用 DFS 找出回边（指向递归栈上节点的边）并剔除，
+        # 在剩下的有向无环图上传播时间，结果才是真实可达区间。
+        back_edges = set()
+        color = {}
+
+        def _find_back(root):
+            stack = [(root, 0)]
+            color[root] = 1
+            while stack:
+                n, i = stack.pop()
+                outs = node_out.get(n, [])
+                if i < len(outs):
+                    stack.append((n, i + 1))
+                    t = outs[i]
+                    if t not in node_time:
+                        continue
+                    c = color.get(t, 0)
+                    if c == 1:
+                        back_edges.add((n, t))
+                    elif c == 0:
+                        color[t] = 1
+                        stack.append((t, 0))
+                else:
+                    color[n] = 2
+
+        _find_back(START)
+        for n in list(node_time):
+            if color.get(n, 0) == 0:
+                _find_back(n)
+
+        lo = {START: 1 * 1440 + 14 * 60 + 40}
+        hi = dict(lo)
+        queue = deque([START])
+        guard = 0
+        while queue and guard < 200000:
+            guard += 1
+            n = queue.popleft()
+            for base in {lo[n], hi[n]}:
+                cur = base
+                for kind, val, _ln in node_time.get(n, []):
+                    if kind == "set":
+                        cur = val
+                    elif kind == "seek":
+                        cur = max(cur, val)
+                    else:
+                        cur += val
+                for t in node_out.get(n, []):
+                    if t not in node_time or (n, t) in back_edges:
+                        continue
+                    changed = False
+                    if t not in lo:
+                        lo[t] = hi[t] = cur
+                        changed = True
+                    else:
+                        if cur < lo[t]:
+                            lo[t] = cur
+                            changed = True
+                        if cur > hi[t]:
+                            hi[t] = cur
+                            changed = True
+                    if changed:
+                        queue.append(t)
+
+        def _fmt(k):
+            return f"第{k // 1440}天{(k % 1440) // 60:02d}:{(k % 1440) % 60:02d}"
+
+        for n, evs in sorted(node_time.items()):
+            if n not in hi:
+                continue
+            sets = [e for e in evs if e[0] == "set"]
+            if not sets:
+                continue
+            _kind, tgt, ln = sets[0]
+            if hi[n] > tgt:
+                warns.append(
+                    f"[时间] {n}:{ln} 时间倒流 —— 最晚可能在 {_fmt(hi[n])} 到达，"
+                    f"却被 @time 拨回 {_fmt(tgt)}（改用 @timeat 可只进不退）")
 
     print("剧情连贯性审计")
     print("=" * 62)

@@ -464,7 +464,7 @@ xuqing(tired)：五年了，第一次有人在那个位置抬手。
 
 -- ================================================= 白天中枢
 == ch4_day_hub
-@time 4 09:40
+@timeat 4 09:40
 @bg hallway day
 @bgm bgm_day_class
 @amb amb_hallway
@@ -654,7 +654,7 @@ liangye(fragile)：我记住了。
 
 -- ================================================= 最后一节课
 == ch4_day_class
-@time 4 10:00
+@timeat 4 10:00
 @bg classroom day
 @bgm bgm_day_class
 @amb amb_classroom_day
@@ -841,7 +841,7 @@ oldqin(warning)：你自己保重。
 
 -- ================================================= 收束
 == ch4_day_end
-@time 4 14:50
+@timeat 4 14:50
 @bg schoolyard rain
 @bgm bgm_investigate
 @amb amb_rain
@@ -897,4 +897,4 @@ oldqin(warning)：你自己保重。
 > 距离最后一次点名，还有七小时十七分钟。
 @set truth +2
 @wait 1.2
-@goto ch4_prep_hub
+@goto ch4_afternoon

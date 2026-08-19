@@ -59,8 +59,9 @@ const BG_MAP := {
 		"": ["library_day"],
 		"day": ["library_day"],
 		"dusk": ["library_dim", "library_day"],
-		"night": ["library_stacks_night", "library_dim", "library_day"],
-		"dark": ["library_stacks_night", "library_dim", "library_day"],
+		"night": ["library_stacks_dark", "library_stacks_night", "library_dim", "library_day"],
+		"dark": ["library_stacks_dark", "library_stacks_night", "library_dim", "library_day"],
+		"stacks": ["library_stacks_dark", "library_stacks_night", "library_dim"],
 	},
 	"dorm": {
 		"": ["dorm_307_day", "dorm_307_night"],
@@ -112,10 +113,14 @@ const BG_MAP := {
 		"carving": ["desk_carving_shen"],
 	},
 	"stairwell": {
-		"": ["stairwell_night"], "night": ["stairwell_night"], "dark": ["stairwell_night"],
+		"": ["stairwell_night"], "night": ["stairwell_night"],
+		"dark": ["stairwell_dark_descend", "stairwell_night"],
+		"down": ["stairwell_dark_descend", "stairwell_night"],
 	},
 	"infirmary": {
 		"": ["infirmary_day"], "day": ["infirmary_day"], "dusk": ["infirmary_day"],
+		"night": ["infirmary_night", "infirmary_day"],
+		"dark": ["infirmary_night", "infirmary_day"],
 	},
 	"schoolgate": {
 		"": ["schoolgate_dusk"], "dusk": ["schoolgate_dusk"],
@@ -194,7 +199,9 @@ const BG_MAP := {
 		"mirror": ["washroom_night_mirror", "washroom_night"],
 	},
 	"canteen": {
-		"": ["canteen_day"], "day": ["canteen_day"], "dark": ["canteen_day"],
+		"": ["canteen_day"], "day": ["canteen_day"],
+		"night": ["canteen_night", "canteen_day"],
+		"dark": ["canteen_night", "canteen_day"],
 	},
 	"mirror": {
 		"": ["mirror_dark", "dorm_307_night"], "dark": ["mirror_dark", "dorm_307_night"],

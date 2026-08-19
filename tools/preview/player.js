@@ -708,6 +708,7 @@ function execCmd(ins){
     case "title": bigCard("",rest); return true;
     case "note": noteCard(rest.replace(/\\n/g,"\n")); return true;
     case "roster": rosterCard(); return true;
+    case "time": case "timeat": case "advtime": break;
     case "wait": blocked=true; pendingWait=parseFloat(args[0]||"1"); return true;
     case "chapter": { S.chapter=+args[0]; bigCard(+args[0]>=5?"第 终 章":"第 "+args[0]+" 章",rest.slice(args[0].length).trim()); return true; }
     case "settle": settle(+args[0]); break;

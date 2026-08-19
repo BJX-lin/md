@@ -4,7 +4,7 @@
 -- 接入：ch1_free_hub 的选项
 
 == ch1_day_hub
-@time 1 12:30
+@timeat 1 12:30
 @bg classroom day
 @bgm bgm_day_class
 @amb amb_classroom_day

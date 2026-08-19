@@ -4,7 +4,7 @@
 -- 接入：ch2_hub2 或旧楼段之后
 
 == ch2_night_hub
-@time 2 22:40
+@timeat 2 22:40
 @bg dorm_hall night
 @bgm bgm_unease
 @amb amb_dorm_night

@@ -4,7 +4,7 @@
 -- 影响：save_route_score / flag_liheng_pact / 终章他是否替你答到
 
 == liheng2_hub
-@time 4 22:30
+@timeat 4 22:30
 @bg classroom night
 @bgm bgm_truth
 @amb amb_classroom_night
