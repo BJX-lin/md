@@ -7,11 +7,68 @@ const GAME_SUBTITLE := "AFTER EVENING STUDY"
 const VERSION := "1.0.0"
 
 # ---------------------------------------------------------------- 反馈渠道
-## BUG 反馈 / 玩家交流 QQ 群。
-## 二维码图片在 assets/ui/qq_qr.png，内容指向 QQ_GROUP_URL。
-## 换群时三处要一起改：群号、链接、重新生成二维码图。
-const QQ_GROUP := "743689780"
-const QQ_GROUP_URL := "https://qm.qq.com/q/743689780"
+## BUG 反馈 / 玩家交流 QQ 群（防篡改存储）。
+##
+## 威胁模型：导出后的 pck 可以被解包，明文字符串一搜就能找到并替换成
+## 骗子的群号，再重新打包分发——玩家扫码进的就是假群。
+## 这类"改联系方式"的篡改在同人游戏里很常见，且受害的是玩家。
+##
+## 做法（三层）：
+##   1. 混淆存储：群号与链接不以明文出现，异或后 Base64
+##   2. 完整性签名：取用时校验 SHA256 摘要，改了就对不上
+##   3. 二维码指纹：图片本身也登记 SHA256，防止只换图片不改代码
+##
+## 注意：这不是加密，本地数据对本地攻击者不存在真正的机密性。
+## 目的是把"记事本搜字符串就能改"提升到"必须读懂并同步改三处"，
+## 并且一旦改错，游戏会明确告诉玩家"联系方式可能被篡改，别加"。
+##
+## 换群时用 tools/gen_contact.py 重新生成下面四个常量与二维码。
+const QQ_ENC := "dlJHU0p8QV1e"
+const QQ_SIG := "0ccc1702b3e3c42720142a01ffbe4b86"
+const QQ_URL_ENC := "KRIAFQF/WUofBEAWIloWCxQVS0xYWkdXW00NAkY="
+const QQ_URL_SIG := "7e9a2ce2a5c70e4f50bfec674175f204"
+## 二维码图片的 SHA256，防止只替换 assets/ui/qq_qr.png
+const QQ_QR_SHA := "0f32c760c3d47ed3ad2ead7d02d5cdcdbafbb3f516f27ace45126c05b77dfa39"
+
+const _CONTACT_KEY := "AfterEveningStudy::contact::v1"
+
+## 解出联系方式并校验完整性。校验失败返回空字符串，
+## 由调用方负责提示玩家"联系方式可能被篡改"。
+static func _decode_contact(enc: String, expect_sig: String) -> String:
+	var raw := Marshalls.base64_to_raw(enc)
+	if raw.is_empty():
+		return ""
+	var key := _CONTACT_KEY.to_utf8_buffer()
+	var out := PackedByteArray()
+	out.resize(raw.size())
+	for i in raw.size():
+		out[i] = raw[i] ^ key[i % key.size()]
+	var text := out.get_string_from_utf8()
+	if text == "":
+		return ""
+	var check := key.duplicate()
+	check.append_array(text.to_utf8_buffer())
+	check.append_array(key)
+	if check.sha256_text().substr(0, 32) != expect_sig:
+		return ""
+	return text
+
+## 群号。被篡改时返回空串。
+static func qq_group() -> String:
+	return _decode_contact(QQ_ENC, QQ_SIG)
+
+## 加群链接（二维码内容）。被篡改时返回空串。
+static func qq_group_url() -> String:
+	return _decode_contact(QQ_URL_ENC, QQ_URL_SIG)
+
+## 二维码图片是否未被替换。
+static func qq_qr_valid() -> bool:
+	var f := FileAccess.open("res://assets/ui/qq_qr.png", FileAccess.READ)
+	if f == null:
+		return false
+	var data := f.get_buffer(f.get_length())
+	f.close()
+	return data.sha256_text() == QQ_QR_SHA
 
 # ---------------------------------------------------------------- 数值上下限
 # 对应 f.md 《全局变量总表 · 1.1 数值变量表》

@@ -217,14 +217,37 @@ def _check_qr(game):
     cfg = os.path.join(game, "autoload", "config.gd")
     if not (os.path.isfile(qr_path) and os.path.isfile(cfg)):
         return 0
-    want = ""
-    for line in open(cfg, encoding="utf-8"):
-        m = _re.search(r'QQ_GROUP_URL\s*:=\s*"([^"]+)"', line)
-        if m:
-            want = m.group(1)
-            break
-    if not want:
+    # 联系方式改为混淆存储：先按 config.gd 的算法解出来
+    import base64 as _b64
+    import hashlib as _hl
+    src = open(cfg, encoding="utf-8").read()
+
+    def _const(name):
+        m = _re.search(r'const %s := "([^"]*)"' % name, src)
+        return m.group(1) if m else ""
+
+    key = "AfterEveningStudy::contact::v1".encode()
+    enc, sig = _const("QQ_URL_ENC"), _const("QQ_URL_SIG")
+    if not enc:
         return 0
+    raw = _b64.b64decode(enc)
+    want = bytes(raw[i] ^ key[i % len(key)]
+                 for i in range(len(raw))).decode("utf-8", "replace")
+    if _hl.sha256(key + want.encode() + key).hexdigest()[:32] != sig:
+        print("      !! 链接签名不符 —— 请用 tools/gen_contact.py 重新生成")
+        return 1
+
+    # 二维码图片指纹
+    qr_sha = _const("QQ_QR_SHA")
+    if qr_sha:
+        actual = _hl.sha256(open(qr_path, "rb").read()).hexdigest()
+        if actual != qr_sha:
+            print("      !! 二维码图片指纹不符")
+            print("         登记 %s" % qr_sha)
+            print("         实际 %s" % actual)
+            print("         请用 tools/gen_contact.py <群号> --write 重新生成")
+            return 1
+        print("      ✓ 二维码图片指纹与 QQ_QR_SHA 一致")
     try:
         import cv2
     except ImportError:

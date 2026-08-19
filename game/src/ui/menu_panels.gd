@@ -707,6 +707,33 @@ static func feedback_panel() -> Control:
 	var root: Control = pair[0]
 	var v := _scroll(pair[1])
 
+	# 联系方式走防篡改解码：被改过会返回空串。
+	var qq := Cfg.qq_group()
+	var qr_ok := Cfg.qq_qr_valid()
+	var tampered := qq == "" or Cfg.qq_group_url() == "" or not qr_ok
+
+	if tampered:
+		# 宁可不给联系方式，也不能把玩家送进假群。
+		var warn_box := PanelContainer.new()
+		var wsb := StyleBoxFlat.new()
+		wsb.bg_color = Color(0.20, 0.06, 0.05, 0.95)
+		wsb.border_color = Color(0.80, 0.30, 0.26, 0.9)
+		wsb.set_border_width_all(2)
+		wsb.content_margin_left = 24
+		wsb.content_margin_right = 24
+		wsb.content_margin_top = 18
+		wsb.content_margin_bottom = 18
+		warn_box.add_theme_stylebox_override("panel", wsb)
+		v.add_child(warn_box)
+		var wl := Label.new()
+		wl.text = "⚠ 联系方式校验未通过\n\n本页的群号或二维码与原版签名不符，\n可能已被第三方篡改。请不要按此处信息加群。\n\n请到官方发布页重新下载游戏。"
+		wl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		wl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		wl.add_theme_font_size_override("font_size", 24)
+		wl.add_theme_color_override("font_color", Color(0.96, 0.80, 0.76))
+		warn_box.add_child(wl)
+		return root
+
 	var intro := Label.new()
 	intro.text = "遇到卡关、闪退、错字、剧情前后矛盾、\n或者时间线对不上——都欢迎反馈。"
 	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -741,7 +768,7 @@ static func feedback_panel() -> Control:
 	cv.add_child(lab)
 
 	var num := Label.new()
-	num.text = Cfg.QQ_GROUP
+	num.text = qq
 	num.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	num.add_theme_font_size_override("font_size", 52)
 	num.add_theme_color_override("font_color", Color(0.90, 0.84, 0.66))
@@ -763,7 +790,7 @@ static func feedback_panel() -> Control:
 	copy_btn.focus_mode = Control.FOCUS_NONE
 	copy_btn.custom_minimum_size = Vector2(190, 0)
 	copy_btn.pressed.connect(func():
-		DisplayServer.clipboard_set(Cfg.QQ_GROUP)
+		DisplayServer.clipboard_set(qq)
 		AudioDirector.play_sfx("sfx_click", 0.8)
 		tip.text = "已复制到剪贴板"
 		tip.modulate.a = 1.0
