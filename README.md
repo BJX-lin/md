@@ -7,12 +7,12 @@
 - 时长：约 2~3 小时，4 章 + 终章，多结局
 - 玩法：文本剧情 / 选项分支 / 密码锁解谜 / 线索与道具收集 / 理智与信任数值系统 / 存档读档 / 周目循环
 
-## 直接下载
+## 直接下载（GitHub raw 直链）
 
 完整工程（含全部资源与工具，用 Godot 4.7.1 打开 `game/project.godot` 即可）：
 
 ```
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.1_full_project.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.2_full_project.zip
 ```
 
 ## 目录结构
@@ -69,3 +69,19 @@ godot --headless --path game res://tools/smoke_runner.tscn
 - 新增自定义角色名：新游戏前可为主角命名，正文、名牌与存档同步
 - 场景图完善：新增俯瞰夜景、主控柜特写、白天旧楼等场景并接入剧本（真结局“天晴”等场景实装）
 - 性能与代码清理：删除无用变量、限制回想/选择日志长度、预取清单更新
+
+> **关于 GitHub 100MB 硬限制**：git 推送的单文件上限是 100MB，服务端强制、
+> 无法关闭。当 ZIP 超过 100MB 时，请改用 **GitHub Releases** 发布
+> （单附件上限 2GB，且不再占用仓库体积）：
+>
+> ```bash
+> # 在你自己的电脑上（网络可达 uploads.github.com）执行，把 ZIP 挂到 v1.1.2 Release：
+> gh release upload v1.1.2 dist/The13thPeriod_v1.1.2_full_project.zip --repo BJX-lin/md
+> ```
+>
+> 上传完成后，下载地址为：
+> `https://github.com/BJX-lin/md/releases/download/v1.1.2/The13thPeriod_v1.1.2_full_project.zip`
+>
+> 其他备选方案：Git LFS（单文件 2~5GB，但免费存储/流量额度有限）、
+> 分包压缩（拆成多个 <100MB 的分卷）。注意：曾经提交进 git 历史的旧 ZIP
+> 会永久占仓库体积，如需彻底瘦身需重写历史（`git filter-repo`，有风险）。
