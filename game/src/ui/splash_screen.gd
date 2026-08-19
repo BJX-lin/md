@@ -118,10 +118,10 @@ func _show_stage(i: int) -> void:
 	tw.tween_property(root, "modulate:a", 1.0, FADE)
 	# 第二段图标轻微放大出场
 	if i == 1:
-		var icon := root.get_meta("icon", null)
+		var icon := root.get_meta("icon", null) as Control
 		if icon != null:
-			(icon as Control).scale = Vector2(0.86, 0.86)
-			(icon as Control).pivot_offset = (icon as Control).size * 0.5
+			icon.scale = Vector2(0.86, 0.86)
+			icon.pivot_offset = icon.size * 0.5
 			var tw2 := create_tween()
 			tw2.tween_property(icon, "scale", Vector2.ONE, 0.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 

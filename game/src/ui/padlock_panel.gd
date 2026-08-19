@@ -10,7 +10,6 @@ signal failed()
 var _code := ""
 var _display: Label
 var _input := ""
-var _shake_t: float = 0.0
 
 const KEY_ROWS := [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["⌫", "0", "确认"]]
 
@@ -131,7 +130,6 @@ func _submit() -> void:
 	else:
 		# 输错：红光 + 抖动，交由剧本结算
 		_display.add_theme_color_override("font_color", Color(1.0, 0.3, 0.25))
-		_shake_t = 0.28
 		var base := _display.position
 		var tw := create_tween()
 		tw.tween_property(_display, "position:x", base.x + 9.0, 0.04)
