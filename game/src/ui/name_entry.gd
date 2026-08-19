@@ -69,7 +69,7 @@ func _ready() -> void:
 	_edit.max_length = MAX_LEN
 	_edit.custom_minimum_size = Vector2(300, 64)
 	_edit.add_theme_font_size_override("font_size", 30)
-	_edit.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_edit.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_edit.text_submitted.connect(func(_t): _confirm())
 	edit_row.add_child(_edit)
 
