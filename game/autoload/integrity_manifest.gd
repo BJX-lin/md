@@ -10,7 +10,7 @@ extends Node
 
 ## 受保护文件 → SHA256（盐 + 文件内容）
 const MANIFEST := {
-	"autoload/config.gd": "e02feeca24ac39255936252878386ea1564538ab4c70cc2195cff00b44a010a8",
+	"autoload/config.gd": "8d0358c208cb4297bea43e0de22a71ba1e33815644f3584a9c88f166ccb59762",
 	"autoload/game_state.gd": "1e9fcfb914de7994c1e860eaf9a52577d41b8843222e6699459b1502f87e0be5",
 	"autoload/save_system.gd": "450fdb3f0ca6f68777472d37fbaf5b0159e924795e139a7124a0cf6ca4ac4b5a",
 	"autoload/story_engine.gd": "cfaf04e6b52bb3292c4dfaa2325b3af78e5b685049230e9ec87fc5d062bdffa2",

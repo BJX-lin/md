@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""烘焙密码锁的两个音效：sfx_unlock.wav / sfx_wrong.wav
+"""烘焙密码锁的两个音效：sfx_unlock.ogg / sfx_wrong.ogg
 
-规格与 assets/audio/ 现有文件一致：22050Hz / 16bit / 单声道 WAV。
+规格与 assets/audio/ 现有文件一致：22050Hz / 单声道，OGG Vorbis。
 """
 import math
 import random
-import struct
-import wave
 from pathlib import Path
+
+import soundfile as sf
 
 SR = 22050
 OUT = Path(__file__).resolve().parent.parent / "assets" / "audio"
@@ -15,16 +15,8 @@ random.seed(20240517)
 
 
 def write_wav(name: str, samples: list[float]) -> None:
-    path = OUT / f"{name}.wav"
-    with wave.open(str(path), "wb") as w:
-        w.setnchannels(1)
-        w.setsampwidth(2)
-        w.setframerate(SR)
-        frames = b"".join(
-            struct.pack("<h", max(-32767, min(32767, int(s * 32767))))
-            for s in samples
-        )
-        w.writeframes(frames)
+    path = OUT / f"{name}.ogg"
+    sf.write(str(path), samples, SR, format="OGG", subtype="VORBIS")
     print(f"wrote {path} ({len(samples) / SR:.2f}s)")
 
 

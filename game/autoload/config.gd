@@ -4,7 +4,7 @@ extends Node
 
 const GAME_TITLE := "第十三节课"
 const GAME_SUBTITLE := "THE 13TH PERIOD"
-const VERSION := "1.1.0"
+const VERSION := "1.1.1"
 
 # ---------------------------------------------------------------- 反馈渠道
 ## BUG 反馈 / 玩家交流 QQ 群（防篡改存储）。

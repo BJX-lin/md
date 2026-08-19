@@ -7,6 +7,14 @@
 - 时长：约 2~3 小时，4 章 + 终章，多结局
 - 玩法：文本剧情 / 选项分支 / 密码锁解谜 / 线索与道具收集 / 理智与信任数值系统 / 存档读档 / 周目循环
 
+## 直接下载
+
+完整工程（含全部资源与工具，用 Godot 4.7.1 打开 `game/project.godot` 即可）：
+
+```
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.1_full_project.zip
+```
+
 ## 目录结构
 
 ```
@@ -50,7 +58,7 @@ godot --headless --path game res://tools/smoke_runner.tscn
 文本插值：`{pname}` 玩家名、`{num:truth}` 数值、`{item:item_xxx}` 道具名、
 `{if 条件?A|B}` 条件文本。玩家改名后正文中的「林昼」自动替换为玩家名字。
 
-## v1.1.0 更新（本分支）
+## v1.1.1 更新（本分支）
 
 - 游戏名更改为《第十三节课》，同步更新开屏 / 标题 / 工程配置 / 安卓包名（`com.example.the13thperiod`）与全部图标（含自适应图标）
 - 开屏动画改为官方 Godot 引擎图标 + 游戏专属图标（均带无贴图兜底）
