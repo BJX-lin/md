@@ -440,21 +440,52 @@ func settle_chapter_4() -> void:
 var player_chose_self_substitute := false
 var player_triggered_fire_sequence := false
 
+## 真结局软权重（f.md 9.1 权重表 + 8.1/8.2 角色状态影响）。
+## 满分 14；与 f.md 判定一致：权重 >= 8 且硬条件满足才可进真结局。
+func _true_end_weight() -> int:
+	var w := 0
+	if get_flag("flag_name_written_back"):
+		w += 2
+	if get_flag("flag_night_roster_taken"):
+		w += 2
+	if get_flag("flag_chose_save_shenhe"):
+		w += 3
+	if get_num("trust_liangye") >= 4:
+		w += 2
+	match get_state("liangye_end_state"):
+		"present_anchor":
+			w += 2
+		"present_fragile_truth":
+			w += 1
+		"absent_echo":
+			w -= 2
+	if get_num("trust_zhouxu") >= 3:
+		w += 1
+	if get_state("zhouxu_end_state") == "enter_with_player":
+		w += 1
+	if get_flag("flag_saw_fire_video"):
+		w += 1
+	if get_flag("flag_true_linday_status_known"):
+		w += 1
+	return w
+
+
 func can_true_end() -> bool:
 	return (
 		get_state("truth_state") == "complete"
 		and get_flag("true_end_precondition_1")
 		and get_flag("true_end_precondition_2")
-		and get_num("save_route_score") >= 46
+		and get_num("save_route_score") >= 100
 		and get_flag("flag_rule_terms_complete")
 		and get_flag("flag_terminal_broadcast_ready")
 		and not get_flag("flag_gave_up_roommate")
 		and get_state("liangye_end_state") in ["present_anchor", "present_fragile_truth"]
+		and _true_end_weight() >= 8
 	)
 
 func can_bittersweet_exchange() -> bool:
 	return (
-		get_num("save_route_score") >= 31
+		get_num("save_route_score") >= 80
 		and get_flag("flag_terminal_broadcast_ready")
 		and (
 			get_state("liangye_end_state") == "absent_echo"

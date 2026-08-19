@@ -81,24 +81,26 @@ static func qq_qr_valid() -> bool:
 
 # ---------------------------------------------------------------- 数值上下限
 # 对应 f.md 《全局变量总表 · 1.1 数值变量表》
+# 范围按剧本实际数值校准（tools 统计：各变量单线正增量总和），
+# 留出分支余量，避免 clampi_var 截断导致高数值区间失去区分度。
 const NUM_RANGE := {
-	"truth": [0, 1500],
+	"truth": [0, 4000],
 	"evidence_count": [0, 8],
 	"sanity": [0, 100],
-	"memory_echo": [0, 460],
-	"shenhe_focus": [0, 190],
-	"trust_zhouxu": [-14, 52],
-	"trust_liangye": [-12, 48],
-	"trust_xuqing": [-8, 5],
-	"trust_oldqin": [-5, 8],
-	"route_obedience": [0, 24],
-	"route_investigate": [0, 24],
-	"route_empathy": [0, 14],
-	"route_hostility": [0, 14],
-	"taboo_count": [0, 25],
-	"save_route_score": [0, 150],
-	"end_cycle_score": [0, 20],
-	"control_route_score": [0, 20],
+	"memory_echo": [0, 1200],
+	"shenhe_focus": [0, 350],
+	"trust_zhouxu": [-60, 120],
+	"trust_liangye": [-60, 110],
+	"trust_xuqing": [-10, 12],
+	"trust_oldqin": [-12, 26],
+	"route_obedience": [0, 100],
+	"route_investigate": [0, 130],
+	"route_empathy": [0, 110],
+	"route_hostility": [0, 40],
+	"taboo_count": [0, 40],
+	"save_route_score": [0, 400],
+	"end_cycle_score": [0, 28],
+	"control_route_score": [0, 28],
 }
 
 const NUM_DEFAULT := {
@@ -144,6 +146,27 @@ const NUM_LABEL := {
 # 玩家可见的核心四项
 const NUM_VISIBLE := ["truth", "sanity", "memory_echo", "shenhe_focus"]
 
+# ---------------------------------------------------------------- 状态条满刻度
+## 与 NUM_RANGE（全收集上限，防截断）不同：这是单周目实际可达的满刻度，
+## 状态面板的进度条用它归一化，保证条形图始终有意义（不会因上限过大而空）。
+const BAR_MAX := {
+	"truth": 1500,
+	"memory_echo": 600,
+	"shenhe_focus": 300,
+	"trust_zhouxu": 60,
+	"trust_liangye": 60,
+	"trust_xuqing": 12,
+	"trust_oldqin": 26,
+	"route_obedience": 100,
+	"route_investigate": 130,
+	"route_empathy": 110,
+	"route_hostility": 40,
+	"taboo_count": 40,
+	"save_route_score": 200,
+	"end_cycle_score": 28,
+	"control_route_score": 28,
+}
+
 # ---------------------------------------------------------------- 枚举状态
 const ENUM_DEFAULT := {
 	"liangye_state": "normal",
@@ -181,20 +204,24 @@ const CHARACTERS := {
 }
 
 # ---------------------------------------------------------------- 阈值表（f.md 六）
+# truth 标度 0~4000：按 f.md 0~30 节奏重分布（低档密集、高档拉开），
+# 与 settle_chapter_4 的 complete(820)/high(640) 判定保持自洽。
 const TH_TRUTH := [
-	[217, "能确认异常不是错觉"],
-	[435, "能读懂基础规则文本"],
-	[676, "能理解待定 / 删除的危险差别"],
-	[863, "第三章末可稳定推进校史馆线"],
-	[1008, "可主动质问补位 / 循环"],
-	[1180, "真相层级可判为 complete 候选"],
+	[230, "能确认异常不是错觉"],
+	[460, "能读懂基础规则文本"],
+	[690, "能理解待定 / 删除的危险差别"],
+	[830, "第三章末可稳定推进校史馆线"],
+	[920, "可主动质问补位 / 循环"],
+	[1150, "真相层级可判为 complete 候选"],
+	[1280, "可见高阶真相、自我重复更明确"],
 ]
 
+## 理智档位边界与 f.md 6.2 对齐（0~19 崩溃边缘）
 const TH_SANITY := [
 	[80, "叙述稳定，可信"],
 	[60, "偶发错听、余光异常"],
 	[40, "文本开始出现被篡改的行"],
-	[25, "会看到不存在的人、听见自己的声音"],
+	[20, "会看到不存在的人、听见自己的声音"],
 	[10, "选项文本可能撒谎"],
 ]
 

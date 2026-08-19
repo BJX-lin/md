@@ -343,7 +343,7 @@ static func _bar_row(key: String) -> Control:
 	var r: Array = Cfg.NUM_RANGE.get(key, [0, 10])
 	var pb := ProgressBar.new()
 	pb.min_value = float(r[0])
-	pb.max_value = float(r[1])
+	pb.max_value = float(Cfg.BAR_MAX.get(key, r[1]))
 	pb.value = float(GameState.get_num(key))
 	pb.show_percentage = false
 	pb.custom_minimum_size = Vector2(360, 20)
