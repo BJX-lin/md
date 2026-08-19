@@ -2,11 +2,6 @@ extends Node
 # Endings
 
 signal var_changed(key: String, old_value: int, new_value: int)
-signal flag_changed(key: String, value: bool)
-signal item_gained(item_id: String)
-signal clue_unlocked(clue_id: String)
-signal state_changed(key: String, value: String)
-signal sanity_crisis()
 signal time_changed(day: int, minute: int)
 
 var nums: Dictionary = {}
@@ -214,8 +209,6 @@ func set_num(key: String, value: int) -> void:
 	nums[key] = nv
 	if nv != old:
 		var_changed.emit(key, old, nv)
-		if key == "sanity" and nv <= 25 and old > 25:
-			sanity_crisis.emit()
 
 func add_num(key: String, delta: int) -> void:
 	set_num(key, get_num(key) + delta)
@@ -225,14 +218,12 @@ func get_flag(key: String) -> bool:
 
 func set_flag(key: String, value: bool = true) -> void:
 	flags[key] = value
-	flag_changed.emit(key, value)
 
 func get_state(key: String) -> String:
 	return String(states.get(key, ""))
 
 func set_state(key: String, value: String) -> void:
 	states[key] = value
-	state_changed.emit(key, value)
 
 # Items
 func has_item(id: String) -> bool:
@@ -241,7 +232,6 @@ func has_item(id: String) -> bool:
 func add_item(id: String) -> void:
 	if not inventory.has(id):
 		inventory.append(id)
-		item_gained.emit(id)
 
 func remove_item(id: String) -> void:
 	inventory.erase(id)
@@ -249,7 +239,6 @@ func remove_item(id: String) -> void:
 func add_clue(id: String) -> void:
 	if not clues.has(id):
 		clues.append(id)
-		clue_unlocked.emit(id)
 		var seen: Array = persistent.get("clues_seen", [])
 		if not seen.has(id):
 			seen.append(id)

@@ -422,7 +422,6 @@ func _connect_engine() -> void:
 	StoryEngine.overlay_requested.connect(_on_overlay)
 	StoryEngine.chapter_started.connect(_on_chapter)
 	StoryEngine.story_finished.connect(func(e): finished.emit(e))
-	GameState.clue_unlocked.connect(func(_id): pass)
 
 func _on_scene(kind: String, value: String, extra: String) -> void:
 	if kind == "bg":
