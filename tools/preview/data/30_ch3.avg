@@ -4,7 +4,7 @@
 == ch3_start
 @chapter 3 熄灯
 @time 3 16:30
-@set sanity +30
+@set sanity +6
 @bg dorm_door night
 @bgm bgm_unease
 @amb amb_dorm_night
@@ -1119,7 +1119,7 @@ zhouxu(urgent)：它要的是一个应答。它不管是谁。
 @sfx sfx_step
 @wait 1.0
 @fx heartbeat 1.0
-@set sanity +8
+@set sanity +5
 梁野在你手底下瘫软下来，开始发抖。
 @wait 0.8
 @clearchars

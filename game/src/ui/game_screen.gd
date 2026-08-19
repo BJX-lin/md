@@ -18,6 +18,11 @@ const MP := preload("res://src/ui/menu_panels.gd")
 ## 在常见手机上约等于物理 9~10mm，接近各家移动端指南的下限建议。
 const TOUCH_MIN := 48
 
+## 理智低于此值开始出现正文重影（叠字）。
+## 平衡后单周目理智中位数约 28、约三成周目会跌破 20，
+## 因此 20 是"多数人至少会遇到一次"的合适门槛。
+const SANITY_GHOST_AT := 20.0
+
 var world: Control              # 可抖动的容器
 var bg: BGLayer
 var actor_root: Control
@@ -30,6 +35,7 @@ var ui_root: Control
 
 var name_label: Label
 var text_label: RichTextLabel
+var text_ghost: RichTextLabel            # 低理智重影层
 var box: PanelContainer
 var _box_text_holder: VBoxContainer      # 正文容器，纹理必须插在它之前
 var _box_texture: TextureRect            # 对话框纸纹底（缺图时为 null）
@@ -356,14 +362,34 @@ func _build_text_box() -> void:
 	else:
 		v.add_child(name_label)
 
+	# 正文与「重影层」叠在同一格里：
+	# 低理智时重影层显示同一段文字，带位移与色偏，制造看不清、
+	# 字在动的错觉。正文本身始终原样，保证读得懂。
+	var text_stack := Control.new()
+	text_stack.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	text_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	v.add_child(text_stack)
+
+	text_ghost = RichTextLabel.new()
+	text_ghost.bbcode_enabled = true
+	text_ghost.fit_content = false
+	text_ghost.scroll_active = false
+	text_ghost.set_anchors_preset(Control.PRESET_FULL_RECT)
+	text_ghost.add_theme_font_size_override("normal_font_size", 29)
+	text_ghost.add_theme_constant_override("line_separation", 10)
+	text_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_ghost.visible = false
+	text_stack.add_child(text_ghost)
+
 	text_label = RichTextLabel.new()
 	text_label.bbcode_enabled = true
 	text_label.fit_content = false
 	text_label.scroll_active = false
-	text_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	text_label.set_anchors_preset(Control.PRESET_FULL_RECT)
 	text_label.add_theme_font_size_override("normal_font_size", 29)
 	text_label.add_theme_constant_override("line_separation", 10)
-	v.add_child(text_label)
+	text_stack.add_child(text_label)
 
 	continue_hint = Label.new()
 	continue_hint.text = "▼"
@@ -595,6 +621,10 @@ func _on_line(line: Dictionary) -> void:
 	_full_text = prefix + raw + suffix
 	text_label.text = _full_text
 	text_label.visible_characters = 0
+	# 重影层同步文本（是否显示、怎么错位由 _update_text_ghost 每帧决定）
+	if is_instance_valid(text_ghost):
+		text_ghost.text = _full_text
+		text_ghost.visible_characters = 0
 	_shown = 0
 	_typing = true
 	_type_acc = 0.0
@@ -604,11 +634,51 @@ func _on_line(line: Dictionary) -> void:
 
 ## 低理智时的文本篡改（保证叙述不可靠感）
 ## 低理智不再篡改台词本身（会影响阅读与理解），
-## 改为通过 SanityFX 影响 UI 呈现：抖动、色偏、暗角、噪点。
+## 改为通过 SanityFX 影响 UI 呈现：抖动、色偏、暗角、噪点，
+## 以及 _update_text_ghost 的正文重影。
 func _corrupt(t: String) -> String:
 	return t
 
+## 低理智正文重影。
+##
+## 理智低于 SANITY_GHOST_AT 时，在正文下方叠一层同样的文字，
+## 带位移 + 色偏 + 轻微抖动，读起来像重影／叠字。
+##
+## 关键取舍：**动的是重影层，正文层永远不动、永远不改字**。
+## 这样既有"看不清"的压迫感，又不会真的读不懂——
+## 玩家眯眼或等一下总能读完，不会卡在看不清剧情上。
+##
+## 越低越夸张：
+##   20 以下  开始出现淡淡重影
+##   10 以下  位移拉大、色偏明显（红/青分离）
+##    5 以下  重影抖动，偶尔出现第二层
+func _update_text_ghost(_delta: float) -> void:
+	if not is_instance_valid(text_ghost):
+		return
+	var san := float(GameState.get_num("sanity"))
+	if san >= SANITY_GHOST_AT:
+		if text_ghost.visible:
+			text_ghost.visible = false
+		return
+
+	# 0（刚到 20）→ 1（0）
+	var g := clampf((SANITY_GHOST_AT - san) / SANITY_GHOST_AT, 0.0, 1.0)
+	text_ghost.visible = true
+	text_ghost.visible_characters = text_label.visible_characters
+
+	var amp := 1.5 + g * 7.0                     # 位移幅度
+	var jitter := 0.0
+	if g > 0.5 and bool(SaveSystem.settings.get("screen_shake", true)):
+		jitter = (g - 0.5) * 4.0
+	var t := Time.get_ticks_msec() / 1000.0
+	var gx := -amp + sin(t * 2.3) * jitter
+	var gy := amp * 0.45 + cos(t * 3.1) * jitter * 0.6
+	text_ghost.position = Vector2(gx, gy)
+	# 色偏：低理智时偏冷红，像印刷套色没对准
+	text_ghost.modulate = Color(0.95, 0.42, 0.40, 0.16 + g * 0.30)
+
 func _process(delta: float) -> void:
+	_update_text_ghost(delta)
 	if _pending_wait > 0.0:
 		_pending_wait -= delta
 		if _pending_wait <= 0.0:

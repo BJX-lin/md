@@ -166,10 +166,14 @@ function settle(ch){
     if(F.flag_night_roster_taken||S.items.has("item_night_roster")) F.true_end_precondition_2=true;
     S.chapter=4;
   } else if(ch===4){
+    // 真结局前置复核（与 game_state.settle_chapter_4 一致）：
+    // 依赖的道具第四章才拿得到，只在第三章判一次会漏。
+    if(F.flag_name_written_back) F.true_end_precondition_1=true;
+    if(F.flag_night_roster_taken||S.items.has("item_night_roster")) F.true_end_precondition_2=true;
     const t=n("truth");
     const core = F.flag_saw_fire_video && F.flag_saw_self_repeat && F.flag_rule_terms_complete;
-    st.truth_state = (t>=(S.flags["flag_testimony_given"]?700:1180)&&core&&F.flag_true_linday_status_known) ? "complete"
-      : ((t>=863&&(F.flag_saw_fire_video||F.flag_roster_core_taken)) ? "high" : "partial");
+    st.truth_state = (t>=(S.flags["flag_testimony_given"]?740:820)&&core&&F.flag_true_linday_status_known) ? "complete"
+      : ((t>=640&&(F.flag_saw_fire_video||F.flag_roster_core_taken)) ? "high" : "partial");
     const m={anchor_alive:"present_anchor",rescued_half:"present_fragile_truth",fragile_alive:"present_unstable"};
     st.liangye_end_state = F.flag_liangye_final_loss ? "absent_echo" : (m[st.liangye_final_state_ch3]||"absent_echo");
     st.zhouxu_end_state = st.zhouxu_final_state_ch3==="confessor_protector"
@@ -186,15 +190,15 @@ function determineEnding(){
  if(S.flags["flag_count_overflow"]){S.states.truth_state="complete";S.flags["flag_terminal_broadcast_ready"]=1;S.flags["true_end_precondition_1"]=1;S.flags["true_end_precondition_2"]=1;S.flags["flag_rule_terms_complete"]=1;}
   const F=S.flags, st=S.states;
   if(st.truth_state==="complete" && F.true_end_precondition_1 && F.true_end_precondition_2
-     && n("save_route_score")>=58 && F.flag_rule_terms_complete && F.flag_terminal_broadcast_ready
+     && n("save_route_score")>=46 && F.flag_rule_terms_complete && F.flag_terminal_broadcast_ready
      && !F.flag_gave_up_roommate && ["present_anchor","present_fragile_truth"].includes(st.liangye_end_state))
     return "ending_true_release";
-  if(n("save_route_score")>=36 && F.flag_terminal_broadcast_ready
+  if(n("save_route_score")>=31 && F.flag_terminal_broadcast_ready
      && (st.liangye_end_state==="absent_echo" || !F.flag_rule_terms_complete || F.flag_player_self_substitute))
     return "ending_bittersweet_exchange";
-  if(n("end_cycle_score")>=9 && F.flag_terminal_broadcast_ready && F.flag_chose_end_cycle)
+  if(n("end_cycle_score")>=7 && F.flag_terminal_broadcast_ready && F.flag_chose_end_cycle)
     return "ending_destroyer";
-  if(n("control_route_score")>=9 || (F.flag_gave_up_roommate && n("control_route_score")>=7))
+  if(n("control_route_score")>=7 || (F.flag_gave_up_roommate && n("control_route_score")>=5))
     return "ending_manager";
   return "ending_empty_seat";
 }

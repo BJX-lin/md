@@ -148,7 +148,7 @@ unknown(flat)：查寝。
 * 数一数整个校园还有几盏灯 -> ch3_roof_count
     @set truth +3
 * 在天台边缘坐一会儿 -> ch3_roof_sit
-    @set sanity +10
+    @set sanity +6
 * 找找有没有人来过的痕迹 -> ch3_roof_trace
     @set truth +2
     @set route_investigate +1

@@ -169,6 +169,8 @@ UI_TEXTURES = {
     "name_plate":      ("说话人名字牌", (512, 72)),
     "topbar":          ("顶栏质感底", (1024, 96)),
     "qq_qr":           ("QQ 群二维码", (568, 568)),
+    "handprint":       ("血手印（gore_overlay）", (512, 512)),
+    "blood_vignette":  ("低理智血色暗角", (1376, 768)),
 }
 
 

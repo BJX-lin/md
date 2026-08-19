@@ -347,7 +347,7 @@ zhouxu(tired)：所以你得有。
 > 一句很笨的逻辑。
 > 但你忽然觉得好受了一点。
 @wait 1.2
-@set sanity +8
+@set sanity +5
 @set trust_liangye +2
 @set memory_echo +2
 @flag flag_three_pact

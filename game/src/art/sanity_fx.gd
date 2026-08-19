@@ -15,6 +15,10 @@ class_name SanityFX
 ##   10-24 抖动加剧、偶发闪烁、余光黑影
 ##   <10   持续色差、频繁闪断、视野明显收窄
 
+## 理智低于此值开始出现血色暗角。
+## 比正文重影（20）略早一点：先"看见血"，再"看不清字"。
+const BLOOD_AT := 35.0
+
 var _t := 0.0
 var _noise_seed := 0
 var _flash_timer := 0.0
@@ -69,6 +73,19 @@ func _draw() -> void:
 	var s := size
 	if s.x <= 1.0 or s.y <= 1.0:
 		return
+
+	# ---- 0. 血色暗角贴图：理智 < 35 开始从四边渗入
+	# 用真实血迹贴图代替纯黑暗角，恐怖感强得多。
+	# 中心保持透明，不遮挡正文与立绘。缺图则跳过，下面的程序化暗角照常工作。
+	var san0 := float(GameState.get_num("sanity"))
+	if san0 < BLOOD_AT:
+		var bt := UITex.get_tex("blood_vignette")
+		if bt != null:
+			var bg: float = clampf((BLOOD_AT - san0) / BLOOD_AT, 0.0, 1.0)
+			# 心跳式脉动，越低越明显
+			var beat: float = 0.85 + 0.15 * sin(_t * (1.4 + bg * 2.0))
+			var ba: float = bg * 0.72 * beat
+			draw_texture_rect(bt, Rect2(Vector2.ZERO, s), false, Color(1, 1, 1, ba))
 
 	# ---- 1. 暗角收紧：理智越低，视野越窄
 	var steps := 18

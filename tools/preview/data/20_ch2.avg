@@ -4,7 +4,7 @@
 == ch2_start
 @chapter 2 旧楼
 @time 2 07:10
-@set sanity +30
+@set sanity +12
 @bg classroom day
 @bgm bgm_day_class
 @amb amb_classroom_day

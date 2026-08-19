@@ -93,7 +93,19 @@ func _draw() -> void:
 			"edge": _draw_edge(s, col, int(m["seed"]))
 			"crack": _draw_crack(c, sc, col, int(m["seed"]))
 
+## 血手印。
+##
+## 优先用 assets/ui/handprint.png（真实质感、带干裂纹理）；
+## 缺图时回落到下面的程序化画法，保证不开天窗。
+## 贴图按 col 染色，因此「变干：鲜红→暗褐」的渐变依然生效。
 func _draw_hand(c: Vector2, sc: float, rot: float, col: Color, sd: int) -> void:
+	var tex := UITex.get_tex("handprint")
+	if tex != null:
+		var w := sc * 2.6
+		draw_set_transform(c, rot, Vector2.ONE)
+		draw_texture_rect(tex, Rect2(-Vector2(w, w) * 0.5, Vector2(w, w)), false, col)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		return
 	var rng := RandomNumberGenerator.new()
 	rng.seed = sd
 	# 掌心

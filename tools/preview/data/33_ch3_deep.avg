@@ -368,7 +368,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
     @set truth +5
     @set route_investigate +2
 * 关机睡觉 -> ch3_deep_phone_c
-    @set sanity +8
+    @set sanity +5
 
 == ch3_deep_phone_a
 你输入"沈禾"两个字。
@@ -715,7 +715,7 @@ zhouxu(tired)：不管你查到什么，别一个人去广播室。
 窗外有鸟叫。宿舍楼下有早起的人在打水，铁桶碰到水泥地的声音。
 @wait 1.0
 这些声音很正常。正常得让人想哭。
-@set sanity +10
+@set sanity +6
 @wait 0.8
 @if flag_bed_marks
 你伸手到床板下面，摸那排刻痕。

@@ -7,7 +7,7 @@
 == ch4_start
 @chapter 4 照片
 @timeat 4 06:40
-@set sanity +25
+@set sanity +5
 @bg dorm dark
 @bgm bgm_investigate
 @amb amb_rain
@@ -698,6 +698,21 @@ zhouxu(flat)：看了也改变不了那十一分钟。
 @clue clue_109th
 @flag flag_saw_self_repeat
 @clue clue_self_repeat
+-- 夜间名单的第二个获取点。
+-- 原先它只能在第三章「从门缝下伸手去够」那一处拿到，且该选项本身还要
+-- 先满足 flag_peeped_door，导致真结局前置 2 有 90% 的周目根本拿不到。
+-- 核心名单页夹着同一份东西，是合理的补救入口。
+@if !flag_night_roster_taken
+@wait 0.8
+名单页之间夹着另一张更薄的纸，边缘发毛，像是被人反复折过。
+@sfx sfx_page
+你把它抽出来。是一张夜间核对名单——和你在门缝下见过的那种，一模一样。
+@item +item_night_roster
+@flag flag_night_roster_taken
+@set truth +3
+@clue clue_night_rewrite
+> 凌晨两点十七分，纸上的墨会自己动。
+@endif
 @wait 1.2
 > 第109次。
 > 图书馆那本书被撕掉的，正好是第109页。
