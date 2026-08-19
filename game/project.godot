@@ -23,6 +23,9 @@ StoryEngine="*res://autoload/story_engine.gd"
 AudioDirector="*res://autoload/audio_director.gd"
 SaveSystem="*res://autoload/save_system.gd"
 ArtCache="*res://autoload/art_cache.gd"
+Integrity="*res://autoload/integrity_manifest.gd"
+ContentPolicy="*res://autoload/content_policy.gd"
+Workshop="*res://autoload/workshop.gd"
 
 [display]
 

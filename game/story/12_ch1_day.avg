@@ -795,7 +795,7 @@ liangye(normal)：我这人记性差。
 
 -- ================================================= 收束
 == ch1_day_end
-@bg hallway day
+@bg hallway empty
 @bgm bgm_unease
 @amb amb_hallway
 @clearchars

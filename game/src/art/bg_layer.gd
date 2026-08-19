@@ -36,6 +36,7 @@ const BG_MAP := {
 	"classroom": {
 		"": ["classroom_day", "classroom_evening"],
 		"day": ["classroom_day", "classroom_evening"],
+		"rollcall_day": ["classroom_day_rollcall", "classroom_day"],
 		"morning": ["classroom_morning", "classroom_day"],
 		"dawn": ["classroom_empty_dawn", "classroom_morning"],
 		"empty": ["classroom_empty_dawn", "classroom_evening_missingseat"],
@@ -50,6 +51,8 @@ const BG_MAP := {
 	"hallway": {
 		"": ["hallway_day", "hallway_night"],
 		"day": ["hallway_day", "hallway_night"],
+		"empty": ["hallway_day_empty", "hallway_day"],
+		"break": ["hallway_day_empty", "hallway_day"],
 		"dusk": ["hallway_dusk", "hallway_night", "hallway_day"],
 		"flicker": ["hallway_night_flicker", "hallway_night"],
 		"night": ["hallway_night"],
@@ -183,6 +186,8 @@ const BG_MAP := {
 	},
 	"monitor_room": {
 		"": ["monitor_room"], "dark": ["monitor_room"],
+		"wall": ["monitor_room_wall", "monitor_room"],
+		"grid": ["monitor_room_wall", "monitor_room"],
 		"snow": ["monitor_room_snow", "monitor_room"],
 	},
 	"schoolyard": {

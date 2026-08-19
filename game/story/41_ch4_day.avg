@@ -64,7 +64,7 @@ liangye(nervous)：等下课再说吧。
 -- ================================================= 早读点名（主线必经）
 == ch4_day_rollcall
 @time 4 07:30
-@bg classroom morning
+@bg classroom rollcall_day
 @bgm bgm_rollcall
 @amb amb_classroom_day
 @clearchars

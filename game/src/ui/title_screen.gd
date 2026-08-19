@@ -7,6 +7,7 @@ signal load_slot(i: int)
 
 const BGLayerS := preload("res://src/art/bg_layer.gd")
 const MenuPanelsS := preload("res://src/ui/menu_panels.gd")
+const WorkshopPanelsS := preload("res://src/ui/workshop_panels.gd")
 
 var _t := 0.0
 var subtitle_label: Label
@@ -122,6 +123,7 @@ func _ready() -> void:
 		var p := MenuPanelsS.system_panel()
 		p.set_meta("on_quit", func(): pass)
 		add_child(p))
+	_add_btn(right, "创意工坊", func(): add_child(WorkshopPanelsS.workshop_panel()))
 	_add_btn(right, "BUG 反馈 / 交流群", func(): add_child(MenuPanelsS.feedback_panel()))
 	if OS.get_name() != "Web":
 		_add_btn(right, "退出", func(): get_tree().quit())

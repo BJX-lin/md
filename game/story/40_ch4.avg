@@ -393,7 +393,7 @@ xuqing(sad)：我描了五年的字。手已经不听使唤了。
 -- ================================================= Scene 5 监控内档室
 == ch4_sc5
 @advtime 25
-@bg monitor_room dark
+@bg monitor_room wall
 @bgm bgm_truth
 @amb amb_broadcast_static
 @clearchars
