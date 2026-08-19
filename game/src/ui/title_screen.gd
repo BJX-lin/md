@@ -81,6 +81,7 @@ func _ready() -> void:
 		var p := MenuPanelsS.system_panel()
 		p.set_meta("on_quit", func(): pass)
 		add_child(p))
+	_add_btn(v, "BUG 反馈 / 交流群", func(): add_child(MenuPanelsS.feedback_panel()))
 	if OS.get_name() != "Web":
 		_add_btn(v, "退出", func(): get_tree().quit())
 
@@ -102,7 +103,8 @@ func _add_btn(v: VBoxContainer, text: String, cb: Callable, disabled := false) -
 	b.text = text
 	b.disabled = disabled
 	b.focus_mode = Control.FOCUS_NONE
-	b.custom_minimum_size = Vector2(400, 0)
+	# 标题菜单是玩家第一次接触到的交互，按钮给足高度
+	b.custom_minimum_size = Vector2(420, 58)
 	b.add_theme_font_size_override("font_size", 28)
 	b.pressed.connect(func():
 		AudioDirector.play_sfx("sfx_click", 0.8)
@@ -137,6 +139,7 @@ func _confirm_new() -> void:
 	var yes := Button.new()
 	yes.text = "开始"
 	yes.focus_mode = Control.FOCUS_NONE
+	yes.custom_minimum_size = Vector2(160, 52)
 	yes.pressed.connect(func():
 		root.queue_free()
 		start_new.emit())
@@ -144,6 +147,7 @@ func _confirm_new() -> void:
 	var no := Button.new()
 	no.text = "返回"
 	no.focus_mode = Control.FOCUS_NONE
+	no.custom_minimum_size = Vector2(160, 52)
 	no.pressed.connect(func(): root.queue_free())
 	h.add_child(no)
 	add_child(root)

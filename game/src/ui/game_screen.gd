@@ -14,6 +14,10 @@ const GoreOverlayS := preload("res://src/art/gore_overlay.gd")
 const OW := preload("res://src/ui/overlay_widgets.gd")
 const MP := preload("res://src/ui/menu_panels.gd")
 
+## 触屏最小点击区（逻辑像素）。视口 1280x720 按 canvas_items 拉伸，
+## 在常见手机上约等于物理 9~10mm，接近各家移动端指南的下限建议。
+const TOUCH_MIN := 48
+
 var world: Control              # 可抖动的容器
 var bg: BGLayer
 var actor_root: Control
@@ -132,7 +136,8 @@ func _build_top_bar() -> void:
 	wrap.offset_left = 0
 	wrap.offset_right = 0
 	wrap.offset_top = 0
-	wrap.offset_bottom = 62
+	# 按钮拉到 48px 触屏高度后，62px 的顶栏会夹住它们，这里同步加高
+	wrap.offset_bottom = 68
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(0.04, 0.04, 0.05, 0.78)
 	sb.border_color = Color(0.4, 0.38, 0.34, 0.4)
@@ -143,6 +148,16 @@ func _build_top_bar() -> void:
 	sb.content_margin_bottom = 6
 	wrap.add_theme_stylebox_override("panel", sb)
 	ui_root.add_child(wrap)
+
+	# 顶栏质感底。同样做成兄弟节点铺在 wrap 之下——
+	# PanelContainer 会按 content_margin 内缩子节点，放进去铺不满。
+	var bar_tex := UITex.make_layer("topbar", 0.5)
+	if bar_tex != null:
+		bar_tex.set_anchors_preset(Control.PRESET_TOP_WIDE)
+		bar_tex.offset_top = 0
+		bar_tex.offset_bottom = 68
+		ui_root.add_child(bar_tex)
+		ui_root.move_child(bar_tex, wrap.get_index())
 
 	top_bar = HBoxContainer.new()
 	top_bar.add_theme_constant_override("separation", 6)
@@ -175,16 +190,19 @@ func _build_top_bar() -> void:
 		var b := Button.new()
 		b.text = String(spec[0])
 		b.focus_mode = Control.FOCUS_NONE
-		b.add_theme_font_size_override("font_size", 20)
+		b.add_theme_font_size_override("font_size", 21)
+		# 触屏最小点击区 48px：顶栏 7 个按钮排得密，原来只有约 32px 高，
+		# 拇指很容易点错到隔壁。这里强制拉到 TOUCH_MIN。
+		b.custom_minimum_size = Vector2(64, TOUCH_MIN)
 		var s2 := StyleBoxFlat.new()
 		s2.bg_color = Color(0.13, 0.12, 0.13, 0.85)
 		s2.border_color = Color(0.45, 0.42, 0.38, 0.5)
 		s2.set_border_width_all(1)
 		s2.set_corner_radius_all(3)
-		s2.content_margin_left = 12
-		s2.content_margin_right = 12
-		s2.content_margin_top = 6
-		s2.content_margin_bottom = 6
+		s2.content_margin_left = 14
+		s2.content_margin_right = 14
+		s2.content_margin_top = 8
+		s2.content_margin_bottom = 8
 		b.add_theme_stylebox_override("normal", s2)
 		b.pressed.connect(Callable(self, String(spec[1])))
 		top_bar.add_child(b)
@@ -361,7 +379,8 @@ func _build_choice_area() -> void:
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui_root.add_child(center)
 	choice_box = VBoxContainer.new()
-	choice_box.add_theme_constant_override("separation", 12)
+	# 选项之间留够间距，避免拇指误触相邻项（原来 12px 偏挤）
+	choice_box.add_theme_constant_override("separation", 16)
 	choice_box.custom_minimum_size.x = 720
 	center.add_child(choice_box)
 
@@ -644,8 +663,11 @@ func _on_choices(list: Array) -> void:
 		b.text = txt
 		b.disabled = not bool(ch.get("enabled", true))
 		b.focus_mode = Control.FOCUS_NONE
-		b.custom_minimum_size = Vector2(720, 0)
+		# 选项是全篇最主要的交互，给足高度；长文本自动换行而不是撑破版面
+		b.custom_minimum_size = Vector2(720, TOUCH_MIN + 8)
 		b.add_theme_font_size_override("font_size", 27)
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		b.clip_text = false
 		b.pressed.connect(func():
 			AudioDirector.play_sfx("sfx_click", 0.8)
 			_confirm_choice(b, ch)

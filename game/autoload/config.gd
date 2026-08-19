@@ -6,6 +6,13 @@ const GAME_TITLE := "晚自习之后"
 const GAME_SUBTITLE := "AFTER EVENING STUDY"
 const VERSION := "1.0.0"
 
+# ---------------------------------------------------------------- 反馈渠道
+## BUG 反馈 / 玩家交流 QQ 群。
+## 二维码图片在 assets/ui/qq_qr.png，内容指向 QQ_GROUP_URL。
+## 换群时三处要一起改：群号、链接、重新生成二维码图。
+const QQ_GROUP := "743689780"
+const QQ_GROUP_URL := "https://qm.qq.com/q/743689780"
+
 # ---------------------------------------------------------------- 数值上下限
 # 对应 f.md 《全局变量总表 · 1.1 数值变量表》
 const NUM_RANGE := {

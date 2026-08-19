@@ -1,6 +1,10 @@
 extends RefCounted
 class_name MenuPanels
-## 各类菜单面板：回想 / 线索 / 状态 / 存读档 / 系统设置 / 图鉴
+## 各类菜单面板：回想 / 线索 / 状态 / 存读档 / 系统设置 / 图鉴 / BUG 反馈
+
+## 触屏最小点击区（逻辑像素），与 game_screen.TOUCH_MIN 保持一致。
+## 所有可点/可拖的控件都不应低于这个高度。
+const TOUCH_MIN := 48
 
 static func _shell(title: String) -> Array:
 	## 返回 [root, content_vbox]
@@ -67,6 +71,7 @@ static func _shell(title: String) -> Array:
 	var close := Button.new()
 	close.text = "关闭"
 	close.focus_mode = Control.FOCUS_NONE
+	close.custom_minimum_size = Vector2(120, TOUCH_MIN)
 	close.pressed.connect(func():
 		AudioDirector.play_sfx("sfx_click", 0.6)
 		root.queue_free()
@@ -464,6 +469,7 @@ static func save_panel(allow_save: bool) -> Control:
 			bs.text = "保存"
 			bs.focus_mode = Control.FOCUS_NONE
 			bs.add_theme_font_size_override("font_size", 21)
+			bs.custom_minimum_size = Vector2(110, TOUCH_MIN)
 			bs.pressed.connect(func():
 				SaveSystem.save_slot(i)
 				AudioDirector.play_sfx("sfx_write", 0.8)
@@ -475,6 +481,7 @@ static func save_panel(allow_save: bool) -> Control:
 		bl.disabled = d.is_empty()
 		bl.focus_mode = Control.FOCUS_NONE
 		bl.add_theme_font_size_override("font_size", 21)
+		bl.custom_minimum_size = Vector2(110, TOUCH_MIN)
 		bl.pressed.connect(func():
 			var cb = root.get_meta("on_load", null)
 			if cb is Callable:
@@ -531,7 +538,8 @@ static func _option_row(title: String, options: Array, current: int, cb: Callabl
 	h.add_theme_constant_override("separation", 10)
 	var l := Label.new()
 	l.text = title
-	l.custom_minimum_size.x = 220
+	l.custom_minimum_size = Vector2(220, TOUCH_MIN)
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	h.add_child(l)
 	var group_buttons: Array[Button] = []
 	for i in options.size():
@@ -539,6 +547,7 @@ static func _option_row(title: String, options: Array, current: int, cb: Callabl
 		b.text = String(options[i])
 		b.focus_mode = Control.FOCUS_NONE
 		b.add_theme_font_size_override("font_size", 22)
+		b.custom_minimum_size = Vector2(96, TOUCH_MIN)
 		b.modulate = Color(1.0, 0.72, 0.6) if i == current else Color.WHITE
 		group_buttons.append(b)
 		b.pressed.connect(func():
@@ -554,11 +563,13 @@ static func _toggle_row(title: String, value: bool, cb: Callable) -> Control:
 	var h := HBoxContainer.new()
 	var l := Label.new()
 	l.text = title
-	l.custom_minimum_size.x = 220
+	l.custom_minimum_size = Vector2(220, TOUCH_MIN)
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	h.add_child(l)
 	var c := CheckButton.new()
 	c.button_pressed = value
 	c.focus_mode = Control.FOCUS_NONE
+	c.custom_minimum_size.y = TOUCH_MIN
 	c.toggled.connect(func(b): cb.call(b))
 	h.add_child(c)
 	return h
@@ -567,14 +578,15 @@ static func _slider_row(title: String, value: float, cb: Callable, display := -1
 	var h := HBoxContainer.new()
 	var l := Label.new()
 	l.text = title
-	l.custom_minimum_size.x = 220
+	l.custom_minimum_size = Vector2(220, TOUCH_MIN)
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	h.add_child(l)
 	var s := HSlider.new()
 	s.min_value = 0.0
 	s.max_value = 1.0
 	s.step = 0.05
 	s.value = value if display < 0.0 else display
-	s.custom_minimum_size = Vector2(360, 28)
+	s.custom_minimum_size = Vector2(360, TOUCH_MIN)
 	s.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	s.focus_mode = Control.FOCUS_NONE
 	s.value_changed.connect(func(x): cb.call(x))
@@ -632,3 +644,177 @@ static func gallery_panel() -> Control:
 	st.add_theme_color_override("font_color", Color(0.70, 0.78, 0.84))
 	v.add_child(st)
 	return root
+
+# ---------------------------------------------------------------- BUG 反馈
+## BUG 反馈 / 玩家交流面板。
+##
+## 手机端玩家没法用鼠标选中文字，所以群号必须给"一键复制"；
+## 二维码给"长按识别 / 另一台设备扫"这两种用法。
+## 二维码图缺失时不留空洞，改成纯文字引导，功能不受影响。
+static func feedback_panel() -> Control:
+	var pair := _shell("BUG 反馈 / 玩家交流")
+	var root: Control = pair[0]
+	var v := _scroll(pair[1])
+
+	var intro := Label.new()
+	intro.text = "遇到卡关、闪退、错字、剧情前后矛盾、\n或者时间线对不上——都欢迎反馈。"
+	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	intro.add_theme_font_size_override("font_size", 25)
+	intro.add_theme_color_override("font_color", Color(0.80, 0.79, 0.75))
+	v.add_child(intro)
+
+	# —— 群号（大号显示 + 一键复制）
+	var card := PanelContainer.new()
+	var csb := StyleBoxFlat.new()
+	csb.bg_color = Color(0.10, 0.10, 0.12, 0.95)
+	csb.border_color = Color(0.52, 0.46, 0.38, 0.7)
+	csb.set_border_width_all(1)
+	csb.set_corner_radius_all(4)
+	csb.content_margin_left = 26
+	csb.content_margin_right = 26
+	csb.content_margin_top = 20
+	csb.content_margin_bottom = 20
+	card.add_theme_stylebox_override("panel", csb)
+	v.add_child(card)
+
+	var cv := VBoxContainer.new()
+	cv.add_theme_constant_override("separation", 10)
+	card.add_child(cv)
+
+	var lab := Label.new()
+	lab.text = "QQ 交流群"
+	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lab.add_theme_font_size_override("font_size", 23)
+	lab.add_theme_color_override("font_color", Color(0.66, 0.64, 0.60))
+	cv.add_child(lab)
+
+	var num := Label.new()
+	num.text = Cfg.QQ_GROUP
+	num.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	num.add_theme_font_size_override("font_size", 52)
+	num.add_theme_color_override("font_color", Color(0.90, 0.84, 0.66))
+	cv.add_child(num)
+
+	var copy_row := HBoxContainer.new()
+	copy_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	copy_row.add_theme_constant_override("separation", 14)
+	cv.add_child(copy_row)
+
+	var tip := Label.new()
+	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tip.add_theme_font_size_override("font_size", 21)
+	tip.add_theme_color_override("font_color", Color(0.58, 0.72, 0.60))
+	tip.modulate.a = 0.0
+
+	var copy_btn := Button.new()
+	copy_btn.text = "复制群号"
+	copy_btn.focus_mode = Control.FOCUS_NONE
+	copy_btn.custom_minimum_size = Vector2(190, 0)
+	copy_btn.pressed.connect(func():
+		DisplayServer.clipboard_set(Cfg.QQ_GROUP)
+		AudioDirector.play_sfx("sfx_click", 0.8)
+		tip.text = "已复制到剪贴板"
+		tip.modulate.a = 1.0
+		if tip.is_inside_tree():
+			tip.create_tween().tween_property(tip, "modulate:a", 0.0, 2.4) \
+				.set_delay(1.2)
+	)
+	copy_row.add_child(copy_btn)
+	cv.add_child(tip)
+
+	# —— 二维码
+	var qr := UITex.get_tex("qq_qr")
+	if qr != null:
+		var qrow := HBoxContainer.new()
+		qrow.alignment = BoxContainer.ALIGNMENT_CENTER
+		v.add_child(qrow)
+		var pic := TextureRect.new()
+		pic.texture = qr
+		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		pic.custom_minimum_size = Vector2(300, 300)
+		qrow.add_child(pic)
+
+		var qtip := Label.new()
+		qtip.text = "用手机 QQ 扫码，或长按识别"
+		qtip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		qtip.add_theme_font_size_override("font_size", 22)
+		qtip.add_theme_color_override("font_color", Color(0.62, 0.61, 0.58))
+		v.add_child(qtip)
+	else:
+		var qmiss := Label.new()
+		qmiss.text = "（二维码图片缺失，请直接搜索上面的群号加群）"
+		qmiss.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		qmiss.add_theme_font_size_override("font_size", 21)
+		qmiss.add_theme_color_override("font_color", Color(0.60, 0.58, 0.55))
+		v.add_child(qmiss)
+
+	# —— 反馈时请附上的信息（直接给可复制的环境串，省去来回追问）
+	var env := PanelContainer.new()
+	var esb := StyleBoxFlat.new()
+	esb.bg_color = Color(0.07, 0.07, 0.085, 0.9)
+	esb.border_color = Color(0.40, 0.38, 0.34, 0.5)
+	esb.set_border_width_all(1)
+	esb.content_margin_left = 22
+	esb.content_margin_right = 22
+	esb.content_margin_top = 16
+	esb.content_margin_bottom = 16
+	env.add_theme_stylebox_override("panel", esb)
+	v.add_child(env)
+
+	var ev := VBoxContainer.new()
+	ev.add_theme_constant_override("separation", 8)
+	env.add_child(ev)
+
+	var eh := Label.new()
+	eh.text = "反馈时请附上以下信息"
+	eh.add_theme_font_size_override("font_size", 23)
+	eh.add_theme_color_override("font_color", Color(0.78, 0.76, 0.70))
+	ev.add_child(eh)
+
+	var info := _env_string()
+	var ib := Label.new()
+	ib.text = info
+	ib.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	ib.add_theme_font_size_override("font_size", 21)
+	ib.add_theme_color_override("font_color", Color(0.64, 0.68, 0.74))
+	ev.add_child(ib)
+
+	var etip := Label.new()
+	etip.add_theme_font_size_override("font_size", 20)
+	etip.add_theme_color_override("font_color", Color(0.58, 0.72, 0.60))
+	etip.modulate.a = 0.0
+
+	var ebtn := Button.new()
+	ebtn.text = "复制环境信息"
+	ebtn.focus_mode = Control.FOCUS_NONE
+	ebtn.pressed.connect(func():
+		DisplayServer.clipboard_set(info)
+		AudioDirector.play_sfx("sfx_click", 0.8)
+		etip.text = "已复制"
+		etip.modulate.a = 1.0
+		if etip.is_inside_tree():
+			etip.create_tween().tween_property(etip, "modulate:a", 0.0, 2.4) \
+				.set_delay(1.2)
+	)
+	ev.add_child(ebtn)
+	ev.add_child(etip)
+
+	return root
+
+## 组装一段可直接粘进群里的环境信息。
+## 带上进度定位（章节 / 节点 / 剧情时间），比只报"卡住了"有用得多。
+static func _env_string() -> String:
+	var node_id := String(GameState.current_node)
+	if node_id == "":
+		node_id = "-"
+	return "版本 v%s　平台 %s\n章节 第%d章　节点 %s\n剧情时间 第%d天 %s　周目 %d" % [
+		Cfg.VERSION,
+		OS.get_name(),
+		GameState.current_chapter,
+		node_id,
+		GameState.story_day,
+		GameState.time_hhmm(),
+		int(GameState.persistent.get("cycles", 0)) + 1,
+	]

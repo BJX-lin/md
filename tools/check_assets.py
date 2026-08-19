@@ -167,6 +167,8 @@ UI_TEXTURES = {
     "panel_frame":     ("菜单面板质感底", (1024, 640)),
     "ending_vignette": ("结局画面底图", (1376, 768)),
     "name_plate":      ("说话人名字牌", (512, 72)),
+    "topbar":          ("顶栏质感底", (1024, 96)),
+    "qq_qr":           ("QQ 群二维码", (568, 568)),
 }
 
 
@@ -201,8 +203,44 @@ def _check_ui(game):
     return 0
 
 
+def _check_qr(game):
+    """核验二维码内容与 Cfg.QQ_GROUP_URL 一致。
+
+    二维码是图片，肉眼看不出内容对不对；换群号时最容易漏掉重新生成图片，
+    结果玩家扫出来进的是旧群。这里直接解码比对。
+    需要 opencv，缺库则跳过（不算失败）。
+    """
+    import re as _re
+    qr_path = os.path.join(game, "assets", "ui", "qq_qr.png")
+    cfg = os.path.join(game, "autoload", "config.gd")
+    if not (os.path.isfile(qr_path) and os.path.isfile(cfg)):
+        return 0
+    want = ""
+    for line in open(cfg, encoding="utf-8"):
+        m = _re.search(r'QQ_GROUP_URL\s*:=\s*"([^"]+)"', line)
+        if m:
+            want = m.group(1)
+            break
+    if not want:
+        return 0
+    try:
+        import cv2
+    except ImportError:
+        print(f"      二维码未校验（缺 opencv）；配置链接 {want}")
+        return 0
+    img = cv2.imread(qr_path)
+    got, _pts, _ = cv2.QRCodeDetector().detectAndDecode(img)
+    if got == want:
+        print(f"      ✓ 二维码内容与配置一致：{want}")
+        return 0
+    print(f"      !! 二维码内容不符：图片={got!r} 配置={want!r}")
+    print("         换群号后请重新生成 assets/ui/qq_qr.png")
+    return 1
+
+
 if __name__ == "__main__":
     _rc = main()
     _check_audio(GAME)
     _check_ui(GAME)
+    _rc |= _check_qr(GAME)
     sys.exit(_rc)
