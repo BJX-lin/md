@@ -4,10 +4,10 @@ extends Node
 ##     python3 tools/gen_integrity.py --write
 
 const MANIFEST := {
-	"autoload/config.gd": "334db0f1574be57e747063826f116ee57ff0df849b4306628b74436cd5669b39",
+	"autoload/config.gd": "f985efc9643c1684348a5197cf8adacb6620d039770074fe03cb5ee3b66f77c4",
 	"autoload/game_state.gd": "83c8bf166545754127db2dc58a79b83cbc35fa944f6281e51be129243441aae1",
-	"autoload/save_system.gd": "975f4fdfd5b04356bd922eebe4b5b6e928b199f5299493d1ac978d38ea41b059",
-	"autoload/story_engine.gd": "875a77dea51991da69cd03440bd1fd22e7974e796c22732f1f90eb9811ca302a",
+	"autoload/save_system.gd": "989adf9330832bf7838412f46eb81f68ba1708db3b4816089ad068607cfd23dd",
+	"autoload/story_engine.gd": "64b6b9c2b2b72ff6ca9ae4eb07af642491d8d09ea00da0a2132fb33e3a8209bc",
 }
 
 const SALT := "The13thPeriod::integrity::v1"

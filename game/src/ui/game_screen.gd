@@ -55,6 +55,7 @@ var _type_acc := 0.0
 var _cur_who := ""
 var _auto := false
 var _skip := false
+var _fast_skipping := false
 var _auto_timer := 0.0
 var _blocked := false  # FX
 var _pending_wait := 0.0
@@ -206,8 +207,9 @@ func _build_top_bar() -> void:
 	GameState.var_changed.connect(func(_k, _o, _n): _refresh_status())
 
 	for spec in [
-		["自动", "_toggle_auto"], ["快进", "_toggle_skip"], ["回想", "_open_history"],
-		["线索", "_open_clues"], ["状态", "_open_status"], ["存档", "_open_saves"], ["≡", "_open_menu"],
+		["自动", "_toggle_auto"], ["快进", "_toggle_skip"], ["跳选", "_start_skip_to_choice"],
+		["回想", "_open_history"], ["线索", "_open_clues"], ["状态", "_open_status"],
+		["存档", "_open_saves"], ["≡", "_open_menu"],
 	]:
 		var b := Button.new()
 		b.text = String(spec[0])
@@ -344,7 +346,7 @@ func _build_text_box() -> void:
 	_box_text_holder = v
 
 	name_label = Label.new()
-	name_label.add_theme_font_size_override("font_size", 26)
+	name_label.add_theme_font_size_override("font_size", _dialogue_font_size() - 3)
 	name_label.add_theme_color_override("font_color", Color(0.86, 0.72, 0.52))
 	# Name
 
@@ -378,7 +380,7 @@ func _build_text_box() -> void:
 	text_ghost.fit_content = false
 	text_ghost.scroll_active = false
 	text_ghost.set_anchors_preset(Control.PRESET_FULL_RECT)
-	text_ghost.add_theme_font_size_override("normal_font_size", 29)
+	text_ghost.add_theme_font_size_override("normal_font_size", _dialogue_font_size())
 	text_ghost.add_theme_constant_override("line_separation", 10)
 	text_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_ghost.visible = false
@@ -389,7 +391,7 @@ func _build_text_box() -> void:
 	text_label.fit_content = false
 	text_label.scroll_active = false
 	text_label.set_anchors_preset(Control.PRESET_FULL_RECT)
-	text_label.add_theme_font_size_override("normal_font_size", 29)
+	text_label.add_theme_font_size_override("normal_font_size", _dialogue_font_size())
 	text_label.add_theme_constant_override("line_separation", 10)
 	text_stack.add_child(text_label)
 
@@ -505,6 +507,12 @@ func _layout_actors() -> void:
 		i += 1
 
 func _on_effect(name: String, power: float) -> void:
+	# Haptics（手机震动反馈：惊吓演出 + 密码错误）
+	if name in ["sting", "bigshake", "bloodburst"] \
+			and bool(SaveSystem.settings.get("haptics", true)) \
+			and OS.get_name() in ["Android", "iOS"]:
+		var ms := 320 if name == "sting" else (200 if name == "bigshake" else 150)
+		Input.vibrate_handheld(clampi(int(ms * power), 50, 600))
 	# UI
 	match name:
 		"handprint", "bloodhand":
@@ -866,6 +874,8 @@ func _clear_choices() -> void:
 		c.queue_free()
 
 func _on_screen_tap() -> void:
+	if _fast_skipping:
+		return
 	if choice_box.get_child_count() > 0:
 		return
 	_advance()
@@ -907,6 +917,57 @@ func _toggle_skip() -> void:
 	_auto = false
 	_mark_toggle()
 
+
+# 快进到下一选项：引擎 fast_mode 逐帧推进，遇选项/密码锁/结局自动停止
+func _start_skip_to_choice() -> void:
+	if _fast_skipping or StoryEngine.waiting_choice or not StoryEngine.running:
+		return
+	_fast_skipping = true
+	_skip = false
+	_auto = false
+	_mark_toggle()
+	text_label.text = ""
+	text_ghost.text = ""
+	name_label.visible = false
+	continue_hint.visible = false
+	StoryEngine.fast_mode = true
+	_fast_step()
+
+
+func _fast_step() -> void:
+	if not _fast_skipping or not is_inside_tree():
+		return
+	if _blocked:
+		call_deferred("_fast_step")
+		return
+	if StoryEngine.fast_mode and StoryEngine.running:
+		StoryEngine.advance()
+		call_deferred("_fast_step")
+		return
+	_finish_fast_skip()
+
+
+func _finish_fast_skip() -> void:
+	if not _fast_skipping:
+		return
+	_fast_skipping = false
+	StoryEngine.fast_mode = false
+	# 若快进停在无选项的节点尾部，给玩家明确反馈
+	if not StoryEngine.waiting_choice and StoryEngine.running:
+		var t := OW.toast("已到可继续阅读的位置")
+		add_child(t)
+
+
+func _dialogue_font_size() -> int:
+	return [26, 29, 33][clampi(int(SaveSystem.settings.get("text_size", 1)), 0, 2)]
+
+
+func _apply_text_size() -> void:
+	var sz := _dialogue_font_size()
+	text_label.add_theme_font_size_override("normal_font_size", sz)
+	text_ghost.add_theme_font_size_override("normal_font_size", sz)
+	name_label.add_theme_font_size_override("font_size", sz - 3)
+
 func _mark_toggle() -> void:
 	for b in top_bar.get_children():
 		if b is Button and b.has_meta("role"):
@@ -942,6 +1003,9 @@ func _open_menu() -> void:
 	p.set_meta("on_quit", func():
 		SaveSystem.autosave()
 		quit_to_title.emit()
+	)
+	p.set_meta("on_settings_saved", func():
+		_apply_text_size()
 	)
 	_push_panel(p)
 

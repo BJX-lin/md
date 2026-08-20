@@ -12,14 +12,14 @@
 **方式一：完整单包（完整单包）**
 
 ```
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.4_full_project.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.2.0_full_project.zip
 ```
 
 **方式二：分卷下载（两个包均 <100MB，规避 GitHub 单文件上限）**
 
 ```
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.4_part1_project.zip
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.1.4_part2_assets.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.2.0_part1_project.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.2.0_part2_assets.zip
 ```
 
 > 分卷使用方法：把两个 ZIP **解压到同一个文件夹**即可合并——
@@ -71,6 +71,14 @@ godot --headless --path game res://tools/smoke_runner.tscn
 文本插值：`{pname}` 玩家名、`{num:truth}` 数值、`{item:item_xxx}` 道具名、
 `{if 条件?A|B}` 条件文本。玩家改名后正文中的「林昼」自动替换为玩家名字。
 
+## v1.2.0 更新（本分支最新）
+
+- 横屏显示：窗口方向改为传感器横屏（支持左右两个方向，手机横屏体验）
+- 新增「跳选」按钮：快进到下一选项（多周目速通），遇选项/密码锁/结局自动停止
+- 新增触觉震动：惊吓演出（sting/bigshake/bloodburst）与密码错误时手机震动，设置面板可关
+- 新增文字大小调节（小/中/大 三档），保存设置后即时应用
+- 设置面板新增两行：触觉震动开关、文字大小
+
 ## v1.1.1 更新（本分支）
 
 > 追加：开屏动画取消游戏图标，统一使用官方 Godot 引擎图标（原生 boot splash 亦恢复引擎默认 Godot 标识，游戏内开屏第二段改为纯文字）；新增 AI 生成的深色雨夜氛围底图（splash_bg.png，压暗+缓慢缩放，Godot 引擎图标浮于其上，缺图自动回退纯色底）
@@ -89,11 +97,11 @@ godot --headless --path game res://tools/smoke_runner.tscn
 >
 > ```bash
 > # 在你自己的电脑上（网络可达 uploads.github.com）执行，把 ZIP 挂到 v1.1.2 Release：
-> gh release upload v1.1.3 dist/The13thPeriod_v1.1.4_full_project.zip --repo BJX-lin/md
+> gh release upload v1.2.0 dist/The13thPeriod_v1.2.0_full_project.zip --repo BJX-lin/md
 > ```
 >
 > 上传完成后，下载地址为：
-> `https://github.com/BJX-lin/md/releases/download/v1.1.3/The13thPeriod_v1.1.4_full_project.zip`
+> `https://github.com/BJX-lin/md/releases/download/v1.2.0/The13thPeriod_v1.2.0_full_project.zip`
 >
 > 其他备选方案：Git LFS（单文件 2~5GB，但免费存储/流量额度有限）、
 > 分包压缩（拆成多个 <100MB 的分卷）。注意：曾经提交进 git 历史的旧 ZIP

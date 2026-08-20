@@ -95,4 +95,17 @@ func _run() -> void:
 		StoryEngine._append_history("me", "第 %d 行" % i)
 	_check(GameState.history.size() == 400, "回想记录封顶 400（实际 %d）" % GameState.history.size())
 
+	# 10) 跳选（快进到下一选项）：fast 模式下应在选项处自动停止
+	StoryEngine.start("prologue")
+	StoryEngine.fast_mode = true
+	var steps := 0
+	while StoryEngine.fast_mode and steps < 300:
+		StoryEngine.advance()
+		steps += 1
+	_check(not StoryEngine.fast_mode, "跳选模式在遇到选项后自动解除")
+	_check(StoryEngine.waiting_choice, "跳选停止时引擎处于选项等待（实际 %s）" % str(StoryEngine.waiting_choice))
+	# 清理：恢复引擎状态
+	StoryEngine.fast_mode = false
+	StoryEngine.waiting_choice = false
+
 	print("SMOKE: done, failures = ", _fail)

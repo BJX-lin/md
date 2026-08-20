@@ -490,6 +490,10 @@ static func system_panel() -> Control:
 		SaveSystem.set_setting("screen_shake", b)))
 	v.add_child(_toggle_row("强闪光效果", bool(SaveSystem.settings.get("flash", true)), func(b):
 		SaveSystem.set_setting("flash", b)))
+	v.add_child(_toggle_row("触觉震动（手机惊吓反馈）", bool(SaveSystem.settings.get("haptics", true)), func(b):
+		SaveSystem.set_setting("haptics", b)))
+	v.add_child(_option_row("文字大小", ["小", "中", "大"], int(SaveSystem.settings.get("text_size", 1)), func(i):
+		SaveSystem.set_setting("text_size", i)))
 	v.add_child(_slider_row("总音量", float(SaveSystem.settings.get("vol_master", 1.0)), func(x):
 		SaveSystem.set_setting("vol_master", x)))
 	v.add_child(_slider_row("音乐/环境", float(SaveSystem.settings.get("vol_bgm", 0.7)), func(x):
@@ -534,6 +538,7 @@ static func system_panel() -> Control:
 	apply.pressed.connect(func():
 		SaveSystem.save_settings()
 		AudioDirector.play_sfx("sfx_click", 0.8)
+		_notify_settings_saved(root)
 		applied.text = "设置已保存"
 		applied.modulate.a = 1.0
 		if applied.is_inside_tree():
@@ -549,6 +554,7 @@ static func system_panel() -> Control:
 	cont.pressed.connect(func():
 		SaveSystem.save_settings()
 		AudioDirector.play_sfx("sfx_click", 0.8)
+		_notify_settings_saved(root)
 		root.queue_free()
 	)
 	row.add_child(cont)
@@ -566,6 +572,13 @@ static func system_panel() -> Control:
 	)
 	v.add_child(quit)
 	return root
+
+## 设置保存后通知宿主（游戏界面据此即时应用文字大小等）
+static func _notify_settings_saved(root: Control) -> void:
+	var cb = root.get_meta("on_settings_saved", null)
+	if cb is Callable:
+		cb.call()
+
 
 static func _option_row(title: String, options: Array, current: int, cb: Callable) -> Control:
 	var h := HBoxContainer.new()

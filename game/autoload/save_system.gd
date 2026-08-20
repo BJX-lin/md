@@ -13,6 +13,8 @@ var settings := {
 	"vol_bgm": 0.7,
 	"vol_sfx": 0.85,
 	"gore": 2,
+	"haptics": true,        # 手机震动反馈
+	"text_size": 1,         # 0小 1中 2大
 
 	# Time
 

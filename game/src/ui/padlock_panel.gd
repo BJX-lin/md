@@ -133,7 +133,9 @@ func _submit() -> void:
 		solved.emit()
 		queue_free()
 	else:
-		# Story
+		# Story + haptics
+		if bool(SaveSystem.settings.get("haptics", true)) and OS.get_name() in ["Android", "iOS"]:
+			Input.vibrate_handheld(80)
 		_display.add_theme_color_override("font_color", Color(1.0, 0.3, 0.25))
 		var base := _display.position
 		var tw := create_tween()
