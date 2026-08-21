@@ -2,7 +2,7 @@
 
 国产校园恐怖文字互动视觉小说（AVG）。
 
-- 引擎：Godot Engine 4.7.1 stable
+- 引擎：Godot Engine 4.7.2 stable
 - 目标平台：Android 手机（竖屏/横屏自适应，渲染后端 Mobile）
 - 时长：约 2~3 小时，4 章 + 终章，多结局
 - 玩法：文本剧情 / 选项分支 / 密码锁解谜 / 线索与道具收集 / 理智与信任数值系统 / 存档读档 / 周目循环
@@ -12,14 +12,14 @@
 **方式一：完整单包（完整单包）**
 
 ```
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.3.0_full_project.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.3.1_full_project.zip
 ```
 
 **方式二：分卷下载（两个包均 <100MB，规避 GitHub 单文件上限）**
 
 ```
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.3.0_part1_project.zip
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.3.0_part2_assets.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.3.1_part1_project.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.3.1_part2_assets.zip
 ```
 
 > 分卷使用方法：把两个 ZIP **解压到同一个文件夹**即可合并——
@@ -71,7 +71,16 @@ godot --headless --path game res://tools/smoke_runner.tscn
 文本插值：`{pname}` 玩家名、`{num:truth}` 数值、`{item:item_xxx}` 道具名、
 `{if 条件?A|B}` 条件文本。玩家改名后正文中的「林昼」自动替换为玩家名字。
 
-## v1.3.0 更新（本分支最新）
+## v1.3.1 更新（本分支最新）
+
+- 引擎升级：Godot Engine 4.7.1 stable → 4.7.2 stable（Android 编辑器）
+- 4.7.2 变更日志核验：全部为 bug 修复、无 GDScript API 破坏；
+  其中与本作直接相关——Android 熄屏启动崩溃修复 / 安卓编辑器回归修复 /
+  GUI 容器 maximum_size 缓存修复
+- 工程适配并通过 4.7.2 源码编译的无头验证（26 脚本 / 560 节点 /
+  21 项冒烟测试）
+
+## v1.3.0 更新
 
 - UI 整体更新为 VNShell 现代扁平深色蓝调风格（纯代码 StyleBoxFlat）：
   深蓝灰面板 #212734 / 主强调蓝 #4a8cff / 大圆角 12~20px，
@@ -107,11 +116,11 @@ godot --headless --path game res://tools/smoke_runner.tscn
 >
 > ```bash
 > # 在你自己的电脑上（网络可达 uploads.github.com）执行，把 ZIP 挂到 v1.1.2 Release：
-> gh release upload v1.3.0 dist/The13thPeriod_v1.3.0_full_project.zip --repo BJX-lin/md
+> gh release upload v1.3.1 dist/The13thPeriod_v1.3.1_full_project.zip --repo BJX-lin/md
 > ```
 >
 > 上传完成后，下载地址为：
-> `https://github.com/BJX-lin/md/releases/download/v1.3.0/The13thPeriod_v1.3.0_full_project.zip`
+> `https://github.com/BJX-lin/md/releases/download/v1.3.1/The13thPeriod_v1.3.1_full_project.zip`
 >
 > 其他备选方案：Git LFS（单文件 2~5GB，但免费存储/流量额度有限）、
 > 分包压缩（拆成多个 <100MB 的分卷）。注意：曾经提交进 git 历史的旧 ZIP

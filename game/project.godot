@@ -1,6 +1,6 @@
 ; Engine configuration file.
 ; The 13th Period
-; Godot Engine 4.7.1 stable / Mobile
+; Godot Engine 4.7.2 stable / Mobile
 
 config_version=5
 
@@ -8,7 +8,7 @@ config_version=5
 
 config/name="第十三节课"
 config/description="国产校园恐怖文字互动视觉小说（完整版）"
-config/version="1.3.0"
+config/version="1.3.1"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.png"
