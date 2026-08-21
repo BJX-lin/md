@@ -149,16 +149,17 @@ func _build() -> void:
 	_build_choice_area()
 
 func _build_top_bar() -> void:
+	var inset := SafeArea.get_safe_insets()
 	var wrap := PanelContainer.new()
 	wrap.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	wrap.offset_left = 0
-	wrap.offset_right = 0
+	wrap.offset_left = inset.x
+	wrap.offset_right = -inset.z
 	wrap.offset_top = 0
 
-	wrap.offset_bottom = 68
+	wrap.offset_bottom = 68 + inset.y
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.04, 0.04, 0.05, 0.78)
-	sb.border_color = Color(0.4, 0.38, 0.34, 0.4)
+	sb.bg_color = Color(0.086, 0.102, 0.133, 0.88)   # VNShell BG 88%
+	sb.border_color = Color(0.169, 0.2, 0.271, 0.6)
 	sb.border_width_bottom = 1
 	sb.content_margin_left = 10
 	sb.content_margin_right = 10
@@ -181,7 +182,7 @@ func _build_top_bar() -> void:
 
 	time_label = Label.new()
 	time_label.add_theme_font_size_override("font_size", 19)
-	time_label.add_theme_color_override("font_color", Color(0.78, 0.76, 0.68))
+	time_label.add_theme_color_override("font_color", Color(0.91, 0.918, 0.929))
 	time_label.custom_minimum_size.x = 190
 	top_bar.add_child(time_label)
 
@@ -196,7 +197,7 @@ func _build_top_bar() -> void:
 
 	var vsep := ColorRect.new()
 	vsep.custom_minimum_size = Vector2(1, 22)
-	vsep.color = Color(0.45, 0.43, 0.38, 0.5)
+	vsep.color = Color(0.169, 0.2, 0.271, 0.5)
 	top_bar.add_child(vsep)
 
 	status_strip = HBoxContainer.new()
@@ -218,8 +219,8 @@ func _build_top_bar() -> void:
 
 		b.custom_minimum_size = Vector2(64, TOUCH_MIN)
 		var s2 := StyleBoxFlat.new()
-		s2.bg_color = Color(0.13, 0.12, 0.13, 0.85)
-		s2.border_color = Color(0.45, 0.42, 0.38, 0.5)
+		s2.bg_color = Color(0.129, 0.153, 0.204, 0.92)
+		s2.border_color = Color(0.169, 0.2, 0.271, 0.5)
 		s2.set_border_width_all(1)
 		s2.set_corner_radius_all(3)
 		s2.content_margin_left = 14
@@ -241,11 +242,11 @@ func _refresh_time() -> void:
 
 	var h := GameState.story_minute / 60
 	if h >= 22 or h < 5:
-		time_label.add_theme_color_override("font_color", Color(0.62, 0.72, 0.84))
+		time_label.add_theme_color_override("font_color", Color(0.55, 0.7, 0.9))
 	elif h < 8:
-		time_label.add_theme_color_override("font_color", Color(0.72, 0.74, 0.78))
+		time_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.85))
 	else:
-		time_label.add_theme_color_override("font_color", Color(0.80, 0.77, 0.68))
+		time_label.add_theme_color_override("font_color", Color(0.9, 0.8, 0.62))
 
 func _refresh_status() -> void:
 	# Stats
@@ -312,20 +313,21 @@ func _apply_box_texture() -> void:
 
 	var sb := box.get_theme_stylebox("panel") as StyleBoxFlat
 	if sb != null:
-		sb.bg_color = Color(0.03, 0.03, 0.04, 0.55)
+		sb.bg_color = Color(0.129, 0.153, 0.204, 0.55)
 
 func _build_text_box() -> void:
+	var inset := SafeArea.get_safe_insets()
 	box = PanelContainer.new()
 	box.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	box.offset_left = 24
-	box.offset_right = -24
+	box.offset_left = 24 + inset.x
+	box.offset_right = -24 - inset.z
 	box.offset_top = -252
-	box.offset_bottom = -20
+	box.offset_bottom = -20 - inset.w
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.045, 0.045, 0.055, 0.985)  # Sprite
-	sb.border_color = Color(0.48, 0.44, 0.40, 0.55)
+	sb.bg_color = Color(0.086, 0.102, 0.133, 0.985)  # VNShell BG
+	sb.border_color = Color(0.169, 0.2, 0.271, 0.6)
 	sb.set_border_width_all(1)
-	sb.set_corner_radius_all(4)
+	sb.set_corner_radius_all(12)
 	sb.content_margin_left = 28
 	sb.content_margin_right = 28
 	sb.content_margin_top = 18
@@ -347,7 +349,7 @@ func _build_text_box() -> void:
 
 	name_label = Label.new()
 	name_label.add_theme_font_size_override("font_size", _dialogue_font_size() - 3)
-	name_label.add_theme_color_override("font_color", Color(0.86, 0.72, 0.52))
+	name_label.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0))
 	# Name
 
 	var plate_sb := UITex.style_box("name_plate", Color(1, 1, 1, 0.9), 10)
@@ -399,7 +401,7 @@ func _build_text_box() -> void:
 	continue_hint.text = "▼"
 	continue_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	continue_hint.add_theme_font_size_override("font_size", 20)
-	continue_hint.add_theme_color_override("font_color", Color(0.8, 0.6, 0.45, 0.8))
+	continue_hint.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0, 0.8))
 	v.add_child(continue_hint)
 
 func _build_choice_area() -> void:
@@ -777,13 +779,13 @@ func _confirm_choice(btn: Button, ch: Dictionary) -> void:
 			tw_o.tween_property(other, "modulate:a", 0.18, 0.16)
 
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.20, 0.19, 0.16, 0.95)
-	sb.border_color = Color(0.86, 0.78, 0.56)
+	sb.bg_color = Color(0.129, 0.153, 0.204, 0.95)
+	sb.border_color = Color(0.29, 0.55, 1.0)
 	sb.set_border_width_all(2)
-	sb.set_corner_radius_all(3)
+	sb.set_corner_radius_all(12)
 	btn.add_theme_stylebox_override("normal", sb)
 	btn.add_theme_stylebox_override("disabled", sb)
-	btn.add_theme_color_override("font_disabled_color", Color(0.94, 0.90, 0.80))
+	btn.add_theme_color_override("font_disabled_color", Color(0.91, 0.918, 0.929))
 	btn.pivot_offset = btn.size * 0.5
 	var tw := create_tween()
 	tw.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -824,7 +826,7 @@ func _flash_choice_effects(ch: Dictionary) -> void:
 	var lbl := Label.new()
 	lbl.text = "　".join(msgs)
 	lbl.add_theme_font_size_override("font_size", 19)
-	lbl.add_theme_color_override("font_color", Color(0.86, 0.80, 0.60))
+	lbl.add_theme_color_override("font_color", Color(0.4, 0.62, 1.0))
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	lbl.position = Vector2(size.x * 0.5 - 200, size.y - 300)
@@ -973,7 +975,7 @@ func _mark_toggle() -> void:
 		if b is Button and b.has_meta("role"):
 			var r := String(b.get_meta("role"))
 			var on := (_auto and r == "auto") or (_skip and r == "skip")
-			b.modulate = Color(1.0, 0.7, 0.6) if on else Color.WHITE
+			b.modulate = Color(0.6, 0.75, 1.0) if on else Color.WHITE
 
 func _open_history() -> void:
 	_push_panel(MP.history_panel())

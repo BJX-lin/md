@@ -19,7 +19,7 @@ func setup(code: String, hint: String) -> void:
 
 	var shade := ColorRect.new()
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.005, 0.005, 0.008, 0.88)
+	shade.color = Color(0.043, 0.051, 0.067, 0.88)
 	add_child(shade)
 
 	var center := CenterContainer.new()
@@ -45,15 +45,15 @@ func setup(code: String, hint: String) -> void:
 		h.text = hint
 		h.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		h.add_theme_font_size_override("font_size", 21)
-		h.add_theme_color_override("font_color", Color(0.78, 0.68, 0.52))
+		h.add_theme_color_override("font_color", Color(0.545, 0.576, 0.639))
 		h.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		v.add_child(h)
 
 	var win := PanelContainer.new()
 	win.custom_minimum_size = Vector2(300, 72)
 	var win_sb := StyleBoxFlat.new()
-	win_sb.bg_color = Color(0.02, 0.04, 0.05)
-	win_sb.border_color = Color(0.55, 0.30, 0.22, 0.9)
+	win_sb.bg_color = Color(0.03, 0.04, 0.06)
+	win_sb.border_color = Color(0.29, 0.55, 1.0, 0.9)
 	win_sb.set_border_width_all(2)
 	win_sb.set_corner_radius_all(6)
 	win.add_theme_stylebox_override("panel", win_sb)
@@ -61,7 +61,7 @@ func setup(code: String, hint: String) -> void:
 	_display.text = "· · · ·"
 	_display.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_display.add_theme_font_size_override("font_size", 40)
-	_display.add_theme_color_override("font_color", Color(1.0, 0.62, 0.45))
+	_display.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0))
 	win.add_child(_display)
 	v.add_child(win)
 
@@ -128,7 +128,7 @@ func _refresh() -> void:
 
 func _submit() -> void:
 	if _input == _code:
-		_display.add_theme_color_override("font_color", Color(0.55, 0.85, 0.6))
+		_display.add_theme_color_override("font_color", Color(0.29, 0.85, 0.57))
 		_display.text = _input[0] + " " + _input[1] + " " + _input[2] + " " + _input[3]
 		solved.emit()
 		queue_free()
@@ -136,7 +136,7 @@ func _submit() -> void:
 		# Story + haptics
 		if bool(SaveSystem.settings.get("haptics", true)) and OS.get_name() in ["Android", "iOS"]:
 			Input.vibrate_handheld(80)
-		_display.add_theme_color_override("font_color", Color(1.0, 0.3, 0.25))
+		_display.add_theme_color_override("font_color", Color(1.0, 0.478, 0.612))
 		var base := _display.position
 		var tw := create_tween()
 		tw.tween_property(_display, "position:x", base.x + 9.0, 0.04)
@@ -145,7 +145,7 @@ func _submit() -> void:
 		tw.tween_property(_display, "position:x", base.x, 0.05)
 		tw.tween_callback(func():
 			_input = ""
-			_display.add_theme_color_override("font_color", Color(1.0, 0.62, 0.45))
+			_display.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0))
 			_refresh()
 			failed.emit()
 			queue_free()

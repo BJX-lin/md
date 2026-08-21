@@ -12,23 +12,24 @@ static func _shell(title: String) -> Array:
 
 	var shade := ColorRect.new()
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.01, 0.01, 0.015, 0.90)
+	shade.color = Color(0.043, 0.051, 0.067, 0.90)
 	root.add_child(shade)
 
 	var wall := UITex.make_layer("menu_bg", 0.32)
 	if wall != null:
 		root.add_child(wall)
 
+	var inset := SafeArea.get_safe_insets()
 	var frame := PanelContainer.new()
 	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
-	frame.offset_left = 60
-	frame.offset_right = -60
-	frame.offset_top = 40
-	frame.offset_bottom = -40
+	frame.offset_left = 60 + inset.x
+	frame.offset_right = -60 - inset.z
+	frame.offset_top = 40 + inset.y
+	frame.offset_bottom = -40 - inset.w
 
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.06, 0.06, 0.07, 0.98)
-	sb.border_color = Color(0.45, 0.42, 0.37, 0.6)
+	sb.bg_color = Color(0.129, 0.153, 0.204, 0.98)
+	sb.border_color = Color(0.169, 0.2, 0.271, 0.6)
 	sb.set_border_width_all(1)
 	sb.content_margin_left = 30
 	sb.content_margin_right = 30
@@ -57,7 +58,7 @@ static func _shell(title: String) -> Array:
 	t.text = title
 	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	t.add_theme_font_size_override("font_size", 34)
-	t.add_theme_color_override("font_color", Color(0.88, 0.74, 0.52))
+	t.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0))
 	head.add_child(t)
 	var close := Button.new()
 	close.text = "关闭"
@@ -71,7 +72,7 @@ static func _shell(title: String) -> Array:
 
 	var sep := ColorRect.new()
 	sep.custom_minimum_size = Vector2(0, 1)
-	sep.color = Color(0.4, 0.38, 0.34, 0.5)
+	sep.color = Color(0.169, 0.2, 0.271, 0.5)
 	v.add_child(sep)
 
 	var content := VBoxContainer.new()
@@ -147,7 +148,7 @@ static func history_panel() -> Control:
 	if hist.is_empty():
 		var e := Label.new()
 		e.text = "（还没有内容）"
-		e.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
+		e.add_theme_color_override("font_color", Color(0.545, 0.576, 0.639))
 		e.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		v.add_child(e)
 
@@ -195,8 +196,8 @@ static func clue_panel() -> Control:
 		var got := GameState.clues.has(cid)
 		var p := PanelContainer.new()
 		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color(0.10, 0.10, 0.11, 0.9) if got else Color(0.07, 0.07, 0.08, 0.7)
-		sb.border_color = Color(0.55, 0.42, 0.30, 0.6) if got else Color(0.24, 0.24, 0.24, 0.5)
+		sb.bg_color = Color(0.169, 0.2, 0.271, 0.9) if got else Color(0.129, 0.153, 0.204, 0.7)
+		sb.border_color = Color(0.29, 0.55, 1.0, 0.6) if got else Color(0.29, 0.314, 0.376, 0.5)
 		sb.set_border_width_all(1)
 		sb.content_margin_left = 18
 		sb.content_margin_right = 18
@@ -209,25 +210,25 @@ static func clue_panel() -> Control:
 		var t := Label.new()
 		t.text = ("【第%d章】%s" % [int(info.get("ch", 1)), String(info.get("name", cid))]) if got else "【？】未获得的线索"
 		t.add_theme_font_size_override("font_size", 26)
-		t.add_theme_color_override("font_color", Color(0.90, 0.78, 0.55) if got else Color(0.42, 0.42, 0.42))
+		t.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0) if got else Color(0.545, 0.576, 0.639))
 		vv.add_child(t)
 		var d := Label.new()
 		d.text = String(info.get("text", "")) if got else "——"
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		d.add_theme_font_size_override("font_size", 23)
-		d.add_theme_color_override("font_color", Color(0.78, 0.77, 0.74) if got else Color(0.32, 0.32, 0.32))
+		d.add_theme_color_override("font_color", Color(0.91, 0.918, 0.929) if got else Color(0.545, 0.576, 0.639))
 		vv.add_child(d)
 
 	# Items
 	var t2 := Label.new()
 	t2.text = "—— 随身物品 ——"
 	t2.add_theme_font_size_override("font_size", 27)
-	t2.add_theme_color_override("font_color", Color(0.80, 0.62, 0.40))
+	t2.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0))
 	v.add_child(t2)
 	if GameState.inventory.is_empty():
 		var e := Label.new()
 		e.text = "（空）"
-		e.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
+		e.add_theme_color_override("font_color", Color(0.545, 0.576, 0.639))
 		v.add_child(e)
 	for iid in GameState.inventory:
 		var info2: Dictionary = GameState.ITEMS.get(iid, {})
@@ -235,7 +236,7 @@ static func clue_panel() -> Control:
 		l.text = "◆ %s —— %s" % [String(info2.get("name", iid)), String(info2.get("desc", ""))]
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l.add_theme_font_size_override("font_size", 24)
-		l.add_theme_color_override("font_color", Color(0.84, 0.82, 0.78))
+		l.add_theme_color_override("font_color", Color(0.91, 0.918, 0.929))
 		v.add_child(l)
 	return root
 
@@ -252,20 +253,20 @@ static func status_panel() -> Control:
 		int(GameState.persistent.get("cycles", 0)) + 1,
 	]
 	head.add_theme_font_size_override("font_size", 25)
-	head.add_theme_color_override("font_color", Color(0.78, 0.77, 0.72))
+	head.add_theme_color_override("font_color", Color(0.91, 0.918, 0.929))
 	v.add_child(head)
 
 	for key in ["truth", "sanity", "memory_echo", "shenhe_focus"]:
 		v.add_child(_bar_row(key))
 	var sep := Label.new()
 	sep.text = "—— 关系 ——"
-	sep.add_theme_color_override("font_color", Color(0.80, 0.62, 0.40))
+	sep.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0))
 	v.add_child(sep)
 	for key in ["trust_zhouxu", "trust_liangye", "trust_xuqing", "trust_oldqin"]:
 		v.add_child(_bar_row(key))
 	var sep2 := Label.new()
 	sep2.text = "—— 倾向 ——"
-	sep2.add_theme_color_override("font_color", Color(0.80, 0.62, 0.40))
+	sep2.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0))
 	v.add_child(sep2)
 	for key in ["route_obedience", "route_investigate", "route_empathy", "route_hostility", "taboo_count"]:
 		v.add_child(_bar_row(key))
@@ -280,7 +281,7 @@ static func status_panel() -> Control:
 	tips.text = "认知：" + msg
 	tips.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	tips.add_theme_font_size_override("font_size", 24)
-	tips.add_theme_color_override("font_color", Color(0.70, 0.80, 0.88))
+	tips.add_theme_color_override("font_color", Color(0.55, 0.7, 0.9))
 	v.add_child(tips)
 
 	var san := GameState.get_num("sanity")
@@ -292,13 +293,13 @@ static func status_panel() -> Control:
 	stip.text = "精神：" + smsg
 	stip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stip.add_theme_font_size_override("font_size", 24)
-	stip.add_theme_color_override("font_color", Color(0.86, 0.66, 0.52))
+	stip.add_theme_color_override("font_color", Color(1.0, 0.706, 0.329))
 	v.add_child(stip)
 
 	# State
 	var sep3 := Label.new()
 	sep3.text = "—— 相关的人 ——"
-	sep3.add_theme_color_override("font_color", Color(0.80, 0.62, 0.40))
+	sep3.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0))
 	v.add_child(sep3)
 	for row in [
 		["梁野", _liangye_desc()], ["周叙", _zhouxu_desc()],
@@ -313,7 +314,7 @@ static func status_panel() -> Control:
 	if not GameState.deaths.is_empty():
 		var dl := Label.new()
 		dl.text = "已失去：" + ", ".join(GameState.deaths)
-		dl.add_theme_color_override("font_color", Color(0.80, 0.28, 0.24))
+		dl.add_theme_color_override("font_color", Color(1.0, 0.478, 0.612))
 		dl.add_theme_font_size_override("font_size", 24)
 		v.add_child(dl)
 	return root
@@ -335,16 +336,16 @@ static func _bar_row(key: String) -> Control:
 	pb.custom_minimum_size = Vector2(360, 20)
 	pb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var bgsb := StyleBoxFlat.new()
-	bgsb.bg_color = Color(0.12, 0.12, 0.13)
+	bgsb.bg_color = Color(0.129, 0.153, 0.204)
 	bgsb.set_corner_radius_all(3)
 	var fgsb := StyleBoxFlat.new()
-	fgsb.bg_color = Color(0.62, 0.30, 0.26)
+	fgsb.bg_color = Color(0.29, 0.55, 1.0)
 	if key == "sanity":
-		fgsb.bg_color = Color(0.35, 0.62, 0.55)
+		fgsb.bg_color = Color(0.29, 0.85, 0.57)
 	elif key == "truth":
-		fgsb.bg_color = Color(0.40, 0.52, 0.70)
+		fgsb.bg_color = Color(0.29, 0.55, 1.0)
 	elif key.begins_with("trust"):
-		fgsb.bg_color = Color(0.66, 0.56, 0.32)
+		fgsb.bg_color = Color(1.0, 0.706, 0.329)
 	fgsb.set_corner_radius_all(3)
 	pb.add_theme_stylebox_override("background", bgsb)
 	pb.add_theme_stylebox_override("fill", fgsb)

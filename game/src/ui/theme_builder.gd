@@ -1,14 +1,19 @@
 extends RefCounted
 # Theme
+## 现代扁平深色主题（VNShell 风格）：纯 StyleBoxFlat，无贴图依赖。
+## 色板与交互规范对齐 VNShell ui_kit.gd。
 
-const BG := Color(0.055, 0.057, 0.065)
-const PANEL := Color(0.09, 0.09, 0.10, 0.92)
-const LINE := Color(0.44, 0.42, 0.38, 0.55)
-const TEXT := Color(0.88, 0.87, 0.84)
-const DIM := Color(0.62, 0.61, 0.58)
-const ACC := Color(0.72, 0.28, 0.24)
-
-# UI
+# Palette
+const BG := Color("#161a22")          # 页面背景（最深）
+const PANEL := Color("#212734")       # 面板 / 按钮底色
+const PANEL_HI := Color("#2b3345")    # 面板高亮态
+const ACCENT := Color("#4a8cff")      # 主强调（蓝）
+const ACCENT_2 := Color("#ff7a9c")    # 次强调（粉）
+const TEXT := Color("#e8eaed")        # 正文字色
+const DIM := Color("#8b93a3")         # 次要文字
+const LOCKED := Color("#4a505e")      # 锁定灰
+const OK := Color("#4ad991")          # 成功绿
+const WARN := Color("#ffb454")        # 警示橙（理智/恐怖演出保留色）
 
 static func build() -> Theme:
 	var t := Theme.new()
@@ -17,75 +22,71 @@ static func build() -> Theme:
 		t.default_font = font
 	t.default_font_size = 26
 
-	# ---- Button
-
-	var b_norm: StyleBox = UITex.style_box("choice_button", Color(1, 1, 1, 0.94), 6)
-	var b_hover: StyleBox
-	var b_press: StyleBox
-	var b_dis: StyleBox
-	if b_norm != null:
-		b_hover = UITex.style_box("choice_button", Color(1.45, 1.12, 1.02, 0.97), 6)
-		b_press = UITex.style_box("choice_button", Color(1.65, 0.78, 0.70, 1.0), 6)
-		b_dis = UITex.style_box("choice_button", Color(0.55, 0.55, 0.58, 0.7), 6)
-	else:
-		b_norm = _sb(Color(0.11, 0.11, 0.125, 0.94), LINE, 1)
-		b_hover = _sb(Color(0.17, 0.15, 0.15, 0.96), Color(0.75, 0.42, 0.34, 0.85), 1)
-		b_press = _sb(Color(0.24, 0.12, 0.11, 0.98), ACC, 1)
-		b_dis = _sb(Color(0.09, 0.09, 0.10, 0.7), Color(0.3, 0.3, 0.3, 0.4), 1)
+	# ---- Button（hover 提亮 / pressed 压暗 / focus 描边 / disabled 灰）
+	var b_norm := _sb(PANEL, 12)
+	var b_hover := _sb(PANEL.lightened(0.12), 12)
+	var b_press := _sb(PANEL.darkened(0.18), 12)
+	var b_dis := _sb(LOCKED.darkened(0.3), 12)
 	for s in [b_norm, b_hover, b_press, b_dis]:
-		s.content_margin_left = 22
-		s.content_margin_right = 22
+		s.content_margin_left = 24
+		s.content_margin_right = 24
 		s.content_margin_top = 14
 		s.content_margin_bottom = 14
 	t.set_stylebox("normal", "Button", b_norm)
 	t.set_stylebox("hover", "Button", b_hover)
 	t.set_stylebox("pressed", "Button", b_press)
 	t.set_stylebox("disabled", "Button", b_dis)
-	t.set_stylebox("focus", "Button", _sb(Color(0, 0, 0, 0), Color(0.8, 0.5, 0.4, 0.5), 1))
+	t.set_stylebox("focus", "Button", _sb(Color.TRANSPARENT, 12, 3, ACCENT))
 	t.set_color("font_color", "Button", TEXT)
-	t.set_color("font_hover_color", "Button", Color(1, 0.92, 0.88))
-	t.set_color("font_pressed_color", "Button", Color(1, 0.85, 0.80))
-	t.set_color("font_disabled_color", "Button", Color(0.45, 0.44, 0.43))
+	t.set_color("font_hover_color", "Button", Color.WHITE)
+	t.set_color("font_pressed_color", "Button", TEXT)
+	t.set_color("font_disabled_color", "Button", DIM.darkened(0.3))
 	t.set_font_size("font_size", "Button", 26)
 
 	# ---- Panel
-	t.set_stylebox("panel", "Panel", _sb(PANEL, LINE, 1))
-	t.set_stylebox("panel", "PanelContainer", _sb(PANEL, LINE, 1))
+	t.set_stylebox("panel", "Panel", _sb(PANEL, 20))
+	t.set_stylebox("panel", "PanelContainer", _sb(PANEL, 20))
 
 	# ---- Labels
 	t.set_color("font_color", "Label", TEXT)
 	t.set_font_size("font_size", "Label", 26)
 	t.set_color("default_color", "RichTextLabel", TEXT)
 	t.set_font_size("normal_font_size", "RichTextLabel", 28)
-	t.set_stylebox("normal", "RichTextLabel", _sb(Color(0, 0, 0, 0), Color(0, 0, 0, 0), 0))
+	t.set_stylebox("normal", "RichTextLabel", _sb(Color.TRANSPARENT, 0, 0, Color.TRANSPARENT))
 
 	# ---- Scroll / Slider / Check
-	t.set_stylebox("panel", "ScrollContainer", _sb(Color(0, 0, 0, 0), Color(0, 0, 0, 0), 0))
-	var grabber := _sb(Color(0.55, 0.32, 0.28, 0.9), Color(0, 0, 0, 0), 0, 6)
+	t.set_stylebox("panel", "ScrollContainer", _sb(Color.TRANSPARENT, 0, 0, Color.TRANSPARENT))
+	var grabber := _sb(ACCENT.darkened(0.15), 6)
 	t.set_stylebox("grabber_area", "VScrollBar", grabber)
-	t.set_stylebox("grabber_area_highlight", "VScrollBar", grabber)
-	t.set_stylebox("scroll", "VScrollBar", _sb(Color(0.15, 0.15, 0.16, 0.6), Color(0, 0, 0, 0), 0, 6))
-	t.set_stylebox("slider", "HSlider", _sb(Color(0.16, 0.16, 0.17, 0.9), LINE, 1, 6))
-	t.set_stylebox("grabber_area", "HSlider", _sb(Color(0.62, 0.3, 0.26, 0.95), Color(0, 0, 0, 0), 0, 6))
-	t.set_stylebox("grabber_area_highlight", "HSlider", _sb(Color(0.78, 0.38, 0.32, 1.0), Color(0, 0, 0, 0), 0, 6))
+	t.set_stylebox("grabber_area_highlight", "VScrollBar", _sb(ACCENT, 6))
+	t.set_stylebox("scroll", "VScrollBar", _sb(Color(1, 1, 1, 0.08), 6))
+	t.set_stylebox("slider", "HSlider", _sb(PANEL_HI, 6))
+	t.set_stylebox("grabber_area", "HSlider", _sb(ACCENT.darkened(0.15), 6))
+	t.set_stylebox("grabber_area_highlight", "HSlider", _sb(ACCENT, 6))
 	t.set_color("font_color", "CheckButton", TEXT)
 	t.set_color("font_color", "CheckBox", TEXT)
 
+	# ---- LineEdit（命名输入）
+	t.set_stylebox("normal", "LineEdit", _sb(PANEL_HI, 12))
+	t.set_stylebox("focus", "LineEdit", _sb(PANEL_HI, 12, 3, ACCENT))
+	t.set_color("font_color", "LineEdit", TEXT)
+	t.set_color("font_placeholder_color", "LineEdit", DIM)
+
 	# ---- Popup
-	t.set_stylebox("panel", "PopupPanel", _sb(Color(0.07, 0.07, 0.08, 0.98), LINE, 1))
+	t.set_stylebox("panel", "PopupPanel", _sb(PANEL, 20))
 	return t
 
-static func _sb(bg: Color, border: Color, bw: int, radius: int = 3) -> StyleBoxFlat:
+static func _sb(bg: Color, radius: int, bw: int = 0, border_color := Color.TRANSPARENT) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = bg
-	s.border_color = border
-	s.set_border_width_all(bw)
 	s.set_corner_radius_all(radius)
+	if bw > 0:
+		s.set_border_width_all(bw)
+		s.border_color = border_color
 	s.anti_aliasing = true
 	return s
 
 static func _load_font() -> Font:
-
 	var candidates := [
 		"res://assets/fonts/main.ttf", "res://assets/fonts/main.otf",
 		"res://assets/fonts/NotoSerifSC.ttf",

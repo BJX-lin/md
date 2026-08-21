@@ -16,7 +16,7 @@ static func _full(c: Control) -> Control:
 static func chapter_card(num: int, title: String) -> Control:
 	var root := ColorRect.new()
 	_full(root)
-	root.color = Color(0.02, 0.02, 0.025, 1.0)
+	root.color = Color(0.086, 0.102, 0.133, 1.0)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var v := VBoxContainer.new()
@@ -31,19 +31,19 @@ static func chapter_card(num: int, title: String) -> Control:
 	idx.text = "第 %s 章" % ("终" if num >= 5 else str(num))
 	idx.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	idx.add_theme_font_size_override("font_size", 30)
-	idx.add_theme_color_override("font_color", Color(0.66, 0.34, 0.28))
+	idx.add_theme_color_override("font_color", Color(0.29, 0.55, 1.0))
 	v.add_child(idx)
 
 	var t := Label.new()
 	t.text = title
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.add_theme_font_size_override("font_size", 62)
-	t.add_theme_color_override("font_color", Color(0.90, 0.88, 0.84))
+	t.add_theme_color_override("font_color", Color(0.91, 0.918, 0.929))
 	v.add_child(t)
 
 	var line := ColorRect.new()
 	line.custom_minimum_size = Vector2(320, 1)
-	line.color = Color(0.5, 0.45, 0.4, 0.6)
+	line.color = Color(0.169, 0.2, 0.271, 0.6)
 	v.add_child(line)
 
 	AudioDirector.play_sfx("sfx_bell", 0.5)
@@ -75,7 +75,7 @@ static func title_card(text: String) -> Control:
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.custom_minimum_size.x = 900
 	l.add_theme_font_size_override("font_size", 46)
-	l.add_theme_color_override("font_color", Color(0.92, 0.90, 0.86))
+	l.add_theme_color_override("font_color", Color(0.91, 0.918, 0.929))
 	root.add_child(l)
 
 	root.modulate.a = 0.0
@@ -113,8 +113,8 @@ static func note_card(text: String) -> Control:
 		paper.add_theme_stylebox_override("panel", note_sb)
 	else:
 		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color(0.83, 0.81, 0.74)
-		sb.border_color = Color(0.45, 0.42, 0.36)
+		sb.bg_color = Color(0.129, 0.153, 0.204)
+		sb.border_color = Color(0.29, 0.55, 1.0)
 		sb.set_border_width_all(1)
 		sb.content_margin_left = 42
 		sb.content_margin_right = 42
@@ -191,8 +191,8 @@ static func roster_card() -> Control:
 		paper.add_theme_stylebox_override("panel", roster_sb)
 	else:
 		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color(0.80, 0.78, 0.71)
-		sb.border_color = Color(0.36, 0.33, 0.28)
+		sb.bg_color = Color(0.169, 0.2, 0.271)
+		sb.border_color = Color(0.29, 0.55, 1.0)
 		sb.set_border_width_all(2)
 		sb.content_margin_left = 60
 		sb.content_margin_right = 60

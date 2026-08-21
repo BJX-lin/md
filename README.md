@@ -12,14 +12,14 @@
 **方式一：完整单包（完整单包）**
 
 ```
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.2.0_full_project.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.3.0_full_project.zip
 ```
 
 **方式二：分卷下载（两个包均 <100MB，规避 GitHub 单文件上限）**
 
 ```
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.2.0_part1_project.zip
-https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.2.0_part2_assets.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.3.0_part1_project.zip
+https://github.com/BJX-lin/md/raw/arena/01a018ff-md/dist/The13thPeriod_v1.3.0_part2_assets.zip
 ```
 
 > 分卷使用方法：把两个 ZIP **解压到同一个文件夹**即可合并——
@@ -71,7 +71,17 @@ godot --headless --path game res://tools/smoke_runner.tscn
 文本插值：`{pname}` 玩家名、`{num:truth}` 数值、`{item:item_xxx}` 道具名、
 `{if 条件?A|B}` 条件文本。玩家改名后正文中的「林昼」自动替换为玩家名字。
 
-## v1.2.0 更新（本分支最新）
+## v1.3.0 更新（本分支最新）
+
+- UI 整体更新为 VNShell 现代扁平深色蓝调风格（纯代码 StyleBoxFlat）：
+  深蓝灰面板 #212734 / 主强调蓝 #4a8cff / 大圆角 12~20px，
+  对话框/顶栏/选项/菜单/密码锁/标题/结局界面全部换色
+- 删除 9 张旧恐怖风 UI 贴图（代码均有纯色回落，功能无损）
+- 新增刘海屏安全区适配（移植 VNShell SafeArea，物理像素→视口换算）：
+  顶栏/对话框/菜单面板自动避开刘海挖孔与手势条
+- 版本号 1.3.0（versionCode 6）
+
+## v1.2.0 更新
 
 - 横屏显示：窗口方向改为传感器横屏（支持左右两个方向，手机横屏体验）
 - 新增「跳选」按钮：快进到下一选项（多周目速通），遇选项/密码锁/结局自动停止
@@ -97,11 +107,11 @@ godot --headless --path game res://tools/smoke_runner.tscn
 >
 > ```bash
 > # 在你自己的电脑上（网络可达 uploads.github.com）执行，把 ZIP 挂到 v1.1.2 Release：
-> gh release upload v1.2.0 dist/The13thPeriod_v1.2.0_full_project.zip --repo BJX-lin/md
+> gh release upload v1.3.0 dist/The13thPeriod_v1.3.0_full_project.zip --repo BJX-lin/md
 > ```
 >
 > 上传完成后，下载地址为：
-> `https://github.com/BJX-lin/md/releases/download/v1.2.0/The13thPeriod_v1.2.0_full_project.zip`
+> `https://github.com/BJX-lin/md/releases/download/v1.3.0/The13thPeriod_v1.3.0_full_project.zip`
 >
 > 其他备选方案：Git LFS（单文件 2~5GB，但免费存储/流量额度有限）、
 > 分包压缩（拆成多个 <100MB 的分卷）。注意：曾经提交进 git 历史的旧 ZIP

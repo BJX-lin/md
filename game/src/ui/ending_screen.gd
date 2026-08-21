@@ -81,7 +81,7 @@ func _ready() -> void:
 	tag.text = String(info["tag"])
 	tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tag.add_theme_font_size_override("font_size", 22)
-	tag.add_theme_color_override("font_color", Color(0.58, 0.56, 0.52))
+	tag.add_theme_color_override("font_color", Color(0.545, 0.576, 0.639))
 	v.add_child(tag)
 
 	var t := Label.new()
@@ -137,7 +137,7 @@ func _ready() -> void:
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.add_theme_font_size_override("font_size", 24)
-	hint.add_theme_color_override("font_color", Color(0.82, 0.66, 0.42))
+	hint.add_theme_color_override("font_color", Color(1.0, 0.706, 0.329))
 	v.add_child(hint)
 
 	var h := HBoxContainer.new()

@@ -70,8 +70,8 @@ func _ready() -> void:
 	var title := Label.new()
 	title.text = Cfg.GAME_TITLE
 	title.add_theme_font_size_override("font_size", 88)
-	title.add_theme_color_override("font_color", Color(0.92, 0.90, 0.86))
-	title.add_theme_color_override("font_shadow_color", Color(0.5, 0.05, 0.04, 0.7))
+	title.add_theme_color_override("font_color", Color(0.91, 0.918, 0.929))
+	title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.6))
 	title.add_theme_constant_override("shadow_offset_x", 3)
 	title.add_theme_constant_override("shadow_offset_y", 3)
 	left.add_child(title)
@@ -79,13 +79,13 @@ func _ready() -> void:
 	# Title
 	var rule := ColorRect.new()
 	rule.custom_minimum_size = Vector2(140, 2)
-	rule.color = Color(0.62, 0.20, 0.18, 0.85)
+	rule.color = Color(0.29, 0.55, 1.0, 0.85)
 	left.add_child(rule)
 
 	subtitle_label = Label.new()
 	subtitle_label.text = Cfg.GAME_SUBTITLE
 	subtitle_label.add_theme_font_size_override("font_size", 21)
-	subtitle_label.add_theme_color_override("font_color", Color(0.62, 0.60, 0.56))
+	subtitle_label.add_theme_color_override("font_color", Color(0.545, 0.576, 0.639))
 	left.add_child(subtitle_label)
 
 	var cycles := int(GameState.persistent.get("cycles", 0))
@@ -93,7 +93,7 @@ func _ready() -> void:
 		var cy := Label.new()
 		cy.text = "这是第 %d 次重排。" % (109 + cycles)
 		cy.add_theme_font_size_override("font_size", 22)
-		cy.add_theme_color_override("font_color", Color(0.72, 0.34, 0.30))
+		cy.add_theme_color_override("font_color", Color(1.0, 0.478, 0.612))
 		left.add_child(cy)
 
 	var right := VBoxContainer.new()
@@ -123,7 +123,7 @@ func _ready() -> void:
 	ver.offset_top = -40
 	ver.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ver.add_theme_font_size_override("font_size", 18)
-	ver.add_theme_color_override("font_color", Color(0.55, 0.53, 0.50, 0.8))
+	ver.add_theme_color_override("font_color", Color(0.545, 0.576, 0.639, 0.8))
 	ver.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(ver)
 
